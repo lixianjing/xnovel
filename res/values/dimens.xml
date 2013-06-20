@@ -8,5 +8,7 @@
     
     <dimen name="main_tab_layout_height">45.0dip</dimen>
     <dimen name="main_title_layout_height">45.0dip</dimen>
+    
+        <dimen name="iphone_dlg_promot_btn_size">10sp</dimen>
 
 </resources>

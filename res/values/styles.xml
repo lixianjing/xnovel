@@ -2,6 +2,8 @@
 
     <style name="AppTheme" parent="android:Theme.Light" />
 
+    <drawable name="translucent_background">#00ffffff</drawable>
+
     <style name="titleText">
         <item name="android:textSize">18.0sp</item>
         <item name="android:textStyle">bold</item>
@@ -25,6 +27,15 @@
         <item name="android:scaleType">center</item>
         <item name="android:drawablePadding">0.0dip</item>
         <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="IPhoneDialog" parent="@android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/translucent_background</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>

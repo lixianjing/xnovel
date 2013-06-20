@@ -12,14 +12,21 @@
     <string name="tab_more_text">关于</string>
     
     <string name="more_version_text">版本号：</string>
-    <string name="more_copyright_text">版权所有：</string>
+    <string name="more_copyright_text">版权所有：李仙靖</string>
     <string name="more_review_btn">评论此软件</string>
     <string name="more_share_btn">分享此软件</string>
-    <string name="more_about_copyright_btn">关于版权</string>
+    <string name="more_copyright_btn">关于版权</string>
     <string name="more_more_btn">更多精彩应用</string>
     <string name="more_contact_msg_text">如果您在使用过程中遇到什么问题或者建议，请撰写邮件联系我们，谢谢合作。</string>
     <string name="more_contact_us_btn">撰写邮件联系我们</string>
     
     <string name="more_thanks_text">特别鸣谢</string>
+    
+    <string name="iphone_dlg_btn_ok_str">Confirm</string>
+    <string name="iphone_dlg_btn_cancel_str">Cancel</string>
+    <string name="str_ok">OK</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="str_error">Error</string>
+    <string name="str_confirm">Confirm</string>
 
 </resources>
