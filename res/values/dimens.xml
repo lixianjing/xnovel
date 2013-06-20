@@ -1,0 +1,8 @@
+<resources>
+
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="tab_item_layout_width">64.0dip</dimen>
+
+</resources>
