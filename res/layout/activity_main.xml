@@ -7,7 +7,8 @@
     <RelativeLayout
         android:id="@+id/main_title_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/main_title_layout_height"
+        android:background="@drawable/title_bar_bkg"
         android:layout_alignParentTop="true"
         android:gravity="center_vertical" >
 
@@ -15,21 +16,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            style="@style/titleText"
             android:gravity="center_vertical"
-            android:text="微小说" />
+            android:text="@string/title_main_text" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <android.support.v4.view.ViewPager
@@ -46,7 +50,7 @@
     <LinearLayout
         android:id="@+id/main_card_tab_view"
         android:layout_width="fill_parent"
-        android:layout_height="44.0dip"
+        android:layout_height="@dimen/main_tab_layout_height"
         android:layout_alignParentBottom="true"
         android:background="@drawable/tabmenu_background"
         android:gravity="fill_horizontal|bottom|center" >
@@ -60,28 +64,24 @@
         <TextView
             android:id="@+id/tab_btn_bookmark"
             style="@style/TabIcon"
-            android:layout_toRightOf="@id/tab_btn_category"
             android:drawableTop="@drawable/tabicon_bookmark"
             android:text="@string/tab_bookmark_text" />
 
         <TextView
             android:id="@+id/tab_btn_history"
             style="@style/TabIcon"
-            android:layout_toRightOf="@id/tab_btn_bookmark"
             android:drawableTop="@drawable/tabicon_history"
             android:text="@string/tab_history_text" />
 
         <TextView
             android:id="@+id/tab_btn_setting"
             style="@style/TabIcon"
-            android:layout_toRightOf="@id/tab_btn_bookmark"
             android:drawableTop="@drawable/tabicon_setting"
             android:text="@string/tab_setting_text" />
 
         <TextView
             android:id="@+id/tab_btn_more"
             style="@style/TabIcon"
-            android:layout_toRightOf="@id/tab_btn_setting"
             android:drawableTop="@drawable/tabicon_more"
             android:text="@string/tab_more_text" />
     </LinearLayout>

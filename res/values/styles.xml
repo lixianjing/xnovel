@@ -2,6 +2,15 @@
 
     <style name="AppTheme" parent="android:Theme.Light" />
 
+    <style name="titleText">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2.0dip</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
     <style name="TabIcon">
         <item name="android:textSize">10.0sp</item>
         <item name="android:textStyle">bold</item>

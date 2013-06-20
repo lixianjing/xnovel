@@ -60,6 +60,7 @@ public class MainActivity extends FragmentActivity {
 
 	private void InitViewPager() {
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
+		mPager.setOffscreenPageLimit(2);//预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 		LayoutInflater mInflater = getLayoutInflater();
 		View activityView = mInflater.inflate(R.layout.fragment_lay, null);
@@ -68,13 +69,13 @@ public class MainActivity extends FragmentActivity {
 		Fragment groupFragment = TestFragment.newInstance("书签");
 		Fragment friendsFragment = TestFragment.newInstance("历史");
 		Fragment chatFragment = TestFragment.newInstance("设置");
-		Fragment aboutFragment = TestFragment.newInstance("关于");
+		Fragment fragmentMore = new FragmentMore();
 
 		fragmentsList.add(activityfragment);
 		fragmentsList.add(groupFragment);
 		fragmentsList.add(friendsFragment);
 		fragmentsList.add(chatFragment);
-		fragmentsList.add(aboutFragment);
+		fragmentsList.add(fragmentMore);
 
 		mPager.setAdapter(new MyFragmentPagerAdapter(
 				getSupportFragmentManager(), fragmentsList));
