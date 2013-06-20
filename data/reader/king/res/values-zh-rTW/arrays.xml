@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sys_set_common_screen_mode_title">
+        <item>重力感應</item>
+        <item>豎屏</item>
+        <item>橫屏</item>
+    </string-array>
+    <string-array name="sys_set_common_screen_mode_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="sys_set_common_enable_suspend_title">
+        <item>禁止關閉</item>
+        <item>1分鐘後</item>
+        <item>2分鐘後</item>
+        <item>3分鐘後</item>
+        <item>4分鐘後</item>
+        <item>5分鐘後</item>
+    </string-array>
+    <string-array name="sys_set_common_enable_suspend_value">
+        <item>-1</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>180000</item>
+        <item>240000</item>
+        <item>300000</item>
+    </string-array>
+    <string-array name="sys_set_common_keep_screen_on_title">
+        <item>禁止關閉屏幕</item>
+        <item>使用系統默認設置</item>
+    </string-array>
+    <string-array name="sys_set_common_keep_screen_on_value">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="txt_set_scroll_mode_title">
+        <item>像素滾屏</item>
+        <item>逐行滾屏</item>
+        <item>逐頁滾屏</item>
+        <item>無限滾屏</item>
+    </string-array>
+    <string-array name="txt_set_scroll_mode_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="txt_set_theme_load_template_title">
+        <item>夜間主題</item>
+        <item>白天主題</item>
+        <item>豆沙綠</item>
+        <item>銀河白</item>
+        <item>葛巾紫</item>
+        <item>杏仁黃</item>
+        <item>秋葉褐</item>
+        <item>胭脂紅</item>
+        <item>海天藍</item>
+        <item>雪 青</item>
+        <item>極光灰</item>
+        <item>白紙</item>
+        <item>羊皮紙</item>
+        <item>藍砂紙</item>
+    </string-array>
+    <string-array name="txt_set_theme_load_template_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+    </string-array>
+    <string-array name="txt_set_theme_font_render_quality_title">
+        <item>速度優先</item>
+        <item>質量優先</item>
+    </string-array>
+    <string-array name="txt_set_theme_font_render_quality_value">
+        <item>0</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="txt_set_gesture_clk_mode_title">
+        <item>上下區域</item>
+        <item>左右區域</item>
+    </string-array>
+    <string-array name="txt_set_gesture_clk_mode_value">
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="txt_set_gesture_l2r_title">
+        <item>無效果</item>
+        <item>前後翻頁</item>
+    </string-array>
+    <string-array name="txt_set_gesture_l2r_value">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+    <string-array name="txt_set_gesture_clk_interval_title">
+        <item>無間隔</item>
+        <item>100毫秒</item>
+        <item>200毫秒</item>
+        <item>300毫秒</item>
+        <item>400毫秒</item>
+        <item>500毫秒</item>
+        <item>600毫秒</item>
+        <item>700毫秒</item>
+        <item>800毫秒</item>
+        <item>900毫秒</item>
+        <item>1000毫秒</item>
+    </string-array>
+    <string-array name="txt_set_gesture_clk_interval_value">
+        <item>0</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
+        <item>600</item>
+        <item>700</item>
+        <item>800</item>
+        <item>900</item>
+        <item>1000</item>
+    </string-array>
+    <string-array name="txt_set_gesture_t2b_title">
+        <item>無效果</item>
+        <item>阻尼滑動效果</item>
+    </string-array>
+    <string-array name="txt_set_gesture_t2b_value">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+    <string-array name="txt_set_gesture_lt2lb_title">
+        <item>無效果</item>
+        <item>調整屏幕亮度</item>
+    </string-array>
+    <string-array name="txt_set_gesture_lt2lb_value">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+    <string-array name="txt_set_gesture_rt2rb_title">
+        <item>無效果</item>
+        <item>調整字體大小</item>
+    </string-array>
+    <string-array name="txt_set_gesture_rt2rb_value">
+        <item>false</item>
+        <item>true</item>
+    </string-array>
+    <string-array name="sys_set_common_auto_save_secs_title">
+        <item>關閉</item>
+        <item>1分鐘</item>
+        <item>2分鐘</item>
+        <item>3分鐘</item>
+        <item>4分鐘</item>
+        <item>5分鐘</item>
+        <item>6分鐘</item>
+    </string-array>
+    <string-array name="sys_set_common_auto_save_secs_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="sys_set_common_screen_light_title">
+        <item>系統亮度</item>
+        <item>10%亮度</item>
+        <item>15%亮度</item>
+        <item>20%亮度</item>
+        <item>25%亮度</item>
+        <item>30%亮度</item>
+        <item>35%亮度</item>
+        <item>40%亮度</item>
+        <item>45%亮度</item>
+        <item>50%亮度</item>
+        <item>55%亮度</item>
+        <item>60%亮度</item>
+        <item>65%亮度</item>
+        <item>70%亮度</item>
+        <item>75%亮度</item>
+        <item>80%亮度</item>
+        <item>85%亮度</item>
+        <item>90%亮度</item>
+        <item>95%亮度</item>
+        <item>100%亮度</item>
+    </string-array>
+    <string-array name="sys_set_common_screen_light_value">
+        <item>-1</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+        <item>60</item>
+        <item>65</item>
+        <item>70</item>
+        <item>75</item>
+        <item>80</item>
+        <item>85</item>
+        <item>90</item>
+        <item>95</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="pic_set_open_mode_title">
+        <item>自動適應屏幕</item>
+        <item>適應屏幕寬度</item>
+        <item>適應屏幕高度</item>
+        <item>原始大小顯示</item>
+    </string-array>
+    <string-array name="pic_set_open_mode_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string-array name="pic_set_align_mode_title">
+        <item>左上角對齊</item>
+        <item>右上角對齊</item>
+        <item>居中對齊</item>
+    </string-array>
+    <string-array name="pic_set_align_mode_value">
+        <item>1</item>
+        <item>3</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="sys_set_fx_type_title">
+        <item>無特效</item>
+        <item>向左滾動</item>
+        <item>向右滾動</item>
+        <item>向左滑動</item>
+        <item>向右滑動</item>
+        <item>向左覆蓋</item>
+        <item>向右覆蓋</item>
+        <item>向上滾動</item>
+        <item>向下滾動</item>
+        <item>向上覆蓋</item>
+        <item>向下覆蓋</item>
+        <item>二維旋轉</item>
+        <item>浮光掠影放大</item>
+        <item>浮光掠影縮小</item>
+    </string-array>
+    <string-array name="sys_set_fx_type_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>11</item>
+        <item>9</item>
+        <item>10</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string-array name="sys_set_fx_type_title2">
+        <item>無特效</item>
+        <item>左右滾動</item>
+        <item>左右滑動</item>
+        <item>左右覆盖</item>
+        <item>上下滾動</item>
+        <item>上下覆蓋</item>
+        <item>浮光掠影</item>
+        <item>真實紙張(已废弃,請選用紙張模式)</item>
+    </string-array>
+    <string-array name="sys_set_fx_type_value2">
+        <item>0</item>
+        <item>1</item>
+        <item>12</item>
+        <item>14</item>
+        <item>3</item>
+        <item>5</item>
+        <item>9</item>
+        <item>7</item>
+    </string-array>
+    <string-array name="sys_set_fx_duration_title">
+        <item>200毫秒</item>
+        <item>250毫秒</item>
+        <item>300毫秒</item>
+        <item>350毫秒</item>
+        <item>400毫秒</item>
+        <item>450毫秒</item>
+        <item>500毫秒</item>
+        <item>600毫秒</item>
+        <item>700毫秒</item>
+        <item>800毫秒</item>
+        <item>900毫秒</item>
+        <item>1000毫秒</item>
+    </string-array>
+    <string-array name="sys_set_fx_duration_value">
+        <item>200</item>
+        <item>250</item>
+        <item>300</item>
+        <item>350</item>
+        <item>400</item>
+        <item>450</item>
+        <item>500</item>
+        <item>600</item>
+        <item>700</item>
+        <item>800</item>
+        <item>900</item>
+        <item>1000</item>
+    </string-array>
+    <string-array name="txt_set_theme_bkg_color_fill_mode_title">
+        <item>純色填充</item>
+        <item>左下至右上過渡填充</item>
+        <item>右下至左上過渡填充</item>
+        <item>左上至右下過渡填充</item>
+        <item>右上至左下過渡填充</item>
+        <item>從下至上過渡填充</item>
+        <item>從上至下過渡填充</item>
+        <item>從左至右過渡填充</item>
+        <item>從右至左過渡色填充</item>
+    </string-array>
+    <string-array name="txt_set_theme_bkg_color_fill_mode_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string-array name="web_browser_zoom_mode_title">
+        <item>原汁原味(WVGA)</item>
+        <item>版面重排(HVGA)</item>
+    </string-array>
+    <string-array name="online_book_store_caption_title">
+        <item>紅袖添香</item>
+        <item>起點中文</item>
+        <item>飛庫小說</item>
+        <item>17K小說</item>
+    </string-array>
+    <string-array name="online_book_store_value">
+        <item>http://quanben.hongxiu.com/free1.html.website</item>
+        <item>http://top.qidian.com.website</item>
+        <item>http://www.feiku.com/Book/OriginSort.website</item>
+        <item>http://top.17k.com.website</item>
+    </string-array>
+    <string-array name="txt_set_theme_font_name_title">
+        <item>Monospace</item>
+        <item>Sans Serif</item>
+        <item>Serif</item>
+        <item>系統默認字體</item>
+        <item>存儲卡上的字體</item>
+    </string-array>
+    <string-array name="txt_set_theme_font_name_value">
+        <item>Monospace</item>
+        <item>Sans Serif</item>
+        <item>Serif</item>
+        <item>Default</item>
+        <item>SDCard</item>
+    </string-array>
+    <string-array name="sys_set_reading_cache_title">
+        <item>智能分配</item>
+        <item>4MB</item>
+        <item>5MB</item>
+        <item>6MB</item>
+        <item>7MB</item>
+        <item>8MB</item>
+        <item>9MB</item>
+        <item>10MB</item>
+        <item>11MB</item>
+        <item>12MB</item>
+        <item>13MB</item>
+        <item>14MB</item>
+        <item>15MB</item>
+    </string-array>
+    <string-array name="sys_set_reading_cache_value">
+        <item>0</item>
+        <item>400000</item>
+        <item>500000</item>
+        <item>600000</item>
+        <item>700000</item>
+        <item>800000</item>
+        <item>900000</item>
+        <item>1000000</item>
+        <item>1100000</item>
+        <item>1200000</item>
+        <item>1300000</item>
+        <item>1400000</item>
+        <item>1500000</item>
+    </string-array>
+    <string-array name="txt_tools_title">
+        <item>滑動閱讀模式</item>
+        <item>紙張翻頁模式</item>
+        <item>文字選擇模式</item>
+    </string-array>
+    <string-array name="pic_tools_title">
+        <item>滑動閱讀模式</item>
+        <item>紙張翻頁模式</item>
+    </string-array>
+    <string-array name="txt_set_gesture_long_click_title">
+        <item>選擇文字</item>
+        <item>無效果</item>
+    </string-array>
+    <string-array name="sys_set_typeset_blank_count_title">
+        <item>原始</item>
+        <item>緊湊</item>
+        <item>文藝</item>
+    </string-array>
+    <string-array name="txt_set_chinese_convert_mode_title">
+        <item>不做轉換</item>
+        <item>簡體 => 繁體</item>
+        <item>繁體 => 簡體</item>
+    </string-array>
+</resources>

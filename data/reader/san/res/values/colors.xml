@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#ff3ca9f4</color>
+    <color name="reflection_default_from">#b0ffffff</color>
+    <color name="reflection_default_to">#00ffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="tran_black">#ff000000</color>
+    <color name="red">#ffff0000</color>
+    <color name="white">#ffffffff</color>
+    <color name="tran_white">#80ffffff</color>
+    <color name="devider_color">#ffe6e5e5</color>
+    <color name="line">#ffcecece</color>
+    <color name="medium_gray">#ff999999</color>
+    <color name="dark_gray">#ff474747</color>
+    <color name="light_gray">#ffdddddd</color>
+    <color name="tuse">#fffeeec2</color>
+    <color name="zongse">#ff886722</color>
+</resources>

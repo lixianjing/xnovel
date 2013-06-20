@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ratingbarStyle">
+        <item name="android:maxHeight">25.0px</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@drawable/ratingbar</item>
+        <item name="android:progressDrawable">@drawable/ratingbar</item>
+        <item name="android:minHeight">25.0px</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:isIndicator">true</item>
+    </style>
+    <style name="Theme.Main" parent="@*android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/book_loading</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Activity.Main</item>
+    </style>
+    <style name="Theme.Main.Splash" parent="@style/Theme.Main">
+        <item name="android:windowBackground">@drawable/book_loading</item>
+    </style>
+    <style name="Theme.Dialog.Generic" parent="@*android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@*android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Activity.Main</item>
+    </style>
+    <style name="Animation.Activity.Main" parent="@*android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
+        <item name="android:taskOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:taskOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:taskCloseEnterAnimation">@anim/fade_in</item>
+        <item name="android:taskCloseExitAnimation">@anim/fade_out</item>
+        <item name="android:taskToFrontEnterAnimation">@anim/fade_in</item>
+        <item name="android:taskToFrontExitAnimation">@anim/fade_out</item>
+        <item name="android:taskToBackEnterAnimation">@anim/fade_in</item>
+        <item name="android:taskToBackExitAnimation">@anim/fade_out</item>
+    </style>
+    <style name="TabIcon">
+        <item name="android:textSize">10.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/tab_btn_select</item>
+        <item name="android:paddingTop">2.0dip</item>
+        <item name="android:layout_width">@dimen/tab_item_layout_width</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginTop">3.0dip</item>
+        <item name="android:layout_marginBottom">2.0dip</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:drawablePadding">0.0dip</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+    <style name="ActionButton">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/button_navigation</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginLeft">30.0dip</item>
+        <item name="android:layout_marginRight">30.0dip</item>
+        <item name="android:layout_marginBottom">24.0dip</item>
+    </style>
+    <style name="ActionButton.Positive" parent="@style/ActionButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:background">@drawable/btn_orange_bg</item>
+        <item name="android:layout_height">42.0dip</item>
+    </style>
+    <style name="ActionButton.Negative" parent="@style/ActionButton">
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:background">@drawable/cancel_button</item>
+        <item name="android:layout_height">42.0dip</item>
+    </style>
+    <style name="List">
+        <item name="android:background">@null</item>
+        <item name="android:paddingBottom">20.0dip</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:listSelector">@*android:color/transparent</item>
+        <item name="android:cacheColorHint">@*android:color/transparent</item>
+        <item name="android:groupIndicator">@null</item>
+        <item name="android:childDivider">@null</item>
+        <item name="android:divider">@null</item>
+        <item name="android:headerDividersEnabled">false</item>
+        <item name="android:smoothScrollbar">true</item>
+    </style>
+    <style name="Title">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:shadowColor">#ffffffff</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">0.0</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+    <style name="TitleLayout">
+        <item name="android:background">@drawable/title_generic</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">45.0dip</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:keepScreenOn">true</item>
+    </style>
+    <style name="NaviRightButton">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/button_navigation</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_square</item>
+        <item name="android:layout_width">50.0dip</item>
+        <item name="android:layout_height">35.0dip</item>
+        <item name="android:shadowColor">#ffffffff</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">0.0</item>
+    </style>
+    <style name="NaviLeftButton" parent="@style/NaviRightButton">
+        <item name="android:background">@drawable/button_back</item>
+        <item name="android:layout_width">55.0dip</item>
+        <item name="android:layout_height">35.0dip</item>
+    </style>
+    <style name="Card">
+        <item name="android:background">@drawable/cate_card_bkd</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">8.0dip</item>
+        <item name="android:layout_marginRight">8.0dip</item>
+    </style>
+    <style name="TitleLeftBackButton">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:background">@drawable/button_back</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">35.0dip</item>
+        <item name="android:layout_marginLeft">5.0dip</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="TitleRightButton">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_square</item>
+        <item name="android:paddingLeft">3.0dip</item>
+        <item name="android:paddingRight">3.0dip</item>
+        <item name="android:layout_width">50.0dip</item>
+        <item name="android:layout_height">35.0dip</item>
+        <item name="android:layout_marginRight">5.0dip</item>
+        <item name="android:shadowColor">#ffffffff</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">0.0</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="SettingRadioItem">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">2.0dip</item>
+        <item name="android:paddingBottom">2.0dip</item>
+        <item name="android:layout_width">40.0dip</item>
+        <item name="android:layout_height">33.0dip</item>
+        <item name="android:button">@null</item>
+    </style>
+</resources>

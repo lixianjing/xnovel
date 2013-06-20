@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.kingreader.framework.os.android.ui.uicontrols.BookGrid android:gravity="center" android:id="@id/book_grid" android:paddingTop="5.0dip" android:layoutAnimation="@anim/layout_grid_fade" android:animationCache="true" android:layout_width="fill_parent" android:layout_height="fill_parent" android:cacheColorHint="@null" android:horizontalSpacing="10.0dip" android:verticalSpacing="10.0dip" android:columnWidth="90.0dip" android:fastScrollEnabled="true" />
+    <LinearLayout android:orientation="vertical" android:id="@id/bl_container" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <com.kingreader.framework.os.android.ui.uicontrols.BookList android:id="@id/book_list" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    </LinearLayout>
+</merge>

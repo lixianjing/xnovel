@@ -1,0 +1,12 @@
+version: 1.5.2
+apkFileName: sanguo.apk
+isFrameworkApk: false
+usesFramework:
+  ids:
+  - 1
+sdkInfo:
+  minSdkVersion: '4'
+packageInfo:
+  cur_package: com.harvesters.ebooksang
+  orig_package: com.harvesters.ebooksang
+compressionType: false

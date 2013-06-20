@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#ff000000</color>
+    <color name="book_menu_bkc1">#ffededed</color>
+    <color name="book_menu_bkc">#ffe0e0e0</color>
+    <color name="book_list_bkc">#ffefefef</color>
+    <color name="book_grid_bkc">#ffd6d7d8</color>
+    <color name="nbs_page_bkc">#ffcdd1d6</color>
+    <color name="nbs_user_desc_text_color">#ff6a727c</color>
+</resources>

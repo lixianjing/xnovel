@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ViewFlipper android:id="@id/view_flipper" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0">
+        <com.kingreader.framework.os.android.ui.page.BookShelfPage android:id="@id/book_shelf_page" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+        <com.kingreader.framework.os.android.ui.page.EsouSearchPage android:id="@id/search_page" android:background="@color/book_list_bkc" android:paddingBottom="50.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+        <com.kingreader.framework.os.android.ui.page.DownloadPage android:id="@id/download_page" android:background="@color/book_list_bkc" android:paddingBottom="50.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+        <com.kingreader.framework.os.android.ui.page.SoftwarePage android:id="@id/software_page" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    </ViewFlipper>
+    <com.kingreader.framework.os.android.ui.uicontrols.IconToolbar android:layout_gravity="bottom" android:id="@id/toolbar" android:background="@drawable/bs_toolbar_bkg" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+</FrameLayout>

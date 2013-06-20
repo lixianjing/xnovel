@@ -1,0 +1,47 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+/* CSS Reset */
+body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote,a,big, em,font,img,strong,tt, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, table, caption, tbody, tfoot, thead, tr, th, td{padding: 0; margin:0;}
+table{border-spacing:0;}
+fieldset,img{border:0;}
+input,select,textarea{font-size:12px}
+ol,ul{list-style:none;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+em{font-variant:normal;}
+
+/* bass css */
+body{margin:0 auto;font-size:12px;font-family:Geneva, Arial, Helvetica, sans-serif;}
+td{font-size:12px;line-height:160%;}
+.left,.center{float:left}
+.right{float:right}
+
+/*===================*/
+div{background-color:#eeeeee;}
+.title { background-color:#1a9ee1;}
+.title h1{ height:60px; line-height:60px; vertical-align:middle;padding:10 0 10 0px; margin:0 0; font-size:36px;color:#FFFFFF;font-family:"黑体"; font-weight:bold;}
+table td { height:30px}
+
+	.tr1bg { background-color:#eeeeee; font-weight:bold;}
+	.td4wd { width:200px; text-align:center}
+	.td3wd { text-align:right;padding:0 100 0 0px;}
+	#ndtable tr {height:30px;}
+	/*第一种颜色*/
+	#ndtable tr.color1{ background-color:#FFFFFF;}
+	/*第二种颜色*/
+	#ndtable tr.color2{ background-color:#FFFFFF;}
+	
+	.upfileform { position:relative;padding:10 0 10 0px;width:360px;height:32px;line-height:32px;}
+	.labels {height:32px;line-height:32px;}
+	.upexplain {height:32px;line-height:32px; border:1px solid #cdcdcd; width:180px;vertical-align:middle;}
+	.upbtn{height:32px; width:90px;line-height:32px;text-align:center;}
+	.upfile{position:absolute; top:3px;right:10px; height:32px; line-height:32px;filter:alpha(opacity:0);opacity: 0;width:270px;}
+	
+	.mlabels {position:relative;height:32px;line-height:32px;width:80px;text-align:center;}
+	.mupexplain {position:relative;height:32px;line-height:32px; border:1px solid #cdcdcd; width:180px;text-align:center;}
+	.mupbtn{height:32px;width:90px;vertical-align:middle;}
+
+	
+	.upload_btns{list-style:none;padding:0;margin:0; height:32px; }
+	.upload_btns li{float:left; height:32px;}
+	.marginleft30{margin-left:30px; }

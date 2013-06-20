@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res/com.kingreader.framework">
+    <PreferenceCategory android:title="@string/preferences_caption_sys">
+        <PreferenceScreen android:title="@string/preferences_caption_sys_common_screen" android:key="sys_common_screen" android:summary="@string/preferences_caption_sys_common_screen_summary">
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_common_screen_mode_title" android:title="@string/sys_set_common_screen_mode" android:key="sys_set_common_screen_mode" android:summary="@string/sys_set_common_screen_mode_summary" android:dialogTitle="@string/sys_set_common_screen_mode" android:entryValues="@array/sys_set_common_screen_mode_value" />
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_common_screen_light_title" android:title="@string/sys_set_common_screen_light" android:key="sys_set_common_screen_light1" android:summary="@string/sys_set_common_screen_light_summary" android:dialogTitle="@string/sys_set_common_screen_light" android:entryValues="@array/sys_set_common_screen_light_value" />
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_common_keep_screen_on_title" android:title="@string/sys_set_common_keep_screen_on" android:key="sys_set_common_keep_screen_on" android:summary="@string/sys_set_common_keep_screen_on_summary" android:dialogTitle="@string/sys_set_common_keep_screen_on" android:entryValues="@array/sys_set_common_keep_screen_on_value" />
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_sys_fx_setting" android:key="sys_fx_setting" android:summary="@string/preferences_caption_sys_fx_setting_summary">
+            <PreferenceCategory android:title="@string/preferences_caption_sys_fx_setting_duration">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_fx_duration_title" android:title="@string/sys_set_fx_duration" android:key="sys_set_fx_duration" android:summary="@string/sys_set_fx_duration_summary" android:dialogTitle="@string/sys_set_fx_duration" android:entryValues="@array/sys_set_fx_duration_value" />
+            </PreferenceCategory>>
+<PreferenceCategory android:title="@string/preferences_caption_sys_fx_setting_action">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_fx_type_title2" android:title="@string/sys_set_txt_turn_page_fx_type" android:key="sys_set_txt_page_fx_type" android:summary="@string/sys_set_fx_type_summary" android:dialogTitle="@string/sys_set_txt_turn_page_fx_type" android:entryValues="@array/sys_set_fx_type_value2" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_fx_type_title2" android:title="@string/sys_set_pic_turn_page_fx_type" android:key="sys_set_pic_page_fx_type" android:summary="@string/sys_set_fx_type_summary" android:dialogTitle="@string/sys_set_pic_turn_page_fx_type" android:entryValues="@array/sys_set_fx_type_value2" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_fx_type_title2" android:title="@string/sys_set_navigation_fx_type" android:key="sys_set_navigate_fx_type" android:summary="@string/sys_set_fx_type_summary" android:dialogTitle="@string/sys_set_navigation_fx_type" android:entryValues="@array/sys_set_fx_type_value2" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_fx_type_title" android:title="@string/sys_set_file_change_fx_type" android:key="sys_set_file_change_fx_type" android:summary="@string/sys_set_fx_type_summary" android:dialogTitle="@string/sys_set_file_change_fx_type" android:entryValues="@array/sys_set_fx_type_value" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_sys_fx_type_sound">
+                <CheckBoxPreference android:title="@string/sys_set_enable_sound_fx" android:key="sys_set_enable_sound_fx" />
+            </PreferenceCategory>> </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_caption_txt">
+        <PreferenceScreen android:title="@string/preferences_caption_sys_common_read" android:key="sys_common_read" android:summary="@string/preferences_caption_sys_common_read_summary">
+            <PreferenceCategory android:title="@string/preferences_caption_sys_common_read_txt">
+                <CheckBoxPreference android:title="@string/txt_set_common_keep_last_line" android:key="txt_set_common_keep_last_line" android:summary="@string/txt_set_common_keep_last_line_summary" />
+                <CheckBoxPreference android:title="@string/txt_set_common_search_from_begin" android:key="txt_set_common_search_from_begin" android:summary="@string/txt_set_common_search_from_begin_summary" />
+                <CheckBoxPreference android:title="@string/txt_set_common_auto_next_file" android:key="txt_set_common_auto_next_file" android:summary="@string/txt_set_common_auto_next_file_summary" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_common_auto_save_secs_title" android:title="@string/sys_set_common_auto_save_secs" android:key="sys_set_common_auto_save_secs" android:summary="@string/sys_set_common_auto_save_secs_summary" android:dialogTitle="@string/sys_set_common_auto_save_secs" android:entryValues="@array/sys_set_common_auto_save_secs_value" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_sys_performance">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_reading_cache_title" android:title="@string/sys_set_common_reading_cache" android:key="sys_set_common_reading_cache" android:summary="@string/sys_set_common_reading_cache_summary" android:dialogTitle="@string/sys_set_common_reading_cache" android:entryValues="@array/sys_set_reading_cache_value" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_txt_layout" android:key="sys_txt_layout" android:summary="@string/preferences_caption_txt_layout_summary">
+            <PreferenceCategory android:title="@string/preferences_caption_sys_common_read1">
+                <CheckBoxPreference android:title="@string/sys_set_common_show_last_read" android:key="sys_set_common_show_last_read" android:summary="@string/sys_set_common_show_last_read_summary" />
+                <CheckBoxPreference android:title="@string/sys_set_show_sys_caption" android:key="sys_set_show_sys_caption" android:summary="@string/sys_set_show_sys_caption_summary" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_txt_infoarea_font">
+                <CheckBoxPreference android:title="@string/txt_set_common_show_summary" android:key="txt_set_common_show_summary" android:summary="@string/txt_set_common_show_summary_summary" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/txt_set_theme_font_size" android:key="sys_set_infoarea_font_size" android:summary="@string/txt_set_infoarea_font_size_summary" app:minValue="12" app:maxValue="30" app:unit="@string/screen_uint" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_txt_workarea">
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/sys_set_workarea_margin_top" android:key="sys_set_workarea_margin_top_v2" android:summary="@string/sys_set_workarea_margin_top_summary" app:minValue="0" app:maxValue="100" app:unit="@string/screen_uint" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/sys_set_workarea_margin_bottom" android:key="sys_set_workarea_margin_bottom_v2" android:summary="@string/sys_set_workarea_margin_bottom_summary" app:minValue="0" app:maxValue="100" app:unit="@string/screen_uint" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/sys_set_workarea_margin_left" android:key="sys_set_workarea_margin_left_v2" android:summary="@string/sys_set_workarea_margin_left_summary" app:minValue="0" app:maxValue="100" app:unit="@string/screen_uint" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/sys_set_workarea_margin_right" android:key="sys_set_workarea_margin_right_v2" android:summary="@string/sys_set_workarea_margin_right_summary" app:minValue="0" app:maxValue="100" app:unit="@string/screen_uint" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_txt_theme" android:key="sys_txt_theme" android:summary="@string/preferences_caption_txt_theme_summary">
+            <PreferenceCategory android:title="@string/preferences_caption_txt_font">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_theme_font_name_title" android:title="@string/txt_set_theme_font_name" android:key="txt_set_theme_font_name" android:summary="@string/txt_set_theme_font_name_summary" android:dialogTitle="@string/txt_set_theme_font_name" android:entryValues="@array/txt_set_theme_font_name_value" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/txt_set_theme_font_size" android:key="txt_set_theme_font_size_v2" android:summary="@string/txt_set_theme_font_size_summary" app:minValue="8" app:maxValue="80" app:unit="@string/screen_uint" />
+                <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/txt_set_theme_font_row_gap" android:key="txt_set_theme_font_row_gap" android:summary="@string/txt_set_theme_font_row_gap_summary" app:minValue="4" app:maxValue="30" app:unit="@string/screen_uint" />
+                <CheckBoxPreference android:title="@string/txt_set_theme_font_bold" android:key="txt_set_theme_font_bold" android:summary="@string/txt_set_theme_font_bold_summary" />
+                <CheckBoxPreference android:title="@string/txt_set_theme_font_shadow" android:key="txt_set_theme_font_shadow" android:summary="@string/txt_set_theme_font_shadow_summary" />
+                <com.kingreader.framework.os.android.ui.preference.ColorPickerPreference2 android:title="@string/txt_set_theme_font_color" android:key="txt_set_theme_font_color_v2" android:summary="@string/txt_set_theme_font_color_summary" alphaSlider="true" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_theme_font_render_quality_title" android:title="@string/txt_set_theme_font_render_quality" android:key="txt_set_theme_font_render_quality" android:summary="@string/txt_set_theme_font_render_quality_summary" android:dialogTitle="@string/txt_set_theme_font_render_quality" android:entryValues="@array/txt_set_theme_font_render_quality_value" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_txt_bkg">
+                <CheckBoxPreference android:title="@string/txt_set_theme_bkg_use_img" android:key="txt_set_theme_bkg_use_img_v2" android:summary="@string/txt_set_theme_bkg_use_img_summary" />
+                <PreferenceScreen android:title="@string/txt_set_theme_bkg_img" android:key="txt_set_theme_bkg_img_v2" android:summary="@string/txt_set_theme_bkg_img_summary" android:dependency="txt_set_theme_bkg_use_img_v2" />
+                <com.kingreader.framework.os.android.ui.preference.ColorPickerPreference2 android:title="@string/txt_set_theme_bkg_color" android:key="txt_set_theme_bkg_color_v2" android:summary="@string/txt_set_theme_bkg_color_summary" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_theme_bkg_color_fill_mode_title" android:title="@string/txt_set_theme_bkg_color_fill_mode" android:key="txt_set_theme_bkg_color_fill_mode_v2" android:summary="@string/txt_set_theme_bkg_color_fill_mode_summary" android:dialogTitle="@string/txt_set_theme_bkg_color_fill_mode" android:entryValues="@array/txt_set_theme_bkg_color_fill_mode_value" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_txt_sel">
+                <com.kingreader.framework.os.android.ui.preference.ColorPickerPreference2 android:title="@string/txt_set_theme_sel_bkc" android:key="txt_set_theme_sel_bkc" android:summary="@string/txt_set_theme_sel_bkc_summary" />
+                <com.kingreader.framework.os.android.ui.preference.ColorPickerPreference2 android:title="@string/txt_set_theme_sel_tc" android:key="txt_set_theme_sel_tc" android:summary="@string/txt_set_theme_sel_tc_summary" />
+                <com.kingreader.framework.os.android.ui.preference.ColorPickerPreference2 android:title="@string/txt_set_theme_anno_bkc" android:key="txt_set_theme_anno_bkc" android:summary="@string/txt_set_theme_anno_bkc_summary" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_txt_gesture" android:key="sys_txt_gesture" android:summary="@string/preferences_caption_txt_gesture_summary">
+            <PreferenceCategory android:title="@string/preferences_caption_txt_clk">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_clk_mode_title" android:title="@string/txt_set_gesture_clk_mode" android:key="txt_set_gesture_clk" android:summary="@string/txt_set_gesture_clk_mode_summary" android:dialogTitle="@string/txt_set_gesture_clk_mode" android:entryValues="@array/txt_set_gesture_clk_mode_value" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_clk_interval_title" android:title="@string/txt_set_gesture_clk_interval" android:key="txt_set_gesture_clk_interval" android:summary="@string/txt_set_gesture_clk_interval_summary" android:dialogTitle="@string/txt_set_gesture_clk_interval" android:entryValues="@array/txt_set_gesture_clk_interval_value" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_long_click_title" android:title="@string/txt_set_gesture_long_click" android:key="txt_set_gesture_long_click" android:summary="@string/txt_set_gesture_long_click_summary" android:dialogTitle="@string/txt_set_gesture_long_click" android:entryValues="@array/txt_set_gesture_long_click_value" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_caption_txt_gesture">
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_l2r_title" android:title="@string/txt_set_gesture_l2r" android:key="txt_set_gesture_l2r_v2" android:summary="@string/txt_set_gesture_l2r_summary" android:dialogTitle="@string/txt_set_gesture_l2r" android:entryValues="@array/txt_set_gesture_l2r_value" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_t2b_title" android:title="@string/txt_set_gesture_t2b" android:key="txt_set_gesture_t2b" android:summary="@string/txt_set_gesture_t2b_summary" android:dialogTitle="@string/txt_set_gesture_t2b" android:entryValues="@array/txt_set_gesture_t2b_value" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_lt2lb_title" android:title="@string/txt_set_gesture_lt2lb" android:key="txt_set_gesture_lt2lb" android:summary="@string/txt_set_gesture_lt2lb_summary" android:dialogTitle="@string/txt_set_gesture_lt2lb" android:entryValues="@array/txt_set_gesture_lt2lb_value" />
+                <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_gesture_rt2rb_title" android:title="@string/txt_set_gesture_rt2rb" android:key="txt_set_gesture_rt2rb" android:summary="@string/txt_set_gesture_rt2rb_summary" android:dialogTitle="@string/txt_set_gesture_rt2rb" android:entryValues="@array/txt_set_gesture_rt2rb_value" />
+                <CheckBoxPreference android:title="@string/txt_set_gesture_mpt_zoom" android:key="txt_set_gesture_mulpt_zoom" android:summary="@string/txt_set_gesture_mpt_zoom_summary" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_txt_typeset" android:key="sys_txt_typeset" android:summary="@string/preferences_caption_txt_typeset_summary">
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/sys_set_typeset_blank_count_title" android:title="@string/txt_set_typeset_skip_blank_count" android:key="txt_set_typeset_zip_blank" android:summary="@string/txt_set_typeset_skip_blank_count" android:dialogTitle="@string/txt_set_typeset_skip_blank_count" android:entryValues="@array/sys_set_typeset_blank_count_value" />
+            <CheckBoxPreference android:title="@string/txt_set_typeset_indent" android:key="txt_set_typeset_indent" android:summary="@string/txt_set_typeset_indent_summary" />
+            <CheckBoxPreference android:title="@string/txt_set_typeset_combine_break_line" android:key="txt_set_typeset_combine_break_line" android:summary="@string/txt_set_typeset_combine_break_line_summary" />
+            <CheckBoxPreference android:title="@string/txt_set_typeset_work_break" android:key="txt_set_typeset_work_break" android:summary="@string/txt_set_typeset_work_break_summary" />
+        </PreferenceScreen>
+        <PreferenceScreen android:title="@string/preferences_caption_txt_autoscroll" android:key="sys_txt_scroll" android:summary="@string/preferences_caption_txt_autoscroll_summary">
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/txt_set_scroll_mode_title" android:title="@string/txt_set_scroll_mode" android:key="txt_set_scroll_mode" android:summary="@string/txt_set_scroll_mode_summary" android:dialogTitle="@string/txt_set_scroll_mode" android:entryValues="@array/txt_set_scroll_mode_value" />
+            <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/txt_set_scroll_timing" android:key="txt_set_scroll_timing" android:summary="@string/txt_set_scroll_timing_summary" app:minValue="1" app:maxValue="50" />
+            <com.kingreader.framework.os.android.ui.preference.SeekBarPreference android:title="@string/txt_set_scroll_speed" android:key="txt_set_scroll_speed" android:summary="@string/txt_set_scroll_speed_summary" app:minValue="1" app:maxValue="7" app:unit="@string/screen_uint" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_caption_pic">
+        <PreferenceScreen android:title="@string/preferences_caption_pic_read_setting" android:key="sys_pic_setting" android:summary="@string/preferences_caption_pic_read_setting_summary">
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/pic_set_open_mode_title" android:title="@string/pic_set_open_mode" android:key="pic_set_open_mode" android:summary="@string/pic_set_open_mode_summary" android:dialogTitle="@string/pic_set_open_mode" android:entryValues="@array/pic_set_open_mode_value" />
+            <com.kingreader.framework.os.android.ui.preference.ListDescPreference android:entries="@array/pic_set_align_mode_title" android:title="@string/pic_set_align_mode" android:key="pic_set_align_mode" android:summary="@string/pic_set_align_mode_summary" android:dialogTitle="@string/pic_set_align_mode" android:entryValues="@array/pic_set_align_mode_value" />
+            <CheckBoxPreference android:title="@string/pic_set_comic_mode" android:key="pic_set_comic_mode" android:summary="@string/pic_set_comic_mode_summary" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>

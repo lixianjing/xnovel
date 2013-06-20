@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layoutAnimation android:id="@id/animation_left" android:delay="100.0%" android:animation="@anim/slide_left"
+  xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.kingreader.framework.os.android.ui.uicontrols.SearchBar android:id="@id/search_bar" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+    <TextView android:textSize="13.0sp" android:textColor="#ff585d62" android:ellipsize="end" android:gravity="center_vertical" android:id="@id/tip" android:background="@drawable/nv_titlebar_tip_bkg" android:paddingLeft="5.0dip" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1" android:shadowColor="@*android:color/white" android:shadowDx="1.0" android:shadowDy="1.0" android:shadowRadius="1.0" />
+    <com.kingreader.framework.os.android.ui.uicontrols.BookList android:id="@id/book_list" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0" />
+</LinearLayout>

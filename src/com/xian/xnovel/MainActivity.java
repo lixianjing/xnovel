@@ -24,7 +24,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 public class MainActivity extends FragmentActivity {
 	private final int TABS_COUNT = 5;
 	private int currIndex = 0;
-
 	private ViewPager mPager;
 	private List<Fragment> fragmentsList;
 	private List<TextView> tabsList;
@@ -62,16 +61,14 @@ public class MainActivity extends FragmentActivity {
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
 		mPager.setOffscreenPageLimit(2);//预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
-		LayoutInflater mInflater = getLayoutInflater();
-		View activityView = mInflater.inflate(R.layout.fragment_lay, null);
 
-		Fragment activityfragment = TestFragment.newInstance("目录");
 		Fragment groupFragment = TestFragment.newInstance("书签");
 		Fragment friendsFragment = TestFragment.newInstance("历史");
 		Fragment chatFragment = TestFragment.newInstance("设置");
 		Fragment fragmentMore = new FragmentMore();
+		Fragment fragmentCata = new FragmentCatalog();
 
-		fragmentsList.add(activityfragment);
+		fragmentsList.add(fragmentCata);
 		fragmentsList.add(groupFragment);
 		fragmentsList.add(friendsFragment);
 		fragmentsList.add(chatFragment);

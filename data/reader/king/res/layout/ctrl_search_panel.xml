@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@id/search_edit_frame" android:background="@null" android:paddingBottom="10.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button android:layout_gravity="bottom|left|center" android:id="@id/search_prev_btn" android:background="@drawable/sb_btn_prev_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+    <Button android:layout_gravity="bottom|right|center" android:id="@id/search_next_btn" android:background="@drawable/sb_btn_next_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+    <LinearLayout android:gravity="center_vertical" android:id="@id/search_bar" android:background="@drawable/sb_bkg" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <Button android:id="@id/voice_search_btn" android:background="@drawable/sb_btn_voice_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+        <EditText android:textSize="18.0sp" android:id="@id/search_src_text" android:background="@null" android:paddingLeft="5.0dip" android:paddingRight="5.0dip" android:focusable="true" android:layout_width="fill_parent" android:layout_height="wrap_content" android:singleLine="true" android:layout_weight="1.0" android:imeOptions="actionSearch" />
+        <Button android:id="@id/search_go_btn" android:background="@drawable/sb_btn_go_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+    </LinearLayout>
+</FrameLayout>
