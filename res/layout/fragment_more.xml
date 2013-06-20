@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/book_grid_bkg" >
+    android:background="@drawable/main_bkg" >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:background="#FFCCDD"
+                android:background="@drawable/more_layout_bkg"
                 android:orientation="vertical"
                 android:padding="10dp" >
 
@@ -27,6 +27,7 @@
                     android:orientation="horizontal" >
 
                     <ImageView
+                        android:id="@+id/more_iv_icon"
                         android:layout_width="56dip"
                         android:layout_height="56dip"
                         android:src="@drawable/ic_launcher" />
@@ -34,6 +35,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="56dip"
+                        android:layout_marginLeft="5dp"
                         android:gravity="center_vertical"
                         android:orientation="vertical" >
 
@@ -59,22 +61,26 @@
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="评论此软件" />
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_review_btn" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="分享给朋友" />
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_share_btn" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="关于版权" />
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_about_copyright_btn" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="更多精彩书籍" />
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_more_btn" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -86,12 +92,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="如果您在使用过程中遇到什么问题或者建议，请撰写邮件联系我们" />
+                        android:text="@string/more_contact_msg_text" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="撰写邮件联系我们" />
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_contact_us_btn" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,7 +109,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="特别鸣谢" />
+                        android:text="@string/more_thanks_text" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -4,13 +4,22 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
-    
     <string name="title_main_text">微小说</string>
-    
     <string name="tab_cate_text">书目</string>
     <string name="tab_bookmark_text">书签</string>
     <string name="tab_history_text">历史</string>
     <string name="tab_setting_text">设置</string>
     <string name="tab_more_text">关于</string>
+    
+    <string name="more_version_text">版本号：</string>
+    <string name="more_copyright_text">版权所有：</string>
+    <string name="more_review_btn">评论此软件</string>
+    <string name="more_share_btn">分享此软件</string>
+    <string name="more_about_copyright_btn">关于版权</string>
+    <string name="more_more_btn">更多精彩应用</string>
+    <string name="more_contact_msg_text">如果您在使用过程中遇到什么问题或者建议，请撰写邮件联系我们，谢谢合作。</string>
+    <string name="more_contact_us_btn">撰写邮件联系我们</string>
+    
+    <string name="more_thanks_text">特别鸣谢</string>
 
 </resources>
