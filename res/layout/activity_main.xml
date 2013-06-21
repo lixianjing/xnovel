@@ -49,9 +49,10 @@
 
     <LinearLayout
         android:id="@+id/main_card_tab_view"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/main_tab_layout_height"
         android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
         android:background="@drawable/tabmenu_background"
         android:gravity="fill_horizontal|bottom|center" >
 

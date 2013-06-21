@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_item_top_layout"
     android:layout_width="match_parent"
-    android:layout_height="64dip" >
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/list_cata_icon1"
@@ -15,13 +15,16 @@
 
     <TextView
         android:id="@+id/list_cata_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/list_cata_icon2"
         android:layout_toRightOf="@+id/list_cata_icon1"
         android:textColor="@color/cata_text_se"
-        android:textSize="16.0sp" />
+        android:maxLines="2"
+        android:ellipsize="marquee"
+        android:textStyle="bold"
+        android:textSize="18.0sp" />
 
     <ImageView
         android:id="@+id/list_cata_icon2"

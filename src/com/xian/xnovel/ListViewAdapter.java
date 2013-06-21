@@ -5,6 +5,7 @@ import java.util.List;
 import com.xian.xnovel.domain.CatalogInfo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,26 +45,21 @@ public class ListViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
 		ViewHolder holder = null;
 		if (convertView == null) {
-
 			holder = new ViewHolder();
-
 			convertView = mInflater.inflate(R.layout.list_cata_item, null);
 			holder.icon = (ImageView) convertView
 					.findViewById(R.id.list_cata_icon1);
 			holder.title = (TextView) convertView
 					.findViewById(R.id.list_cata_title);
 			convertView.setTag(holder);
-
 		} else {
-
 			holder = (ViewHolder) convertView.getTag();
 		}
 
 		holder.icon.setBackgroundResource(R.drawable.sub_cat_icon);
-
+		holder.title.setText(dataList.get(position).getTitle());
 		return convertView;
 	}
 

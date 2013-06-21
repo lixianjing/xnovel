@@ -7,19 +7,63 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.xian.xnovel.domain.CatalogInfo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.util.JsonReader;
-import android.util.JsonToken;
 
 /**
  * @author limingfeng
  */
 public class Utils {
+
+	
+	/**
+	 * 分享
+	 * @param context
+	 * @param titleRes
+	 * @param mesgRes
+	 * @param contentRes
+	 */
+	public static void shareWithFriends(Context context, int titleRes,
+			int mesgRes,int contentRes) {
+		try {
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, mesgRes);
+			intent.putExtra(Intent.EXTRA_TEXT, context.getString(contentRes));
+			context.startActivity(Intent.createChooser(intent,
+					context.getString(titleRes)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 发送邮件
+	 * @param context
+	 * @param titleRes
+	 * @param mesgRes
+	 * @param contentRes
+	 */
+	public static void sendEMailForMe(Context context) {
+		try {
+			Intent intent = new Intent(Intent.ACTION_SENDTO);
+			intent.setData(Uri.parse("flower_is@163.com"));
+			intent.putExtra(Intent.EXTRA_SUBJECT, "标题");
+			intent.putExtra(Intent.EXTRA_TEXT, "内容");
+			context.startActivity(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * 获取版本号
 	 * 
@@ -74,9 +118,30 @@ public class Utils {
 		}
 		return null;
 	}
-	
 
-	public List<CatalogInfo> getJsonFromStream(InputStream stream) {
+	public static List<CatalogInfo> getJsonListFromAssetsFile(Context context,
+			String fileName) {
+		AssetManager am = context.getResources().getAssets();
+		InputStream inputStream = null;
+		try {
+			inputStream = am.open(fileName);
+			return getJsonListFromStream(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+	public static List<CatalogInfo> getJsonListFromStream(InputStream stream) {
 		JsonReader reader = null;
 		try {
 			reader = new JsonReader(new InputStreamReader(stream, "UTF-8"));
@@ -97,7 +162,7 @@ public class Utils {
 
 	}
 
-	public List<CatalogInfo> readMessagesArray(JsonReader reader)
+	public static List<CatalogInfo> readMessagesArray(JsonReader reader)
 			throws IOException {
 		List<CatalogInfo> infos = new ArrayList<CatalogInfo>();
 
@@ -109,7 +174,7 @@ public class Utils {
 		return infos;
 	}
 
-	public CatalogInfo readMessage(JsonReader reader) throws IOException {
+	public static CatalogInfo readMessage(JsonReader reader) throws IOException {
 		int cno = 0;
 		int pid = 0;
 		int pages = 0;
