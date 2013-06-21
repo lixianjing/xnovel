@@ -71,8 +71,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 			Utils.sendEMailForMe(getActivity());
 			break;
 		case R.id.more_btn_share:
-			Utils.shareWithFriends(getActivity(), R.string.share_title,
-					R.string.share_subject, R.string.share_content);
+			Utils.shareWithFriends(getActivity());
 			break;
 
 		default:

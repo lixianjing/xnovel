@@ -27,6 +27,12 @@ public class MainActivity extends FragmentActivity {
 	private ViewPager mPager;
 	private List<Fragment> fragmentsList;
 	private List<TextView> tabsList;
+	private TextView tvTitleSecond;
+
+	private static final int[] tabsTitleRes = new int[] {
+			R.string.tab_cate_text, R.string.tab_bookmark_text,
+			R.string.tab_history_text, R.string.tab_setting_text,
+			R.string.tab_more_text };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,17 +55,18 @@ public class MainActivity extends FragmentActivity {
 			tabsList.get(i).setOnClickListener(new MyOnClickListener(i));
 		}
 
+		tvTitleSecond = (TextView) findViewById(R.id.main_title_second);
+
 		InitViewPager();
 	}
 
 	private void initData() {
-		currIndex = 0;
-		tabsList.get(0).setSelected(true);
+		setCurrentPage(0);
 	}
 
 	private void InitViewPager() {
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
-		mPager.setOffscreenPageLimit(2);//预先加载几个fragment
+		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 
 		Fragment groupFragment = TestFragment.newInstance("书签");
@@ -76,7 +83,6 @@ public class MainActivity extends FragmentActivity {
 
 		mPager.setAdapter(new MyFragmentPagerAdapter(
 				getSupportFragmentManager(), fragmentsList));
-		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 	}
 
@@ -86,7 +92,6 @@ public class MainActivity extends FragmentActivity {
 		public void onPageSelected(int arg0) {
 
 			tabsList.get(currIndex).setSelected(false);
-			tabsList.get(arg0).setSelected(true);
 			currIndex = arg0;
 		}
 
@@ -108,8 +113,13 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public void onClick(View v) {
-			mPager.setCurrentItem(index);
+			setCurrentPage(index);
 		}
 	};
 
+	private void setCurrentPage(int index) {
+		tabsList.get(index).setSelected(true);
+		tvTitleSecond.setText("---" + getString(tabsTitleRes[index]));
+		mPager.setCurrentItem(index);
+	}
 }

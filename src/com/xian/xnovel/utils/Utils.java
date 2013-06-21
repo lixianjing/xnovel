@@ -7,46 +7,49 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.xian.xnovel.R;
 import com.xian.xnovel.domain.CatalogInfo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.util.JsonReader;
 
 /**
  * @author limingfeng
  */
+@SuppressLint("NewApi")
 public class Utils {
 
-	
 	/**
 	 * 分享
+	 * 
 	 * @param context
 	 * @param titleRes
 	 * @param mesgRes
 	 * @param contentRes
 	 */
-	public static void shareWithFriends(Context context, int titleRes,
-			int mesgRes,int contentRes) {
+	public static void shareWithFriends(Context context) {
 		try {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, mesgRes);
-			intent.putExtra(Intent.EXTRA_TEXT, context.getString(contentRes));
+			intent.putExtra(Intent.EXTRA_SUBJECT,
+					context.getString(R.string.share_subject));
+			intent.putExtra(Intent.EXTRA_TEXT,
+					context.getString(R.string.share_content));
 			context.startActivity(Intent.createChooser(intent,
-					context.getString(titleRes)));
+					context.getString(R.string.select_application)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 发送邮件
+	 * 
 	 * @param context
 	 * @param titleRes
 	 * @param mesgRes
@@ -54,11 +57,17 @@ public class Utils {
 	 */
 	public static void sendEMailForMe(Context context) {
 		try {
-			Intent intent = new Intent(Intent.ACTION_SENDTO);
-			intent.setData(Uri.parse("flower_is@163.com"));
-			intent.putExtra(Intent.EXTRA_SUBJECT, "标题");
-			intent.putExtra(Intent.EXTRA_TEXT, "内容");
-			context.startActivity(intent);
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			// intent.setType("text/plain"); //use this line for testing in the
+			// emulator
+			intent.setType("message/rfc822"); // use from live device
+			intent.putExtra(Intent.EXTRA_EMAIL,
+					new String[] { Settings.CONTACT_EMAIL });
+			intent.putExtra(Intent.EXTRA_SUBJECT,
+					context.getString(R.string.contact_email_title));
+			context.startActivity(Intent.createChooser(intent,
+					context.getString(R.string.select_application)));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -141,6 +150,7 @@ public class Utils {
 		return null;
 	}
 
+	@SuppressLint("NewApi")
 	public static List<CatalogInfo> getJsonListFromStream(InputStream stream) {
 		JsonReader reader = null;
 		try {

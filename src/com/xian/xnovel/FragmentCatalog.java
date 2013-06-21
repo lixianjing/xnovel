@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class FragmentCatalog extends ListFragment {
 	private static final String TAG = "FragmentCatalog";
@@ -28,7 +31,6 @@ public class FragmentCatalog extends ListFragment {
 		mContext = this.getActivity();
 		infos=Utils.getJsonListFromAssetsFile(mContext, PATH);
 		adapter=new ListViewAdapter(mContext,infos);
-		Log.e("lmf", ">>>>onCreate>>>>>>>>"+infos.size());
 		this.setListAdapter(adapter);
 	}
 
@@ -47,7 +49,14 @@ public class FragmentCatalog extends ListFragment {
 		super.onDestroy();
 		Log.d(TAG, "TestFragment-----onDestroy");
 	}
-	
+
+    public void onListItemClick(ListView parent, View v,   
+    int position, long id)   
+    {            
+        Toast.makeText(getActivity(),   
+            "You have selected " + position,   
+            Toast.LENGTH_SHORT).show();  
+    } 
 	
 
 }
