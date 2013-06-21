@@ -11,7 +11,7 @@
     <string name="tab_setting_text">设置</string>
     <string name="tab_more_text">关于</string>
     <string name="more_version_text">版本号：</string>
-    <string name="more_copyright_text">版权所有者：李明锋</string>
+    <string name="more_copyright_text">版权所有者：神喻者</string>
     <string name="more_review_btn">评论此软件</string>
     <string name="more_share_btn">分享此软件</string>
     <string name="more_copyright_btn">关于版权</string>
@@ -20,8 +20,6 @@
     <string name="more_contact_us_btn">撰写邮件联系我们</string>
     <string name="more_copyright_message">本APK所有内容均来自网络，仅出于传递信息的目的，不代表本APK作者声音。如对文章内容有任何异议，或者想法请发送邮件与我们联系。</string>
     <string name="more_thanks_text">特别鸣谢</string>
-    <string name="iphone_dlg_btn_ok_str">Confirm</string>
-    <string name="iphone_dlg_btn_cancel_str">Cancel</string>
     <string name="str_ok">OK</string>
     <string name="str_cancel">Cancel</string>
     <string name="str_error">Error</string>

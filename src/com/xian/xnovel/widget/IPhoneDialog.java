@@ -755,11 +755,11 @@ public class IPhoneDialog extends Dialog {
 
 		public View mView = null;
 		public int mViewHeight = DIALOG_MIDDLE_VIEW_DEFAULT_HEIGHT;
-		public int mBtnPositiveTextResId = R.string.iphone_dlg_btn_ok_str;
+		public int mBtnPositiveTextResId = R.string.str_ok;
 		public int mPositiveBkResId = R.drawable.iphone_dlg_btn_positive;
 		public int mBtnPositiveTextColor = Color.WHITE;
 
-		public int mBtnNegativeTextResId = R.string.iphone_dlg_btn_cancel_str;
+		public int mBtnNegativeTextResId = R.string.str_cancel;
 		public int mNegativeBkResId = R.drawable.iphone_dlg_btn_negative;
 		public int mBtnNegativeTextColor = Color.WHITE;
 

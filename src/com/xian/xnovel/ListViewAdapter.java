@@ -2,7 +2,7 @@ package com.xian.xnovel;
 
 import java.util.List;
 
-import com.xian.xnovel.domain.TitleInfo;
+import com.xian.xnovel.domain.CatalogInfo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,10 +15,10 @@ import android.widget.TextView;
 public class ListViewAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
-	private List<TitleInfo> dataList;
+	private List<CatalogInfo> dataList;
 	private Context mContext;
 
-	public ListViewAdapter(Context context, List<TitleInfo> list) {
+	public ListViewAdapter(Context context, List<CatalogInfo> list) {
 		this.mInflater = LayoutInflater.from(context);
 		dataList = list;
 		mContext = context;
@@ -63,7 +63,6 @@ public class ListViewAdapter extends BaseAdapter {
 		}
 
 		holder.icon.setBackgroundResource(R.drawable.sub_cat_icon);
-		holder.title.setText(dataList.get(position).getTitleStr());
 
 		return convertView;
 	}
