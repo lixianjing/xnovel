@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.Utils;
 
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
@@ -61,7 +57,10 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initData() {
+		mPager.setCurrentItem(0);
 		setCurrentPage(0);
+		Log.e("lmf",">>>>>>"+AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX);
+		Utils.copyFile(this, AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX, AppSettings.ASSETS_FILE_PATH+"1.txt");
 	}
 
 	private void InitViewPager() {
@@ -92,7 +91,7 @@ public class MainActivity extends FragmentActivity {
 		public void onPageSelected(int arg0) {
 
 			tabsList.get(currIndex).setSelected(false);
-			currIndex = arg0;
+			setCurrentPage(arg0);
 		}
 
 		@Override
@@ -113,13 +112,13 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public void onClick(View v) {
-			setCurrentPage(index);
+			mPager.setCurrentItem(index);
 		}
 	};
 
 	private void setCurrentPage(int index) {
 		tabsList.get(index).setSelected(true);
 		tvTitleSecond.setText("---" + getString(tabsTitleRes[index]));
-		mPager.setCurrentItem(index);
+		currIndex = index;
 	}
 }

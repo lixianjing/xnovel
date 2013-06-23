@@ -28,6 +28,9 @@
         <string name="contact_email_title">关于《微小说》的问题与建议</string>
     <string name="select_application">Select an Application</string>
     
+     <string name="progress">进程</string>
+    
+    
     <string name="str_ok">OK</string>
     <string name="str_cancel">Cancel</string>
     <string name="str_error">Error</string>

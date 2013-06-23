@@ -1,6 +1,8 @@
 package com.xian.xnovel.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,7 +64,7 @@ public class Utils {
 			// emulator
 			intent.setType("message/rfc822"); // use from live device
 			intent.putExtra(Intent.EXTRA_EMAIL,
-					new String[] { Settings.CONTACT_EMAIL });
+					new String[] { AppSettings.CONTACT_EMAIL });
 			intent.putExtra(Intent.EXTRA_SUBJECT,
 					context.getString(R.string.contact_email_title));
 			context.startActivity(Intent.createChooser(intent,
@@ -91,6 +93,36 @@ public class Utils {
 		}
 	}
 
+	/***********************************************************
+	 * file control begin
+	 */
+	
+	public static boolean copyFile(Context context, String fileName,
+			String srcPath) {
+		try {
+
+				InputStream inStream = context.getAssets().open(srcPath);
+				FileOutputStream fs= context.openFileOutput(fileName, Context.MODE_PRIVATE);
+				byte[] buffer = new byte[1024 * 1024];// 1MB
+				int byteread = 0;
+				while ((byteread = inStream.read(buffer)) != -1) {
+					fs.write(buffer, 0, byteread);
+				}
+				inStream.close();
+				fs.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param context
+	 * @param fileName
+	 * @return
+	 */
 	public static String getStringFromAssetsFile(Context context,
 			String fileName) {
 		AssetManager am = context.getResources().getAssets();
@@ -210,5 +242,13 @@ public class Utils {
 		reader.endObject();
 		return new CatalogInfo(cno, pid, pages, id, title);
 	}
+	
+	
+	
+	
+	
+	/***********************************************************
+	 * file control end
+	 */
 
 }

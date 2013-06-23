@@ -6,6 +6,7 @@ import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.utils.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -53,6 +54,9 @@ public class FragmentCatalog extends ListFragment {
     public void onListItemClick(ListView parent, View v,   
     int position, long id)   
     {            
+    	Intent intent=new Intent(mContext,BookActivity.class);
+    	
+    	mContext.startActivity(intent);
         Toast.makeText(getActivity(),   
             "You have selected " + position,   
             Toast.LENGTH_SHORT).show();  
