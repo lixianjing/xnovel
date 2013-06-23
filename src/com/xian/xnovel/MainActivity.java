@@ -59,8 +59,7 @@ public class MainActivity extends FragmentActivity {
 	private void initData() {
 		mPager.setCurrentItem(0);
 		setCurrentPage(0);
-		Log.e("lmf",">>>>>>"+AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX);
-		Utils.copyFile(this, AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX, AppSettings.ASSETS_FILE_PATH+"1.txt");
+		Utils.copyFile(this, "1.txt", AppSettings.ASSETS_FILE_PATH+"1.txt");
 	}
 
 	private void InitViewPager() {

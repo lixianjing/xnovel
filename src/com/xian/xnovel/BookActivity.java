@@ -1,5 +1,6 @@
 package com.xian.xnovel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -98,6 +99,8 @@ public class BookActivity extends Activity {
 			pagefactory.setFileName("filename");
 			mPageWidget = new PageWidget(this, w, h);
 			setContentView(mPageWidget);
+	        File file=new File(AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX+"1.txt");
+	        Log.e("lmf","file.exists()>>>>>>>"+file.exists());
 			pagefactory.openbook(AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX+"1.txt");
 
 //			if (book.bookmark > 0) {

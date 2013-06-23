@@ -7,5 +7,5 @@ public interface AppSettings {
 	public static final String ASSETS_FILE_PATH = "data/";
 	
 	public static final String DST_FILE_PATH_PREFIX = "/data/data/";
-	public static final String DST_FILE_PATH_SUFFIX = "/file/";
+	public static final String DST_FILE_PATH_SUFFIX = "/files/";
 }
