@@ -25,11 +25,13 @@ public class FragmentCatalog extends ListFragment {
 	private Context mContext;
 	private ListViewAdapter adapter;
 	private List<CatalogInfo> infos;
+	private long startTime;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("lmf", "MoreFragment-----onCreate");
+		Log.d("lmf", "FragmentCatalog-----onCreate>>"+System.currentTimeMillis());
+		startTime=System.currentTimeMillis();
 		mContext = this.getActivity();
 		infos = Utils.getJsonListFromAssetsFile(mContext,
 				AppSettings.ASSETS_FILE_PATH + AppSettings.BOOK_CATA_NAME);
@@ -40,9 +42,11 @@ public class FragmentCatalog extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("lmf", "MoreFragment-----onCreateView");
+		Log.d("lmf", "FragmentCatalog-----onCreateView>>"+System.currentTimeMillis());
 		View view = inflater.inflate(R.layout.fragment_catalog, container,
 				false);
+		long endTime=System.currentTimeMillis();
+		Log.d("lmf", "FragmentCatalog-----onCreateView>>"+(endTime-startTime));
 		return view;
 
 	}

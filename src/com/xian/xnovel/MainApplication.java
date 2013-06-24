@@ -23,6 +23,8 @@ public class MainApplication extends Application {
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
+		Log.e("lmf", "MainApplication>>>>>>onCreate>>>>start>>"+System.currentTimeMillis());
+		Long startTime=System.currentTimeMillis();
 		super.onCreate();
 		mContext=this;
 		SharedPreferences pre = this.getSharedPreferences(
@@ -31,10 +33,10 @@ public class MainApplication extends Application {
 		mHeight = pre.getInt(AppSettings.settings_height, 0);
 		if (mWidth == 0) {
 			// this is first run app we should init data
-			
 			loadBookContent(5);
-			
 		}
+		Long endTime=System.currentTimeMillis();
+		Log.e("lmf", "MainApplication>>>>>>onCreate>>>>end>>"+(endTime-startTime));
 
 	}
 	

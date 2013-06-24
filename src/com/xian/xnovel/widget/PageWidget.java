@@ -17,23 +17,23 @@ import android.widget.Scroller;
 
 public class PageWidget extends View {
 
-	private static final String TAG = "hmg";
+	private static final String TAG = "PageWidget";
 	private int mWidth = 480;
 	private int mHeight = 800;
-	private int mCornerX = 0; // ��ק���Ӧ��ҳ��
+	private int mCornerX = 0; // 拖拽点对应的页脚
 	private int mCornerY = 0;
 	private Path mPath0;
 	private Path mPath1;
-	Bitmap mCurPageBitmap = null; // ��ǰҳ
+	Bitmap mCurPageBitmap = null; // 当前页
 	Bitmap mNextPageBitmap = null;
 
-	PointF mTouch = new PointF(); // ��ק��
-	PointF mBezierStart1 = new PointF(); // �����������ʼ��
-	PointF mBezierControl1 = new PointF(); // ��������߿��Ƶ�
-	PointF mBeziervertex1 = new PointF(); // ��������߶���
-	PointF mBezierEnd1 = new PointF(); // ��������߽����
+	PointF mTouch = new PointF(); // 拖拽点
+	PointF mBezierStart1 = new PointF(); // 贝塞尔曲线起始点
+	PointF mBezierControl1 = new PointF(); // 贝塞尔曲线控制点
+	PointF mBeziervertex1 = new PointF(); // 贝塞尔曲线顶点
+	PointF mBezierEnd1 = new PointF(); // 贝塞尔曲线结束点
 
-	PointF mBezierStart2 = new PointF(); // ��һ�����������
+	PointF mBezierStart2 = new PointF(); // 另一条贝塞尔曲线
 	PointF mBezierControl2 = new PointF();
 	PointF mBeziervertex2 = new PointF();
 	PointF mBezierEnd2 = new PointF();
@@ -46,7 +46,7 @@ public class PageWidget extends View {
 	Matrix mMatrix;
 	float[] mMatrixArray = { 0, 0, 0, 0, 0, 0, 0, 0, 1.0f };
 
-	boolean mIsRTandLB; // �Ƿ�������������
+	boolean mIsRTandLB; // 是否属于右上左下
 	float mMaxLength = (float) Math.hypot(mWidth, mHeight);
 	int[] mBackShadowColors;
 	int[] mFrontShadowColors;
@@ -84,12 +84,12 @@ public class PageWidget extends View {
 		mMatrix = new Matrix();
 		mScroller = new Scroller(getContext());
 
-		mTouch.x = 0.01f; // ����x,yΪ0,�����ڵ����ʱ��������
+		mTouch.x = 0.01f; // 不让x,y为0,否则在点计算时会有问题
 		mTouch.y = 0.01f;
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : ������ק���Ӧ����ק��
+	 * Author : hmg25 Version: 1.0 Description : 计算拖拽点对应的拖拽脚
 	 */
 	public void calcCornerXY(float x, float y) {
 		if (x <= mWidth / 2)
@@ -135,11 +135,11 @@ public class PageWidget extends View {
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : ���ֱ��P1P2��ֱ��P3P4�Ľ������
+	 * Author : hmg25 Version: 1.0 Description : 求解直线P1P2和直线P3P4的交点坐标
 	 */
 	public PointF getCross(PointF P1, PointF P2, PointF P3, PointF P4) {
 		PointF CrossP = new PointF();
-		// ��Ԫ����ͨʽ�� y=ax+b
+		// 二元函数通式： y=ax+b
 		float a1 = (P2.y - P1.y) / (P2.x - P1.x);
 		float b1 = ((P1.x * P2.y) - (P2.x * P1.y)) / (P1.x - P2.x);
 
@@ -170,8 +170,8 @@ public class PageWidget extends View {
 				/ 2;
 		mBezierStart1.y = mCornerY;
 
-		// ��mBezierStart1.x < 0����mBezierStart1.x > 480ʱ
-		// ������ҳ�������BUG���ڴ�����
+		// 当mBezierStart1.x < 0或者mBezierStart1.x > 480时
+		// 如果继续翻页，会出现BUG故在此限制
 		if (mTouch.x > 0 && mTouch.x < mWidth) {
 			if (mBezierStart1.x < 0 || mBezierStart1.x > mWidth) {
 				if (mBezierStart1.x < 0)
@@ -223,8 +223,8 @@ public class PageWidget extends View {
 		// + mBezierEnd2.y);
 
 		/*
-		 * mBeziervertex1.x �Ƶ�
-		 * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 ����ȼ���
+		 * mBeziervertex1.x 推导
+		 * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
 		 * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
 		 */
 		mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
@@ -306,7 +306,7 @@ public class PageWidget extends View {
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : ������Ӱ��GradientDrawable
+	 * Author : hmg25 Version: 1.0 Description : 创建阴影的GradientDrawable
 	 */
 	private void createDrawable() {
 		int[] color = { 0x333333, 0xb0333333 };
@@ -351,7 +351,7 @@ public class PageWidget extends View {
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : ���Ʒ���ҳ����Ӱ
+	 * Author : hmg25 Version: 1.0 Description : 绘制翻起页的阴影
 	 */
 	public void drawCurrentPageShadow(Canvas canvas) {
 		double degree;
@@ -366,7 +366,7 @@ public class PageWidget extends View {
 					- Math.atan2(mTouch.y - mBezierControl1.y, mTouch.x
 							- mBezierControl1.x);
 		}
-		// ����ҳ��Ӱ������touch��ľ���
+		// 翻起页阴影顶点与touch点的距离
 		double d1 = (float) 25 * 1.414 * Math.cos(degree);
 		double d2 = (float) 25 * 1.414 * Math.sin(degree);
 		float x = (float) (mTouch.x + d1);
@@ -454,7 +454,7 @@ public class PageWidget extends View {
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : ���Ʒ���ҳ����
+	 * Author : hmg25 Version: 1.0 Description : 绘制翻起页背面
 	 */
 	private void drawCurrentBackArea(Canvas canvas, Bitmap bitmap) {
 		int i = (int) (mBezierStart1.x + mBezierControl1.x) / 2;
@@ -522,8 +522,8 @@ public class PageWidget extends View {
 
 	private void startAnimation(int delayMillis) {
 		int dx, dy;
-		// dx ˮƽ���򻬶��ľ��룬��ֵ��ʹ�����������
-		// dy ��ֱ���򻬶��ľ��룬��ֵ��ʹ�������Ϲ���
+		// dx 水平方向滑动的距离，负值会使滚动向左滚动
+		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
 		if (mCornerX > 0) {
 			dx = -(int) (mWidth + mTouch.x);
 		} else {
@@ -532,7 +532,7 @@ public class PageWidget extends View {
 		if (mCornerY > 0) {
 			dy = (int) (mHeight - mTouch.y);
 		} else {
-			dy = (int) (1 - mTouch.y); // ��ֹmTouch.y���ձ�Ϊ0
+			dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
 		}
 		mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy,
 				delayMillis);
@@ -551,7 +551,7 @@ public class PageWidget extends View {
 	}
 
 	/**
-	 * Author : hmg25 Version: 1.0 Description : �Ƿ����߷����ұ�
+	 * Author : hmg25 Version: 1.0 Description : 是否从左边翻向右边
 	 */
 	public boolean DragToRight() {
 		if (mCornerX > 0)

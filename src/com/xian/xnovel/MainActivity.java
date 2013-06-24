@@ -37,6 +37,8 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>start>>"+System.currentTimeMillis());
+		long startTime=System.currentTimeMillis();
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
@@ -44,6 +46,8 @@ public class MainActivity extends FragmentActivity {
 		app=(MainApplication) this.getApplication();
 		initView();
 		initData();
+		Long endTime=System.currentTimeMillis();
+		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>end>>"+(endTime-startTime));
 	}
 
 	private void initView() {
