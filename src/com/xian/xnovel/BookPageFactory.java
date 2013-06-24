@@ -23,13 +23,12 @@ import android.graphics.Typeface;
 import android.widget.Toast;
 
 public class BookPageFactory {
-
-	private File book_file = null;
+	
 	private MappedByteBuffer m_mbBuf = null;
 	private int m_mbBufLen = 0;
 	private int m_mbBufBegin = 50; //50
 	private int m_mbBufEnd = 0;
-	private String m_strCharsetName = "GBK";
+	private String m_strCharsetName = "UTF-8";
 	private Bitmap m_book_bg = null;
 	private int mWidth;
 	private int mHeight;
@@ -92,12 +91,12 @@ public class BookPageFactory {
 		titlePaint.setTextSize(30);
 		titlePaint.setColor(m_textColor);
 		
+		
 	}
 
-	public void openbook(String strFilePath) {
+	public void openbook(String filePath, String fileName) {
 		try {
-			
-			book_file = new File(strFilePath);
+			File book_file = new File(filePath, fileName);
 			long lLen = book_file.length();
 			m_mbBufLen = (int) lLen;
 			m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
@@ -111,7 +110,7 @@ public class BookPageFactory {
 		}
 	}
 
-	protected byte[] readParagraphBack(int nFromPos) {
+	private byte[] readParagraphBack(int nFromPos) {
 		int nEnd = nFromPos;
 		int i;
 		byte b0, b1;

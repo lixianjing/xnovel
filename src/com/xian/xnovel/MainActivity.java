@@ -7,7 +7,10 @@ import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +27,8 @@ public class MainActivity extends FragmentActivity {
 	private List<Fragment> fragmentsList;
 	private List<TextView> tabsList;
 	private TextView tvTitleSecond;
+	private Context mContext;
+	private MainApplication app;
 
 	private static final int[] tabsTitleRes = new int[] {
 			R.string.tab_cate_text, R.string.tab_bookmark_text,
@@ -35,6 +40,8 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+		mContext = this;
+		app=(MainApplication) this.getApplication();
 		initView();
 		initData();
 	}
@@ -54,12 +61,19 @@ public class MainActivity extends FragmentActivity {
 		tvTitleSecond = (TextView) findViewById(R.id.main_title_second);
 
 		InitViewPager();
+		mPager.setCurrentItem(0);
+		setCurrentPage(0);
 	}
 
 	private void initData() {
-		mPager.setCurrentItem(0);
-		setCurrentPage(0);
-		Utils.copyFile(this, "1.txt", AppSettings.ASSETS_FILE_PATH+"1.txt");
+		if(app.getWidth()==0){
+			//we should calatue;
+			DisplayMetrics dm = new DisplayMetrics();  
+			getWindowManager().getDefaultDisplay().getMetrics(dm);  
+			SharedPreferences pre=mContext.getSharedPreferences(AppSettings.Settings, Context.MODE_PRIVATE);
+			pre.edit().putInt(AppSettings.settings_width, dm.widthPixels);
+			pre.edit().putInt(AppSettings.settings_height, dm.widthPixels);
+		}
 	}
 
 	private void InitViewPager() {

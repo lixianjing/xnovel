@@ -2,11 +2,16 @@ package com.xian.xnovel.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.xian.xnovel.R;
@@ -96,20 +101,21 @@ public class Utils {
 	/***********************************************************
 	 * file control begin
 	 */
-	
-	public static boolean copyFile(Context context, String fileName,
+
+	public static boolean copyFileFromAssets(Context context, String fileName,
 			String srcPath) {
 		try {
 
-				InputStream inStream = context.getAssets().open(srcPath);
-				FileOutputStream fs= context.openFileOutput(fileName, Context.MODE_PRIVATE);
-				byte[] buffer = new byte[1024 * 1024];// 1MB
-				int byteread = 0;
-				while ((byteread = inStream.read(buffer)) != -1) {
-					fs.write(buffer, 0, byteread);
-				}
-				inStream.close();
-				fs.close();
+			InputStream inStream = context.getAssets().open(srcPath);
+			FileOutputStream fs = context.openFileOutput(fileName,
+					Context.MODE_PRIVATE);
+			byte[] buffer = new byte[1024 * 1024];// 1MB
+			int byteread = 0;
+			while ((byteread = inStream.read(buffer)) != -1) {
+				fs.write(buffer, 0, byteread);
+			}
+			inStream.close();
+			fs.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,38 +223,94 @@ public class Utils {
 	}
 
 	public static CatalogInfo readMessage(JsonReader reader) throws IOException {
-		int cno = 0;
-		int pid = 0;
-		int pages = 0;
 		int id = 0;
+		int pid = 0;
 		String title = null;
 		reader.beginObject();
 		while (reader.hasNext()) {
 			String name = reader.nextName();
-			if (name.equals("cno")) {
+			if (CatalogInfo.ID.equals(name)) {
 				id = reader.nextInt();
-			} else if (name.equals("pid")) {
+			} else if (CatalogInfo.PID.equals(name)) {
 				pid = reader.nextInt();
-			} else if (name.equals("pages")) {
-				pages = reader.nextInt();
-			} else if (name.equals("id")) {
-				id = reader.nextInt();
-			} else if (name.equals("title")) {
+			} else if (CatalogInfo.TITLE.equals(name)) {
 				title = reader.nextString();
 			} else {
 				reader.skipValue();
 			}
 		}
 		reader.endObject();
-		return new CatalogInfo(cno, pid, pages, id, title);
+		return new CatalogInfo(id, pid, title);
 	}
-	
-	
-	
-	
-	
+
 	/***********************************************************
 	 * file control end
 	 */
 
+	public static void mergeFile() {
+		String filePrefix = "content_0_";
+		String fileSplitChar = "_";
+		String fileName = "";
+		String tempFileName;
+		String tempName;
+		File newFile = null;
+		File file = new File("data");
+		File[] files = file.listFiles();
+		Arrays.sort(files);
+		for (File tempFile : files) {
+			if (tempFile.getName().startsWith(filePrefix)) {
+				tempFileName = tempFile.getName();
+				tempName = tempFileName.split(fileSplitChar)[2];
+				if (tempName != fileName) {
+					// create a new File
+					newFile = new File(tempName);
+					try {
+						newFile.createNewFile();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					fileName = tempName;
+				}
+				readFileByChars(tempFile, newFile);
+
+			}
+		}
+	}
+
+	/**
+	 * 以字符为单位读取文件，常用于读文本，数字等类型的文件
+	 */
+	public static void readFileByChars(File infile, File outfile) {
+		Reader reader = null;
+		Writer writer = null;
+		try {
+			System.out.println("以字符为单位读取文件内容，一次读多个字节：");
+			// 一次读多个字符
+			char[] tempchars = new char[1024];
+			int charread = 0;
+			reader = new InputStreamReader(new FileInputStream(infile));
+			writer = new OutputStreamWriter(new FileOutputStream(outfile, true));
+			// 读入多个字符到字符数组中，charread为一次读取字符数
+			while ((charread = reader.read(tempchars)) != -1) {
+				writer.write(tempchars, 0, charread);
+			}
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e1) {
+				}
+			}
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e1) {
+				}
+			}
+		}
+	}
 }

@@ -3,7 +3,6 @@
     <string name="app_name">xNovel</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_main_text">微小说</string>
     <string name="tab_cate_text">书目</string>
     <string name="tab_bookmark_text">书签</string>

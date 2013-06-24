@@ -45,7 +45,7 @@ public class BookActivity extends Activity {
 	public final static int OPENMARK = 0;
 	public final static int SAVEMARK = 1;
 	public final static int TEXTSET = 2;
-
+	
 	private PageWidget mPageWidget;
 	private Bitmap mCurPageBitmap, mNextPageBitmap;
 	private Canvas mCurPageCanvas, mNextPageCanvas;
@@ -68,9 +68,6 @@ public class BookActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("lmf", "onCreate>>>>>>>>>");
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		Display display = getWindowManager().getDefaultDisplay();
 		int w = display.getWidth();
 		int h = display.getHeight();
@@ -99,9 +96,7 @@ public class BookActivity extends Activity {
 			pagefactory.setFileName("filename");
 			mPageWidget = new PageWidget(this, w, h);
 			setContentView(mPageWidget);
-	        File file=new File(AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX+"1.txt");
-	        Log.e("lmf","file.exists()>>>>>>>"+file.exists());
-			pagefactory.openbook(AppSettings.DST_FILE_PATH_PREFIX+this.getPackageName()+AppSettings.DST_FILE_PATH_SUFFIX+"1.txt");
+			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,"1");
 
 //			if (book.bookmark > 0) {
 //				whichSize = setup.fontsize;

@@ -5,47 +5,23 @@ package com.xian.xnovel.domain;
  */
 public class CatalogInfo {
 
-	private int cno;
-	private int pid;
-	private int pages;
+	public static final String ID="id";
+	public static final String PID="pid";
+	public static final String TITLE="title";
+	
 	private int id;
+	private int pid;
 	private String title;
 
 	public CatalogInfo() {
 		super();
 	}
 
-	public CatalogInfo(int cno, int pid, int pages, int id, String title) {
+	public CatalogInfo(int id, int pid, String title) {
 		super();
-		this.cno = cno;
-		this.pid = pid;
-		this.pages = pages;
 		this.id = id;
-		this.title = title;
-	}
-
-	public int getCno() {
-		return cno;
-	}
-
-	public void setCno(int cno) {
-		this.cno = cno;
-	}
-
-	public int getPid() {
-		return pid;
-	}
-
-	public void setPid(int pid) {
 		this.pid = pid;
-	}
-
-	public int getPages() {
-		return pages;
-	}
-
-	public void setPages(int pages) {
-		this.pages = pages;
+		this.title = title;
 	}
 
 	public int getId() {
@@ -56,6 +32,14 @@ public class CatalogInfo {
 		this.id = id;
 	}
 
+	public int getPid() {
+		return pid;
+	}
+
+	public void setPid(int pid) {
+		this.pid = pid;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -64,4 +48,5 @@ public class CatalogInfo {
 		this.title = title;
 	}
 
+	
 }
