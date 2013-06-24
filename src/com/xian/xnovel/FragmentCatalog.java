@@ -3,6 +3,7 @@ package com.xian.xnovel;
 import java.util.List;
 
 import com.xian.xnovel.domain.CatalogInfo;
+import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 
 import android.content.Context;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 
 public class FragmentCatalog extends ListFragment {
 	private static final String TAG = "FragmentCatalog";
-	private static final String PATH="data/cate_sub.txt";
+
 	private Context mContext;
 	private ListViewAdapter adapter;
 	private List<CatalogInfo> infos;
@@ -30,8 +31,9 @@ public class FragmentCatalog extends ListFragment {
 		super.onCreate(savedInstanceState);
 		Log.d("lmf", "MoreFragment-----onCreate");
 		mContext = this.getActivity();
-		infos=Utils.getJsonListFromAssetsFile(mContext, PATH);
-		adapter=new ListViewAdapter(mContext,infos);
+		infos = Utils.getJsonListFromAssetsFile(mContext,
+				AppSettings.ASSETS_FILE_PATH + AppSettings.BOOK_CATA_NAME);
+		adapter = new ListViewAdapter(mContext, infos);
 		this.setListAdapter(adapter);
 	}
 
@@ -51,16 +53,14 @@ public class FragmentCatalog extends ListFragment {
 		Log.d(TAG, "TestFragment-----onDestroy");
 	}
 
-    public void onListItemClick(ListView parent, View v,   
-    int position, long id)   
-    {            
-    	Intent intent=new Intent(mContext,BookActivity.class);
-    	
-    	mContext.startActivity(intent);
-        Toast.makeText(getActivity(),   
-            "You have selected " + position,   
-            Toast.LENGTH_SHORT).show();  
-    } 
-	
+	public void onListItemClick(ListView parent, View v, int position, long id) {
+		Intent intent = new Intent(mContext, BookActivity.class);
+		CatalogInfo tempInfo=infos.get(position);
+		intent.putExtra(CatalogInfo.ID, tempInfo.getId());
+		intent.putExtra(CatalogInfo.TITLE, tempInfo.getTitle());
+		mContext.startActivity(intent);
+		Toast.makeText(getActivity(), "You have selected " + position,
+				Toast.LENGTH_SHORT).show();
+	}
 
 }

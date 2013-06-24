@@ -72,7 +72,9 @@ public class MainActivity extends FragmentActivity {
 			getWindowManager().getDefaultDisplay().getMetrics(dm);  
 			SharedPreferences pre=mContext.getSharedPreferences(AppSettings.Settings, Context.MODE_PRIVATE);
 			pre.edit().putInt(AppSettings.settings_width, dm.widthPixels);
-			pre.edit().putInt(AppSettings.settings_height, dm.widthPixels);
+			pre.edit().putInt(AppSettings.settings_height, dm.heightPixels);
+			app.setWidth(dm.widthPixels);
+			app.setHeight(dm.heightPixels);
 		}
 	}
 

@@ -1,13 +1,8 @@
 package com.xian.xnovel;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import com.xian.xnovel.db.DbHelper;
-import com.xian.xnovel.domain.BookInfo;
-import com.xian.xnovel.domain.SetupInfo;
+import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.PageWidget;
 
@@ -16,7 +11,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,8 +27,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,77 +36,69 @@ public class BookActivity extends Activity {
 	public final static int OPENMARK = 0;
 	public final static int SAVEMARK = 1;
 	public final static int TEXTSET = 2;
-	
+
 	private PageWidget mPageWidget;
 	private Bitmap mCurPageBitmap, mNextPageBitmap;
 	private Canvas mCurPageCanvas, mNextPageCanvas;
 	private BookPageFactory pagefactory;
-	private static Boolean isExit = false;// 用于判断是否推出
-	private static Boolean hasTask = false;
 	private int whichSize = 6;// 当前的字体大小
 	private int txtProgress = 0;// 当前阅读的进度
-	private String bookPath = "/sdcard/lovereader/";
 	final String[] font = new String[] { "20", "24", "26", "30", "32", "36",
 			"40", "46", "50", "56", "60", "66", "70" };
 	int curPostion;
-//	DbHelper db;
-	Context mContext;
-//	Cursor mCursor;
-//	BookInfo book = null;
-//	SetupInfo setup = null;
+	private Context mContext;
+	private MainApplication app;
+	private String bookTitle;
+	private int bookID;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mContext = this;
+		app = (MainApplication) getApplication();
 		Log.e("lmf", "onCreate>>>>>>>>>");
-		Display display = getWindowManager().getDefaultDisplay();
-		int w = display.getWidth();
-		int h = display.getHeight();
-		System.out.println(w + "\t" + h);
-		mCurPageBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-		mNextPageBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		mCurPageBitmap = Bitmap.createBitmap(app.getWidth(), app.getHeight(),
+				Bitmap.Config.ARGB_8888);
+		mNextPageBitmap = Bitmap.createBitmap(app.getWidth(), app.getHeight(),
+				Bitmap.Config.ARGB_8888);
 
 		mCurPageCanvas = new Canvas(mCurPageBitmap);
 		mNextPageCanvas = new Canvas(mNextPageBitmap);
-		pagefactory = new BookPageFactory(w, h);
+		pagefactory = new BookPageFactory(app.getWidth(), app.getHeight());
 		pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
 				R.drawable.theme_1));
 
-		// 取得传递的参数
-//		Intent intent = getIntent();
-//		String bookid = intent.getStringExtra("bookid");
 		mContext = this;
-//		db = new DbHelper(mContext);
-//		try {
-//			book = db.getBookInfo(Integer.parseInt(bookid));
-//			setup = db.getSetupInfo();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		if (book != null) {
-			pagefactory.setFileName("filename");
-			mPageWidget = new PageWidget(this, w, h);
+		Intent intent = getIntent();
+		bookTitle = intent.getStringExtra(CatalogInfo.TITLE);
+		bookID = intent.getIntExtra(CatalogInfo.ID, 0);
+		if (bookID != 0) {
+			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookTitle + ":" + bookID);
+			pagefactory.setFileName(bookTitle);
+			mPageWidget = new PageWidget(this, app.getWidth(), app.getHeight());
 			setContentView(mPageWidget);
-			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,"1");
+			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+					AppSettings.BOOK_FILE_PREFIX + bookID);
 
-//			if (book.bookmark > 0) {
-//				whichSize = setup.fontsize;
-//				pagefactory.setFontSize(Integer.parseInt(font[setup.fontsize]));
-//				pagefactory.setBeginPos(Integer.valueOf(book.bookmark));
-//				try {
-//					pagefactory.prePage();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				pagefactory.onDraw(mNextPageCanvas);
-//				mPageWidget.setBitmaps(mNextPageBitmap, mNextPageBitmap);
-//				mPageWidget.postInvalidate();
-//				db.close();
-//			} else {
-				pagefactory.onDraw(mCurPageCanvas);
-				mPageWidget.setBitmaps(mCurPageBitmap, mCurPageBitmap);
-//			}
+			// if (book.bookmark > 0) {
+			// whichSize = setup.fontsize;
+			// pagefactory.setFontSize(Integer.parseInt(font[setup.fontsize]));
+			// pagefactory.setBeginPos(Integer.valueOf(book.bookmark));
+			// try {
+			// pagefactory.prePage();
+			// } catch (IOException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			// pagefactory.onDraw(mNextPageCanvas);
+			// mPageWidget.setBitmaps(mNextPageBitmap, mNextPageBitmap);
+			// mPageWidget.postInvalidate();
+			// db.close();
+			// } else {
+			pagefactory.onDraw(mCurPageCanvas);
+			mPageWidget.setBitmaps(mCurPageBitmap, mCurPageBitmap);
+			// }
 
 			mPageWidget.setOnTouchListener(new OnTouchListener() {
 				@Override
@@ -161,15 +144,13 @@ public class BookActivity extends Activity {
 					return false;
 				}
 			});
-//		} else {
-//			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-//					.show();
-//			BookActivity.this.finish();
-//		}
+		} else {
+			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+					.show();
+			BookActivity.this.finish();
+		}
 
 	}
-
-
 
 	public boolean onCreateOptionsMenu(Menu menu) {// 创建菜单
 		super.onCreateOptionsMenu(menu);
@@ -237,8 +218,8 @@ public class BookActivity extends Activity {
 
 				@Override
 				public void onStartTrackingTouch(SeekBar seekBar) {
-					 Toast.makeText(mContext, "StartTouch",
-					 Toast.LENGTH_SHORT).show();
+					Toast.makeText(mContext, "StartTouch", Toast.LENGTH_SHORT)
+							.show();
 				}
 
 				@Override
@@ -284,14 +265,6 @@ public class BookActivity extends Activity {
 		mPageWidget.invalidate();
 	}
 
-	Timer tExit = new Timer();
-	TimerTask task = new TimerTask() {
-		@Override
-		public void run() {
-			isExit = false;
-			hasTask = true;
-		}
-	};
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -323,40 +296,40 @@ public class BookActivity extends Activity {
 				break;
 
 			case OPENMARK:
-				Log.e("lmf",">>>>>>OPENMARK>>>");
-//				try {
-//					mCursor = db.select();
-//
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//				if (mCursor.getCount() > 0) {
-//					mCursor.moveToPosition(mCursor.getCount() - 1);
-//					String pos = mCursor.getString(2);
-//
-//					pagefactory.setBeginPos(Integer.valueOf(pos));
-//					try {
-//						pagefactory.prePage();
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					pagefactory.onDraw(mNextPageCanvas);
-//					mPageWidget.setBitmaps(mCurPageBitmap, mNextPageBitmap);
-//					mPageWidget.invalidate();
-//					db.close();
-//				}
+				Log.e("lmf", ">>>>>>OPENMARK>>>");
+				// try {
+				// mCursor = db.select();
+				//
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				// if (mCursor.getCount() > 0) {
+				// mCursor.moveToPosition(mCursor.getCount() - 1);
+				// String pos = mCursor.getString(2);
+				//
+				// pagefactory.setBeginPos(Integer.valueOf(pos));
+				// try {
+				// pagefactory.prePage();
+				// } catch (IOException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+				// pagefactory.onDraw(mNextPageCanvas);
+				// mPageWidget.setBitmaps(mCurPageBitmap, mNextPageBitmap);
+				// mPageWidget.invalidate();
+				// db.close();
+				// }
 				break;
 
 			case SAVEMARK:
-				Log.e("lmf",">>>>>>SAVEMARK>>>");
-//				try {
-//					db.update(book.id, book.bookname, String.valueOf(msg.arg2));
-//					db.updateSetup(setup.id, String.valueOf(msg.arg1), "0", "0");
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//				db.close();
+				Log.e("lmf", ">>>>>>SAVEMARK>>>");
+				// try {
+				// db.update(book.id, book.bookname, String.valueOf(msg.arg2));
+				// db.updateSetup(setup.id, String.valueOf(msg.arg1), "0", "0");
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				// db.close();
 				break;
 
 			default:
