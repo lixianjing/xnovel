@@ -17,14 +17,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 
 public class BookPageFactory {
+	
+	private static final String TAG="BookPageFactory";
 
-	private File book_file = null;
 	private MappedByteBuffer m_mbBuf = null;
-	private int m_mbBufLen = 0;
-	private int m_mbBufBegin = 50; // 50
-	private int m_mbBufEnd = 0;
+	private int mBufLen = 0;//总文件大小
+	private int mBufBegin = 0; //文件起始位置
+	private int mBufEnd = 0;
 	private String m_strCharsetName = "UTF-8";
 	private Bitmap m_book_bg = null;
 	private int mWidth;
@@ -94,7 +96,9 @@ public class BookPageFactory {
 		try {
 			File book_file = new File(filePath, fileName);
 			long lLen = book_file.length();
-			m_mbBufLen = (int) lLen;
+			Log.e("lmf", ">>>>>>lLen>>>>"+lLen);
+			mBufLen = (int) lLen;
+			Log.e("lmf", ">>>>>>m_mbBufLen>>>>"+mBufLen);
 			m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
 		} catch (FileNotFoundException e) {
@@ -107,6 +111,7 @@ public class BookPageFactory {
 	}
 
 	protected byte[] readParagraphBack(int nFromPos) {
+		Log.e(TAG, "readParagraphBack>>>"+nFromPos);
 		int nEnd = nFromPos;
 		int i;
 		byte b0, b1;
@@ -157,12 +162,13 @@ public class BookPageFactory {
 
 	// 读取上一段落
 	protected byte[] readParagraphForward(int nFromPos) {
+		Log.e(TAG, "readParagraphForward>>>"+nFromPos);
 		int nStart = nFromPos;
 		int i = nStart;
 		byte b0, b1;
 		// 根据编码格式判断换行
 		if (m_strCharsetName.equals("UTF-16LE")) {
-			while (i < m_mbBufLen - 1) {
+			while (i < mBufLen - 1) {
 				b0 = m_mbBuf.get(i++);
 				b1 = m_mbBuf.get(i++);
 				if (b0 == 0x0a && b1 == 0x00) {
@@ -170,7 +176,7 @@ public class BookPageFactory {
 				}
 			}
 		} else if (m_strCharsetName.equals("UTF-16BE")) {
-			while (i < m_mbBufLen - 1) {
+			while (i < mBufLen - 1) {
 				b0 = m_mbBuf.get(i++);
 				b1 = m_mbBuf.get(i++);
 				if (b0 == 0x00 && b1 == 0x0a) {
@@ -178,7 +184,7 @@ public class BookPageFactory {
 				}
 			}
 		} else {
-			while (i < m_mbBufLen) {
+			while (i < mBufLen) {
 				b0 = m_mbBuf.get(i++);
 				if (b0 == 0x0a) {
 					break;
@@ -194,11 +200,12 @@ public class BookPageFactory {
 	}
 
 	protected Vector<String> pageDown() {
+		Log.e(TAG, "pageDown>>>");
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
-		while (lines.size() < mLineCount && m_mbBufEnd < m_mbBufLen) {
-			byte[] paraBuf = readParagraphForward(m_mbBufEnd); // 读取一个段落
-			m_mbBufEnd += paraBuf.length;
+		while (lines.size() < mLineCount && mBufEnd < mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufEnd += paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, m_strCharsetName);
 			} catch (UnsupportedEncodingException e) {
@@ -228,7 +235,7 @@ public class BookPageFactory {
 			}
 			if (strParagraph.length() != 0) {
 				try {
-					m_mbBufEnd -= (strParagraph + strReturn)
+					mBufEnd -= (strParagraph + strReturn)
 							.getBytes(m_strCharsetName).length;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
@@ -240,14 +247,15 @@ public class BookPageFactory {
 	}
 
 	protected void pageUp() {
-		if (m_mbBufBegin < 0)
-			m_mbBufBegin = 0;
+		Log.e(TAG, "pageUp>>>");
+		if (mBufBegin < 0)
+			mBufBegin = 0;
 		Vector<String> lines = new Vector<String>();
 		String strParagraph = "";
-		while (lines.size() < mLineCount && m_mbBufBegin > 0) {
+		while (lines.size() < mLineCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
-			byte[] paraBuf = readParagraphBack(m_mbBufBegin);
-			m_mbBufBegin -= paraBuf.length;
+			byte[] paraBuf = readParagraphBack(mBufBegin);
+			mBufBegin -= paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, m_strCharsetName);
 			} catch (UnsupportedEncodingException e) {
@@ -270,20 +278,21 @@ public class BookPageFactory {
 		}
 		while (lines.size() > mLineCount) {
 			try {
-				m_mbBufBegin += lines.get(0).getBytes(m_strCharsetName).length;
+				mBufBegin += lines.get(0).getBytes(m_strCharsetName).length;
 				lines.remove(0);
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		m_mbBufEnd = m_mbBufBegin;
+		mBufEnd = mBufBegin;
 		return;
 	}
 
 	protected void prePage() throws IOException {
-		if (m_mbBufBegin <= 0) {
-			m_mbBufBegin = 0;
+		Log.e(TAG, "prePage>>>");
+		if (mBufBegin <= 0) {
+			mBufBegin = 0;
 			m_isfirstPage = true;
 			return;
 		} else
@@ -294,17 +303,19 @@ public class BookPageFactory {
 	}
 
 	public void nextPage() throws IOException {
-		if (m_mbBufEnd >= m_mbBufLen) {
+		Log.e(TAG, "nextPage>>>");
+		if (mBufEnd >= mBufLen) {
 			m_islastPage = true;
 			return;
 		} else
 			m_islastPage = false;
 		m_lines.clear();
-		m_mbBufBegin = m_mbBufEnd;
+		mBufBegin = mBufEnd;
 		m_lines = pageDown();
 	}
 
 	public void onDraw(Canvas c) {
+		Log.e(TAG, "onDraw>>>");
 		if (m_lines.size() == 0)
 			m_lines = pageDown();
 		if (m_lines.size() > 0) {
@@ -313,14 +324,9 @@ public class BookPageFactory {
 			else
 				c.drawBitmap(m_book_bg, 0, 0, null);
 			int y = marginHeight + youmiHeight;
-			// int titleWidth = (int) titlePaint.measureText("娘子为夫饿了") + 1;
-			// int titleHeight = y/2;
-			// c.drawText("娘子为夫饿了", (mWidth-titleWidth)/2, titleHeight,
-			// titlePaint);
 			int i = 0;
 			for (String strLine : m_lines) {
 				y += m_fontSize;
-				// mPaint.setTypeface(Typeface.DEFAULT_BOLD);
 				c.drawText(strLine, marginWidth, y, mPaint);
 				y += spaceSize;
 				if (i != m_lines.size() - 1) {
@@ -329,16 +335,15 @@ public class BookPageFactory {
 				i++;
 			}
 		}
-		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
-		DecimalFormat df = new DecimalFormat("#0.0");
-		String strPercent = df.format(fPercent * 100) + "%";
-
-		curProgress = (int) round1(fPercent * 100, 0);
+		float fPercent = (float) (mBufBegin * 1.0 / mBufLen);
+		Log.e("lmf", ">>>>>>>fPercent>>>>>>>>"+fPercent+":"+mBufBegin);
+		DecimalFormat df = new DecimalFormat("#0.0%");
+		String strPercent = df.format(fPercent );
+		
+		curProgress = (int) getCurrentProcess(fPercent * 100, 0);
 		int nPercentWidth = (int) bPaint.measureText("99.9%") + 1;
 		c.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5, bPaint);
 
-		// c.drawText("噬魂天书", mWidth/2, mHeight-5, mPaint);
-		// int nTimeWidth = (int)mPaint.measureText("12:12") + 1;
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		String str = formatter.format(curDate);
@@ -348,10 +353,10 @@ public class BookPageFactory {
 				mHeight - 5, bPaint);
 	}
 
-	private static double round1(double v, int scale) {
+	private  double getCurrentProcess(double v, int scale) {
 		if (scale < 0)
 			return v;
-		String temp = "#####0.";
+		String temp = "###0.";
 		for (int i = 0; i < scale; i++) {
 			temp += "0";
 		}
@@ -378,29 +383,26 @@ public class BookPageFactory {
 	}
 
 	public int getCurPostion() {
-		return m_mbBufEnd;
+		return mBufEnd;
 	}
 
 	public int getCurPostionBeg() {
-		return m_mbBufBegin;
+		return mBufBegin;
 	}
 
 	public void setBeginPos(int pos) {
-		m_mbBufEnd = pos;
-		m_mbBufBegin = pos;
+		mBufEnd = pos;
+		mBufBegin = pos;
 	}
 
 	public int getBufLen() {
-		return m_mbBufLen;
+		return mBufLen;
 	}
 
 	public int getCurProgress() {
 		return curProgress;
 	}
 
-	public String getOneLine() {
-		return m_lines.toString().substring(0, 10);
-	}
 
 	public void changBackGround(int color) {
 		mPaint.setColor(color);

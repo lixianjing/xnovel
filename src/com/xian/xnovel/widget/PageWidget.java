@@ -1,5 +1,9 @@
 package com.xian.xnovel.widget;
 
+import java.io.IOException;
+
+import com.xian.xnovel.MainApplication;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,15 +15,17 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
+import android.widget.Toast;
 
 public class PageWidget extends View {
 
 	private static final String TAG = "PageWidget";
-	private int mWidth = 480;
-	private int mHeight = 800;
+	private int mWidth = 0;
+	private int mHeight = 0;
 	private int mCornerX = 0; // 拖拽点对应的页脚
 	private int mCornerY = 0;
 	private Path mPath0;
@@ -47,7 +53,7 @@ public class PageWidget extends View {
 	float[] mMatrixArray = { 0, 0, 0, 0, 0, 0, 0, 0, 1.0f };
 
 	boolean mIsRTandLB; // 是否属于右上左下
-	float mMaxLength = (float) Math.hypot(mWidth, mHeight);
+	float mMaxLength ;
 	int[] mBackShadowColors;
 	int[] mFrontShadowColors;
 	GradientDrawable mBackShadowDrawableLR;
@@ -63,9 +69,12 @@ public class PageWidget extends View {
 	Paint mPaint;
 
 	Scroller mScroller;
+	
+	private Context mContext;
 
 	public PageWidget(Context context, int w, int h) {
 		super(context);
+		mContext=context;
 		// TODO Auto-generated constructor stub
 		mWidth = w;
 		mHeight = h;
@@ -76,6 +85,8 @@ public class PageWidget extends View {
 		mPaint = new Paint();
 		mPaint.setStyle(Paint.Style.FILL);
 
+		mMaxLength=(float) Math.hypot(mWidth, mHeight);
+		
 		ColorMatrix cm = new ColorMatrix();
 		float array[] = { 0.55f, 0, 0, 0, 80.0f, 0, 0.55f, 0, 0, 80.0f, 0, 0,
 				0.55f, 0, 80.0f, 0, 0, 0, 0.2f, 0 };
@@ -86,6 +97,7 @@ public class PageWidget extends View {
 
 		mTouch.x = 0.01f; // 不让x,y为0,否则在点计算时会有问题
 		mTouch.y = 0.01f;
+		
 	}
 
 	/**
@@ -106,6 +118,11 @@ public class PageWidget extends View {
 		else
 			mIsRTandLB = false;
 	}
+
+	
+
+	
+	
 
 	public boolean doTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
@@ -290,10 +307,6 @@ public class PageWidget extends View {
 		mNextPageBitmap = bm2;
 	}
 
-	public void setScreen(int w, int h) {
-		mWidth = w;
-		mHeight = h;
-	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
