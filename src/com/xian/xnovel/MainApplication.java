@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class MainApplication extends Application {
-	private int mWidth, mHeight;
+	public static int sWidth, sHeight;
 	private Context mContext;
 
 	@Override
@@ -29,9 +29,9 @@ public class MainApplication extends Application {
 		mContext=this;
 		SharedPreferences pre = this.getSharedPreferences(
 				AppSettings.Settings, Context.MODE_PRIVATE);
-		mWidth = pre.getInt(AppSettings.settings_width, 0);
-		mHeight = pre.getInt(AppSettings.settings_height, 0);
-		if (mWidth == 0) {
+		sWidth = pre.getInt(AppSettings.settings_width, 0);
+		sHeight = pre.getInt(AppSettings.settings_height, 0);
+		if (sWidth == 0) {
 			// this is first run app we should init data
 			loadBookContent(5);
 		}
@@ -76,22 +76,5 @@ public class MainApplication extends Application {
 		super.onLowMemory();
 	}
 
-	public int getWidth() {
-		return mWidth;
-	}
-
-	public void setWidth(int mWidth) {
-		this.mWidth = mWidth;
-	}
-
-	public int getHeight() {
-		return mHeight;
-	}
-
-	public void setHeight(int mHeight) {
-		this.mHeight = mHeight;
-	}
-	
-	
 
 }

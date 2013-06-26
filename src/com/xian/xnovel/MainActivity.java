@@ -9,6 +9,7 @@ import com.xian.xnovel.utils.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,7 +29,6 @@ public class MainActivity extends FragmentActivity {
 	private List<TextView> tabsList;
 	private TextView tvTitleSecond;
 	private Context mContext;
-	private MainApplication app;
 
 	private static final int[] tabsTitleRes = new int[] {
 			R.string.tab_cate_text, R.string.tab_bookmark_text,
@@ -43,7 +43,19 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		mContext = this;
-		app=(MainApplication) this.getApplication();
+		if(MainApplication.sWidth==0){
+			//we should calatue;
+			DisplayMetrics dm = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(dm);
+			SharedPreferences pre = mContext.getSharedPreferences(
+					AppSettings.Settings, Context.MODE_PRIVATE);
+			Editor editor=pre.edit();
+			editor.putInt(AppSettings.settings_width, dm.widthPixels);
+			editor.putInt(AppSettings.settings_height, dm.heightPixels);
+			editor.commit();
+			MainApplication.sWidth = dm.widthPixels;
+			MainApplication.sHeight = dm.heightPixels;
+		}
 		initView();
 		initData();
 		Long endTime=System.currentTimeMillis();
@@ -70,16 +82,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initData() {
-		if(app.getWidth()==0){
-			//we should calatue;
-			DisplayMetrics dm = new DisplayMetrics();  
-			getWindowManager().getDefaultDisplay().getMetrics(dm);  
-			SharedPreferences pre=mContext.getSharedPreferences(AppSettings.Settings, Context.MODE_PRIVATE);
-			pre.edit().putInt(AppSettings.settings_width, dm.widthPixels);
-			pre.edit().putInt(AppSettings.settings_height, dm.heightPixels);
-			app.setWidth(dm.widthPixels);
-			app.setHeight(dm.heightPixels);
-		}
+
 	}
 
 	private void InitViewPager() {

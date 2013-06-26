@@ -12,6 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import com.xian.xnovel.utils.AppSettings;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,20 +26,23 @@ import android.util.Log;
 public class BookPageFactory {
 
 	private static final String TAG = "BookPageFactory";
+	private String mCharsetName = "UTF-8";
+
+	private Context mContext;
 
 	private MappedByteBuffer mFileBuf = null;
 	private int mBufLen = 0;// 总文件大小
 	private int mBufBegin = 0; // 文件起始位置
 	private int mBufEnd = 0;
-	private String mCharsetName = "UTF-8";
+
 	private Bitmap m_book_bg = null;
+
 	private int mWidth;
 	private int mHeight;
 
 	private Vector<String> mContentVector = new Vector<String>();
 
 	private int m_fontSize = 40;
-	private int r_fontSize = 30;
 	private int m_textColor = Color.BLACK;
 	private int m_backColor = 0xffff9e85; // 背景颜色
 	private int marginWidth = 15; // 左右与边缘的距离
@@ -47,34 +54,35 @@ public class BookPageFactory {
 	private float mVisibleWidth; // 绘制内容的宽
 	private boolean m_isfirstPage, m_islastPage;
 	private int b_FontSize = 16;// 底部文字大小
-	private int e_fontSize = 5;
 	private int spaceSize = 20;// 行间距大小
 	private int curProgress = 0;// 当前的进度
-	private String fileName = "";
+
+	private String fileName = null;
 
 	private Paint mPaint;
 	private Paint bPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
 
+	private Bitmap pageBitmap;
+	private Canvas pageCanvas;
+
 	private static BookPageFactory factory;
-	
-	public static BookPageFactory getInstance(){
-		if(factory!=null){
+
+	public static BookPageFactory getInstance() {
+		if (factory != null) {
 			return factory;
-		}else{
-			factory=new BookPageFactory();
+		} else {
+			factory = new BookPageFactory();
 			return factory;
 		}
-		
+
 	}
-	
-	
+
 	private BookPageFactory() {
-	}
-	
-	public void init(int w, int h){
-		mWidth = w;
-		mHeight = h;
+
+		mWidth = MainApplication.sWidth;
+		mHeight = MainApplication.sHeight;
+
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPaint.setTextAlign(Align.LEFT);
 		// mPaint.setTextSize(30);
@@ -96,17 +104,16 @@ public class BookPageFactory {
 		spactPaint.setTextAlign(Align.LEFT);
 		spactPaint.setTextSize(spaceSize);
 		spactPaint.setColor(m_textColor);
+
+		// 设置画布和图片
+		pageBitmap = Bitmap.createBitmap(mWidth, mHeight,
+				Bitmap.Config.ARGB_8888);
+		pageCanvas = new Canvas(pageBitmap);
 	}
-	
-	public void release(){
-		mPaint=null;
-		bPaint=null;
-		spactPaint=null;
-	}
-	
-	
 
 	public void openbook(String filePath, String fileName) {
+		Log.e("lmf", "BookPageFactory>>>>>>>>>openbook");
+		release();
 		try {
 			File book_file = new File(filePath, fileName);
 			long lLen = book_file.length();
@@ -115,6 +122,7 @@ public class BookPageFactory {
 			Log.e("lmf", ">>>>>>m_mbBufLen>>>>" + mBufLen);
 			mFileBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -122,6 +130,14 @@ public class BookPageFactory {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void release() {
+		mFileBuf = null;
+		mBufLen = 0;
+		mBufBegin = 0;
+		mBufEnd = 0;
+		mContentVector.clear();
 	}
 
 	protected byte[] readParagraphBack(int nFromPos) {
@@ -261,7 +277,7 @@ public class BookPageFactory {
 		return;
 	}
 
-	protected void prePage() throws IOException {
+	public void prePage() throws IOException {
 		Log.e(TAG, "prePage>>>");
 		if (mBufBegin <= 0) {
 			mBufBegin = 0;
@@ -286,42 +302,43 @@ public class BookPageFactory {
 		mContentVector = pageDown();
 	}
 
-	public void onDraw(Canvas c) {
-		Log.e(TAG, "onDraw>>>");
+	public void drawPageBitmap() {
+		Log.e(TAG, "drawPageBitmap>>>");
 		if (mContentVector.size() == 0)
 			mContentVector = pageDown();
 		if (mContentVector.size() > 0) {
 			if (m_book_bg == null)
-				c.drawColor(m_backColor);
+				pageCanvas.drawColor(m_backColor);
 			else
-				c.drawBitmap(m_book_bg, 0, 0, null);
+				pageCanvas.drawBitmap(m_book_bg, 0, 0, null);
 			int y = marginHeight + youmiHeight;
 			int i = 0;
 			for (String strLine : mContentVector) {
 				y += m_fontSize;
-				c.drawText(strLine, marginWidth, y, mPaint);
+				Log.e("lmf", "bookPageFactory>>>>>>>" + strLine);
+				pageCanvas.drawText(strLine, marginWidth, y, mPaint);
 				y += spaceSize;
 				if (i != mContentVector.size() - 1) {
-					c.drawText("", marginWidth, y, spactPaint);
+					pageCanvas.drawText("", marginWidth, y, spactPaint);
 				}
 				i++;
 			}
 		}
 		float fPercent = (float) (mBufBegin * 1.0 / mBufLen);
-		Log.e("lmf", ">>>>>>>fPercent>>>>>>>>" + fPercent + ":" + mBufBegin);
 		DecimalFormat df = new DecimalFormat("#0.0%");
 		String strPercent = df.format(fPercent);
 
 		curProgress = (int) getCurrentProcess(fPercent * 100, 0);
 		int nPercentWidth = (int) bPaint.measureText("99.9%") + 1;
-		c.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5, bPaint);
+		pageCanvas.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5,
+				bPaint);
 
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		String str = formatter.format(curDate);
-		c.drawText(str, 5, mHeight - 5, bPaint);
+		pageCanvas.drawText(str, 5, mHeight - 5, bPaint);
 		int titleWidth = (int) bPaint.measureText("《" + fileName + "》") + 1;
-		c.drawText("《" + fileName + "》", (mWidth - titleWidth) / 2,
+		pageCanvas.drawText("《" + fileName + "》", (mWidth - titleWidth) / 2,
 				mHeight - 5, bPaint);
 	}
 
@@ -388,6 +405,10 @@ public class BookPageFactory {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public Bitmap getPageBitmap() {
+		return pageBitmap;
 	}
 
 }
