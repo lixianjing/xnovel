@@ -33,7 +33,7 @@ public class BookActivity extends Activity {
 		Log.e("lmf", "onCreate>>>>>>>>>");
 
 		mContext = this;
-
+		setContentView(R.layout.activity_book);
 		pagefactory = BookPageFactory.getInstance();
 		pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
 				R.drawable.theme_1));

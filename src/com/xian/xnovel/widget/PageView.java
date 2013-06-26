@@ -11,10 +11,11 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.Toast;
 
-public class PageView extends View {
+public class PageView extends ViewGroup {
 
 	private static final int DIR_PRE_PAGE = 1;
 	private static final int DIR_NEXT_PAGE = 2;
@@ -135,5 +136,19 @@ public class PageView extends View {
 			mScroller.abortAnimation();
 		}
 	}
+
+	@Override
+	protected void onLayout(boolean arg0, int arg1, int arg2, int arg3, int arg4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// TODO Auto-generated method stub
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	}
+	
+	
 
 }
