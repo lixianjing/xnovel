@@ -28,7 +28,6 @@ public class BookPageFactory {
 	private static final String TAG = "BookPageFactory";
 	private String mCharsetName = "UTF-8";
 
-	private Context mContext;
 
 	private MappedByteBuffer mFileBuf = null;
 	private int mBufLen = 0;// 总文件大小
@@ -63,8 +62,6 @@ public class BookPageFactory {
 	private Paint bPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
 
-	private Bitmap pageBitmap;
-	private Canvas pageCanvas;
 
 	private static BookPageFactory factory;
 
@@ -105,10 +102,6 @@ public class BookPageFactory {
 		spactPaint.setTextSize(spaceSize);
 		spactPaint.setColor(m_textColor);
 
-		// 设置画布和图片
-		pageBitmap = Bitmap.createBitmap(mWidth, mHeight,
-				Bitmap.Config.ARGB_8888);
-		pageCanvas = new Canvas(pageBitmap);
 	}
 
 	public void openbook(String filePath, String fileName) {

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Scroller;
 import android.widget.Toast;
 
 public class PageView extends ViewGroup {
+
 
 	private static final int DIR_PRE_PAGE = 1;
 	private static final int DIR_NEXT_PAGE = 2;
@@ -30,12 +32,27 @@ public class PageView extends ViewGroup {
 	private Paint mPaint;
 
 	public PageView(Context context) {
-		super(context);
+		this(context,null);
 		// TODO Auto-generated constructor stub
+	}
+
+	public PageView(Context context, AttributeSet attrs) {
+		this(context, attrs,0);
+		// TODO Auto-generated constructor stub
+	}
+
+	public PageView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		mContext=context;
+		init();
+		// TODO Auto-generated constructor stub
+	}
+
+	
+	private void init(){
 		pagefactory = BookPageFactory.getInstance();
 		mPaint = new Paint();
 		mPaint.setStyle(Paint.Style.FILL);
-
 	}
 
 	@Override
