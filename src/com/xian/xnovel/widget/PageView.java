@@ -8,16 +8,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.Toast;
 
-public class PageView extends ViewGroup {
-
+public class PageView extends View {
 
 	private static final int DIR_PRE_PAGE = 1;
 	private static final int DIR_NEXT_PAGE = 2;
@@ -32,27 +29,12 @@ public class PageView extends ViewGroup {
 	private Paint mPaint;
 
 	public PageView(Context context) {
-		this(context,null);
+		super(context);
 		// TODO Auto-generated constructor stub
-	}
-
-	public PageView(Context context, AttributeSet attrs) {
-		this(context, attrs,0);
-		// TODO Auto-generated constructor stub
-	}
-
-	public PageView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		mContext=context;
-		init();
-		// TODO Auto-generated constructor stub
-	}
-
-	
-	private void init(){
 		pagefactory = BookPageFactory.getInstance();
 		mPaint = new Paint();
 		mPaint.setStyle(Paint.Style.FILL);
+
 	}
 
 	@Override
@@ -153,19 +135,5 @@ public class PageView extends ViewGroup {
 			mScroller.abortAnimation();
 		}
 	}
-
-	@Override
-	protected void onLayout(boolean arg0, int arg1, int arg2, int arg3, int arg4) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// TODO Auto-generated method stub
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	}
-	
-	
 
 }

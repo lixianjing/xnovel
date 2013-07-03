@@ -1,14 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/book_rl_main"
-    android:background="@drawable/theme_1"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
-    <com.xian.xnovel.widget.PageView
-        android:id="@+id/book_pageview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,22 +11,20 @@
         android:gravity="center_vertical" >
 
         <TextView
-            android:id="@+id/book_tv_left"
+            android:id="@+id/book_tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical" />
 
         <TextView
-            android:id="@+id/book_tv_center"
-            android:layout_centerInParent="true"
+            android:id="@+id/book_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="title"
             android:gravity="center_vertical" />
 
         <TextView
-            android:id="@+id/book_tv_right"
+            android:id="@+id/book_tv_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
