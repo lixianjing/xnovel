@@ -52,16 +52,16 @@ public class BookPageFactory {
 	private int mLineCount; // 每页可以显示的行数
 	private float mVisibleHeight; // 绘制内容的宽
 	private float mVisibleWidth; // 绘制内容的宽
-	private boolean m_isfirstPage, m_islastPage;
 	private int b_FontSize = 16;// 底部文字大小
 	private int spaceSize = 20;// 行间距大小
 	private int curProgress = 0;// 当前的进度
 
+	
+	private boolean isFirstPage, isLastPage;
 	private String fileName = null;
 
 	private Paint mPaint;
-	private Paint bPaint;// 底部文字绘制
-	private Paint spactPaint;// 行间距绘制
+	private Paint bottomPaint;// 底部文字绘制
 
 	private Bitmap pageBitmap;
 	private Canvas pageCanvas;
@@ -94,16 +94,11 @@ public class BookPageFactory {
 		mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
 		int totalSize = m_fontSize + spaceSize;
 		mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
-		// 底部文字绘制
-		bPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		bPaint.setTextAlign(Align.LEFT);
-		bPaint.setTextSize(b_FontSize);
-		bPaint.setColor(m_textColor);
-		// 行间距设置
-		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		spactPaint.setTextAlign(Align.LEFT);
-		spactPaint.setTextSize(spaceSize);
-		spactPaint.setColor(m_textColor);
+		// 底部文字画笔设置
+		bottomPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		bottomPaint.setTextAlign(Align.LEFT);
+		bottomPaint.setTextSize(b_FontSize);
+		bottomPaint.setColor(m_textColor);
 
 		// 设置画布和图片
 		pageBitmap = Bitmap.createBitmap(mWidth, mHeight,
@@ -138,6 +133,7 @@ public class BookPageFactory {
 		mBufBegin = 0;
 		mBufEnd = 0;
 		mContentVector.clear();
+		factory=null;
 	}
 
 	protected byte[] readParagraphBack(int nFromPos) {
@@ -281,10 +277,10 @@ public class BookPageFactory {
 		Log.e(TAG, "prePage>>>");
 		if (mBufBegin <= 0) {
 			mBufBegin = 0;
-			m_isfirstPage = true;
+			isFirstPage = true;
 			return;
 		} else
-			m_isfirstPage = false;
+			isFirstPage = false;
 		mContentVector.clear();
 		pageUp();
 		mContentVector = pageDown();
@@ -293,10 +289,10 @@ public class BookPageFactory {
 	public void nextPage() throws IOException {
 		Log.e(TAG, "nextPage>>>");
 		if (mBufEnd >= mBufLen) {
-			m_islastPage = true;
+			isLastPage = true;
 			return;
 		} else
-			m_islastPage = false;
+			isLastPage = false;
 		mContentVector.clear();
 		mBufBegin = mBufEnd;
 		mContentVector = pageDown();
@@ -312,16 +308,11 @@ public class BookPageFactory {
 			else
 				pageCanvas.drawBitmap(m_book_bg, 0, 0, null);
 			int y = marginHeight + youmiHeight;
-			int i = 0;
 			for (String strLine : mContentVector) {
 				y += m_fontSize;
 				Log.e("lmf", "bookPageFactory>>>>>>>" + strLine);
 				pageCanvas.drawText(strLine, marginWidth, y, mPaint);
 				y += spaceSize;
-				if (i != mContentVector.size() - 1) {
-					pageCanvas.drawText("", marginWidth, y, spactPaint);
-				}
-				i++;
 			}
 		}
 		float fPercent = (float) (mBufBegin * 1.0 / mBufLen);
@@ -329,17 +320,17 @@ public class BookPageFactory {
 		String strPercent = df.format(fPercent);
 
 		curProgress = (int) getCurrentProcess(fPercent * 100, 0);
-		int nPercentWidth = (int) bPaint.measureText("99.9%") + 1;
+		int nPercentWidth = (int) bottomPaint.measureText("99.9%") + 1;
 		pageCanvas.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5,
-				bPaint);
+				bottomPaint);
 
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		String str = formatter.format(curDate);
-		pageCanvas.drawText(str, 5, mHeight - 5, bPaint);
-		int titleWidth = (int) bPaint.measureText("《" + fileName + "》") + 1;
+		pageCanvas.drawText(str, 5, mHeight - 5, bottomPaint);
+		int titleWidth = (int) bottomPaint.measureText("《" + fileName + "》") + 1;
 		pageCanvas.drawText("《" + fileName + "》", (mWidth - titleWidth) / 2,
-				mHeight - 5, bPaint);
+				mHeight - 5, bottomPaint);
 	}
 
 	private double getCurrentProcess(double v, int scale) {
@@ -360,15 +351,15 @@ public class BookPageFactory {
 	}
 
 	public boolean isfirstPage() {
-		return m_isfirstPage;
+		return isFirstPage;
 	}
 
 	public void setIslastPage(boolean islast) {
-		m_islastPage = islast;
+		isLastPage = islast;
 	}
 
 	public boolean islastPage() {
-		return m_islastPage;
+		return isLastPage;
 	}
 
 	public int getCurPostion() {
@@ -410,5 +401,16 @@ public class BookPageFactory {
 	public Bitmap getPageBitmap() {
 		return pageBitmap;
 	}
+
+	public Paint getmPaint() {
+		return mPaint;
+	}
+
+
+	public Paint getBottomPaint() {
+		return bottomPaint;
+	}
+
+	
 
 }
