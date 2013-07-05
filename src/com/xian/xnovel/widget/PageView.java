@@ -1,6 +1,9 @@
 package com.xian.xnovel.widget;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.xian.xnovel.BookPageFactory;
 
@@ -45,7 +48,7 @@ public class PageView extends View {
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
 		Log.e("lmf", "PageView>>>>>>onDraw>>>>");
-		canvas.drawBitmap(pagefactory.getPageBitmap(), 0, 0, mPaint);
+		pagefactory.drawContent(canvas);
 		super.onDraw(canvas);
 	}
 
@@ -130,7 +133,6 @@ public class PageView extends View {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			pagefactory.drawPageBitmap();
 
 			break;
 		case DIR_NEXT_PAGE:
@@ -140,7 +142,6 @@ public class PageView extends View {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			pagefactory.drawPageBitmap();
 			break;
 		case DIR_UP_SCROLL:
 			break;

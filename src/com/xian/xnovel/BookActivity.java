@@ -35,8 +35,8 @@ public class BookActivity extends Activity {
 		mContext = this;
 
 		pagefactory = BookPageFactory.getInstance();
-		pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
-				R.drawable.theme_1));
+//		pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
+//				R.drawable.theme_1));
 
 		Intent intent = getIntent();
 		bookTitle = intent.getStringExtra(CatalogInfo.TITLE);
@@ -46,10 +46,11 @@ public class BookActivity extends Activity {
 			pagefactory.setFileName(bookTitle);
 			mPageView = new PageView(this);
 			setContentView(mPageView);
+			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 
-			pagefactory.drawPageBitmap();
+//			pagefactory.drawPageBitmap();
 			mPageView.invalidate();
 
 		} else {
