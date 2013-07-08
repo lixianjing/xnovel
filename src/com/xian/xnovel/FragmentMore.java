@@ -1,7 +1,7 @@
 package com.xian.xnovel;
 
 import com.xian.xnovel.utils.Utils;
-import com.xian.xnovel.widget.IPhoneDialog;
+import com.xian.xnovel.widget.DialogManager;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -58,7 +58,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.more_btn_copy:
-			IPhoneDialog
+			DialogManager
 					.showConfirmDialog(getActivity(),
 							R.string.more_copyright_btn,
 							R.string.more_copyright_message,

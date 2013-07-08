@@ -74,6 +74,7 @@ public class BookPageFactory {
 
 	private float offsetY;
 	private float scrollY = 0f;
+	
 
 	private static BookPageFactory factory;
 
@@ -109,7 +110,6 @@ public class BookPageFactory {
 		curDate = new Date();
 		updateComposition();
 		scrollY = 0f;
-		
 	}
 
 	private void initFileDate() {

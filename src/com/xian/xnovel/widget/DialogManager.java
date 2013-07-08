@@ -22,11 +22,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author limingfeng
  */
-public class IPhoneDialog extends Dialog {
+public class DialogManager extends Dialog {
 
 	public final static int DIALOG_BACKGROUND_ALPAH = 255;
 	private static int DIALOG_BTN_GAP = 10;
@@ -76,7 +77,7 @@ public class IPhoneDialog extends Dialog {
 	private int mType;
 	private boolean mIgnoreBackKey = false;
 
-	public IPhoneDialog(Context context, int type) {
+	public DialogManager(Context context, int type) {
 		this(context, R.style.IPhoneDialog, type);
 		mCtrlParam = new ControlParam(context);
 		mContext = context;
@@ -84,7 +85,7 @@ public class IPhoneDialog extends Dialog {
 		// TODO Auto-generated constructor stub
 	}
 
-	public IPhoneDialog(Context context, int theme, int type) {
+	public DialogManager(Context context, int theme, int type) {
 		super(context, theme);
 		mCtrlParam = new ControlParam(context);
 		mContext = context;
@@ -849,7 +850,7 @@ public class IPhoneDialog extends Dialog {
 		}
 
 		public void apply() {
-			IPhoneDialog d = (IPhoneDialog) mDialog;
+			DialogManager d = (DialogManager) mDialog;
 			d.setPositiveButton(mBtnPositiveTextResId, mBtnPositiveListener);
 			d.setPositiveBackground(mPositiveBkResId);
 			d.setPositiveTextColor(mBtnPositiveTextColor);
@@ -890,7 +891,7 @@ public class IPhoneDialog extends Dialog {
 
 	public static class BuilderEx {
 		private ControlParam mControlParam;
-		private IPhoneDialog mAlertDialogEx;
+		private DialogManager mAlertDialogEx;
 		private Context mContext;
 		private int mTheme;
 		private int mType;
@@ -898,8 +899,8 @@ public class IPhoneDialog extends Dialog {
 		public static final int DIALOG_TYPE_SHORT_BUTTON = 0x1;
 		public static final int DIALOG_TYPE_LONG_BUTTON = 0x2;
 
-		private static IPhoneDialog mCurDialog = null;
-		private static IPhoneDialog mCurDialogTemp = null;
+		private static DialogManager mCurDialog = null;
+		private static DialogManager mCurDialogTemp = null;
 
 		private static final float ANIMATION_SCALE_LARGE = 1.05f;
 		// Animation will keep a mListener ref to outside so it can not be
@@ -941,8 +942,8 @@ public class IPhoneDialog extends Dialog {
 			// System.gc();
 		}
 
-		public IPhoneDialog create() {
-			mAlertDialogEx = new IPhoneDialog(mContext, mTheme, mType);
+		public DialogManager create() {
+			mAlertDialogEx = new DialogManager(mContext, mTheme, mType);
 			if (mCurDialogTemp == null) {
 				mCurDialogTemp = mAlertDialogEx;
 			}
@@ -960,7 +961,7 @@ public class IPhoneDialog extends Dialog {
 			return null;
 		}
 
-		public IPhoneDialog show() {
+		public DialogManager show() {
 			// if (mAlertDialogEx == null)
 			create();
 			mAlertDialogEx.show();
@@ -1163,7 +1164,7 @@ public class IPhoneDialog extends Dialog {
 
 	public static void showConfirmDialog(Context context, int titleRes,
 			int msgRes, int btnRes, View.OnClickListener listener) {
-		new IPhoneDialog.BuilderEx(context).setTitle(titleRes)
+		new DialogManager.BuilderEx(context).setTitle(titleRes)
 				.setMessage(msgRes).setMessageGravity(Gravity.CENTER)
 				.setShowIcon(false).setPositiveButton(btnRes, listener).show();
 	}
@@ -1171,9 +1172,34 @@ public class IPhoneDialog extends Dialog {
 	public static void showDialog(Context context, int titleRes, int msgRes,
 			int btnRes1, View.OnClickListener listener1, int btnRes2,
 			View.OnClickListener listener2) {
-		new IPhoneDialog.BuilderEx(context).setTitle(titleRes)
+		new DialogManager.BuilderEx(context).setTitle(titleRes)
 				.setMessage(msgRes).setMessageGravity(Gravity.CENTER)
 				.setShowIcon(false).setPositiveButton(btnRes1, listener1)
 				.setNegativeButton(btnRes2, listener2);
+	}
+
+	/**
+	 * Toast manager
+	 */
+	private static Toast toast;
+
+	public static void showToast(Context context, int res, int dur) {
+		showToast(context, context.getString(res), dur);
+	}
+
+	public static void showToast(Context context, String str, int dur) {
+		if (toast == null) {
+			toast = new Toast(context);
+		}
+		toast.cancel();
+		toast.setText(str);
+		toast.setDuration(dur);
+		toast.show();
+	}
+
+	public static void cancelToast() {
+		if (toast != null) {
+			toast.cancel();
+		}
 	}
 }

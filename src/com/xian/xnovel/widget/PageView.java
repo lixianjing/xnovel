@@ -31,7 +31,6 @@ public class PageView extends View {
 
 	private static int SNAP_VELOCITY = 600;
 	private static final int SNAP_DISTANCE = 50;
-	private int mTouchSlop = 20;
 
 	private final static int TOUCH_STATE_REST = 0;
 	private final static int TOUCH_STATE_SCROLLING = 1;
@@ -50,9 +49,6 @@ public class PageView extends View {
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		pagefactory = BookPageFactory.getInstance(context);
-		final ViewConfiguration configuration = ViewConfiguration
-				.get(getContext());
-		mTouchSlop = configuration.getScaledTouchSlop();
 
 		mHandler = new Handler() {
 
@@ -78,13 +74,16 @@ public class PageView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "PageView>>>>>>onDraw>>>>");
+		long begin=System.currentTimeMillis();
 		pagefactory.drawContent(canvas);
 		super.onDraw(canvas);
+		long end=System.currentTimeMillis();
+		LogUtils.log("PageView","onDraw",end-begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
+		Log.e("lmf","PageView>>>>>onTouchEvent>>>>"+event.getAction()+":"+mTouchState);
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
@@ -98,7 +97,6 @@ public class PageView extends View {
 		case MotionEvent.ACTION_DOWN:
 			mDownX = x;
 			mDownY = y;
-			mLastMotionY = y;
 			mTouchX = x;
 			mTouchY = y;
 			LogUtils.log("PageView", "ACTION_DOWN", mLastMotionY);
@@ -108,35 +106,48 @@ public class PageView extends View {
 			mTouchX = x;
 			mTouchY = y;
 			Log.e("lmf", "PageView>>>ACTION_MOVE>>>" + y + ":" + mLastMotionY);
-			float offy = y - mLastMotionY;
+			if (mTouchState == TOUCH_STATE_SCROLLING) {
+				float offy = y - mLastMotionY;
+				Message msg = Message.obtain();
+				msg.what = MSG_GESTURE_MOVE;
+				msg.arg1 = (int) offy;
+				mHandler.sendMessage(msg);
+				LogUtils.log("OnTouchEvent","ACTION_MOVE",mTouchState);
+			} else {
+				int offx = (int) (mTouchX - mDownX);
+				int offy = (int) (mTouchY - mDownY);
+				if (Math.abs(offx) < Math.abs(offy)) {
+					mTouchState = TOUCH_STATE_SCROLLING;
+				}
+				LogUtils.log("OnTouchEvent","ACTION_MOVE",mTouchState,offx,offy);
+			}
 			mLastMotionY = y;
-
-			Message msg = Message.obtain();
-			msg.what = MSG_GESTURE_MOVE;
-			msg.arg1 = (int) offy;
-			mHandler.sendMessage(msg);
-
 			break;
 		case MotionEvent.ACTION_UP:
 
-			final VelocityTracker velocityTracker = mVelocityTracker;
-			velocityTracker.computeCurrentVelocity(1000);
-
-			int velocityX = (int) velocityTracker.getXVelocity();
-
-			if (velocityX > SNAP_VELOCITY) {
-				updatePageInfo(DIR_PRE_PAGE);
-			} else if (velocityX < -SNAP_VELOCITY) {
-				updatePageInfo(DIR_NEXT_PAGE);
+			if (mTouchState == TOUCH_STATE_SCROLLING) {
 			} else {
-				snapToDestination();
-			}
 
-			if (mVelocityTracker != null) {
-				mVelocityTracker.recycle();
-				mVelocityTracker = null;
-			}
+				final VelocityTracker velocityTracker = mVelocityTracker;
+				velocityTracker.computeCurrentVelocity(1000);
 
+				int velocityX = (int) velocityTracker.getXVelocity();
+
+				if (velocityX > SNAP_VELOCITY) {
+					updatePageInfo(DIR_PRE_PAGE);
+				} else if (velocityX < -SNAP_VELOCITY) {
+					updatePageInfo(DIR_NEXT_PAGE);
+				} else {
+					snapToDestination();
+				}
+
+				if (mVelocityTracker != null) {
+					mVelocityTracker.recycle();
+					mVelocityTracker = null;
+				}
+
+			}
+			mTouchState = TOUCH_STATE_REST;
 			break;
 
 		case MotionEvent.ACTION_CANCEL:
@@ -144,6 +155,7 @@ public class PageView extends View {
 				mVelocityTracker.recycle();
 				mVelocityTracker = null;
 			}
+			mTouchState = TOUCH_STATE_REST;
 			break;
 		}
 
