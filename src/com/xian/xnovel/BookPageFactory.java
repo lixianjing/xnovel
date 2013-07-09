@@ -12,24 +12,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-import com.xian.xnovel.utils.AppSettings;
-import com.xian.xnovel.widget.PageView;
+import com.xian.xnovel.utils.LogUtils;
+import com.xian.xnovel.widget.DialogManager;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.graphics.Paint.Style;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Region.Op;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 public class BookPageFactory {
 
@@ -51,8 +42,9 @@ public class BookPageFactory {
 	private int contentFontSize = 40;
 	private int contentTextColor = Color.BLACK;
 	private int marginWidth = 20; // 左右与边缘的距离
-	private int marginTop = 20; // 上下与边缘的距离
+	private int marginHeight = 20; // 上下与边缘的距离
 	private int adHeight = 0;// 广告条的狂度
+	private int topHeight;// 上部总大小
 
 	private int mLineCount; // 每页可以显示的行数
 	private float mVisibleHeight; // 绘制内容的宽
@@ -74,7 +66,6 @@ public class BookPageFactory {
 
 	private float offsetY;
 	private float scrollY = 0f;
-	
 
 	private static BookPageFactory factory;
 
@@ -82,7 +73,7 @@ public class BookPageFactory {
 		if (factory != null) {
 			return factory;
 		} else {
-			factory = new BookPageFactory( context);
+			factory = new BookPageFactory(context);
 			return factory;
 		}
 
@@ -90,7 +81,7 @@ public class BookPageFactory {
 
 	private BookPageFactory(Context context) {
 
-		mContext=context;
+		mContext = context;
 		mWidth = MainApplication.sWidth;
 		mHeight = MainApplication.sHeight;
 
@@ -127,8 +118,9 @@ public class BookPageFactory {
 	}
 
 	private void updateComposition() {
+		topHeight = marginHeight + adHeight;
 		mVisibleWidth = mWidth - marginWidth * 2;
-		mVisibleHeight = mHeight - marginTop - adHeight - bottomHeight;
+		mVisibleHeight = mHeight - topHeight - bottomHeight;
 		int totalSize = contentFontSize + spaceLineSize;
 		mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
 	}
@@ -141,16 +133,13 @@ public class BookPageFactory {
 		factory = null;
 	}
 
-	public void openbook(String filePath, String file,String fileName) {
-		Log.e("lmf", "BookPageFactory>>>>>>>>>openbook");
+	public void openbook(String filePath, String file, String fileName) {
 		initFileDate();
-		this.fileName=fileName;
+		this.fileName = fileName;
 		try {
 			File book_file = new File(filePath, file);
 			long lLen = book_file.length();
-			Log.e("lmf", ">>>>>>lLen>>>>" + lLen);
 			mBufLen = (int) lLen;
-			Log.e("lmf", ">>>>>>m_mbBufLen>>>>" + mBufLen);
 			mFileBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
 
@@ -313,7 +302,7 @@ public class BookPageFactory {
 		if (mBufBegin <= 0) {
 			mBufBegin = 0;
 			isFirstPage = true;
-			Toast.makeText(mContext, "已经是第一页了", 2).show();
+			DialogManager.showToast(mContext, "已经是第一页了", 2);
 			return;
 		} else
 			isFirstPage = false;
@@ -326,7 +315,7 @@ public class BookPageFactory {
 		scrollY = 0;
 		if (mBufEnd >= mBufLen) {
 			isLastPage = true;
-			Toast.makeText(mContext, "已经是最后一页了", 2).show();
+			DialogManager.showToast(mContext, "已经是最后一页了", 2);
 			return;
 		} else
 			isLastPage = false;
@@ -337,14 +326,20 @@ public class BookPageFactory {
 
 	public void drawContent(Canvas canvas) {
 		Log.e(TAG, "drawPageBitmap>>>");
+		float y = topHeight + scrollY;
+		if(y>topHeight&&mBufBegin==0){
+			LogUtils.log("BookPageFactory","drawContent","it is first page");
+			return;
+		}
+		
+		
 		if (mContentVector.size() == 0)
 			mContentVector = loadContent();
 		if (mContentVector.size() > 0) {
 			canvas.save();
-			canvas.clipRect(marginWidth, marginTop + adHeight, mWidth
-					- marginWidth, marginTop + adHeight + mVisibleHeight);
-			float y = marginTop + adHeight + scrollY;
-			Log.e("lmf", "drawContent>>>>>>" + y);
+			canvas.clipRect(marginWidth, topHeight, mWidth - marginWidth,
+					topHeight + mVisibleHeight);
+		
 			for (String strLine : mContentVector) {
 				y += contentFontSize;
 				canvas.drawText(strLine, marginWidth, y, mPaint);
@@ -353,6 +348,10 @@ public class BookPageFactory {
 			canvas.restore();
 		}
 
+		drawBottom(canvas);
+	}
+
+	private void drawBottom(Canvas canvas) {
 		canvas.drawText(getCurrentProcessStr(), mWidth - marginWidth
 				- getProcessWidth(), getBottomDrawHeight(), bottomPaint);
 
@@ -430,7 +429,6 @@ public class BookPageFactory {
 	}
 
 	public void setOffsetY(float offsetY) {
-		Log.e("lmf", "setOffsetY>>>>>>>>>>" + offsetY);
 		this.offsetY = offsetY;
 		scrollY += offsetY;
 

@@ -83,7 +83,6 @@ public class PageView extends View {
 
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
-		Log.e("lmf","PageView>>>>>onTouchEvent>>>>"+event.getAction()+":"+mTouchState);
 		if (mVelocityTracker == null) {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
@@ -99,13 +98,11 @@ public class PageView extends View {
 			mDownY = y;
 			mTouchX = x;
 			mTouchY = y;
-			LogUtils.log("PageView", "ACTION_DOWN", mLastMotionY);
 
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mTouchX = x;
 			mTouchY = y;
-			Log.e("lmf", "PageView>>>ACTION_MOVE>>>" + y + ":" + mLastMotionY);
 			if (mTouchState == TOUCH_STATE_SCROLLING) {
 				float offy = y - mLastMotionY;
 				Message msg = Message.obtain();
