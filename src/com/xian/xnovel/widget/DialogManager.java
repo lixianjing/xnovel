@@ -1189,11 +1189,10 @@ public class DialogManager extends Dialog {
 
 	public static void showToast(Context context, String str, int dur) {
 		if (toast == null) {
-			toast = new Toast(context);
-		}
+			toast = Toast.makeText(context, str, dur);
+		} 
 		toast.cancel();
-		toast.setText(str);
-		toast.setDuration(dur);
+		toast=Toast.makeText(context, str, dur);
 		toast.show();
 	}
 

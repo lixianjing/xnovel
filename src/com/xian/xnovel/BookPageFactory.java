@@ -23,7 +23,6 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 public class BookPageFactory {
-
 	private static final String TAG = "BookPageFactory";
 
 	private String mCharsetName = "UTF-8";
@@ -327,9 +326,15 @@ public class BookPageFactory {
 	public void drawContent(Canvas canvas) {
 		Log.e(TAG, "drawPageBitmap>>>");
 		float y = topHeight + scrollY;
-		if(y>topHeight&&mBufBegin==0){
-			LogUtils.log("BookPageFactory","drawContent","it is first page");
-			return;
+		if(y>topHeight){
+			
+			if(mBufBegin==0){
+				LogUtils.log("BookPageFactory","drawContent","it is first page");
+				y=topHeight;
+			}else{
+				LogUtils.log("BookPageFactory","drawContent","load");
+				y=topHeight;
+			}
 		}
 		
 		
