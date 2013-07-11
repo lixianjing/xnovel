@@ -78,7 +78,7 @@ public class PageView extends View {
 		pagefactory.drawContent(canvas);
 		super.onDraw(canvas);
 		long end=System.currentTimeMillis();
-		LogUtils.log("PageView","onDraw",end-begin);
+		LogUtils.log("PageView","onDraw","TIME",end-begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
