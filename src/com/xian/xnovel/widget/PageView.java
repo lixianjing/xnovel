@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.xian.xnovel.BookPageFactory;
+import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.LogUtils;
 
 import android.content.Context;
@@ -74,11 +74,11 @@ public class PageView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
-		long begin=System.currentTimeMillis();
-		pagefactory.drawContent(canvas);
+		long begin = System.currentTimeMillis();
+		pagefactory.draw(canvas);
 		super.onDraw(canvas);
-		long end=System.currentTimeMillis();
-		LogUtils.log("PageView","onDraw","TIME",end-begin);
+		long end = System.currentTimeMillis();
+		LogUtils.log("PageView", "onDraw", "TIME", end - begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -109,14 +109,12 @@ public class PageView extends View {
 				msg.what = MSG_GESTURE_MOVE;
 				msg.arg1 = (int) offy;
 				mHandler.sendMessage(msg);
-				LogUtils.log("OnTouchEvent","ACTION_MOVE",mTouchState);
 			} else {
 				int offx = (int) (mTouchX - mDownX);
 				int offy = (int) (mTouchY - mDownY);
 				if (Math.abs(offx) < Math.abs(offy)) {
 					mTouchState = TOUCH_STATE_SCROLLING;
 				}
-				LogUtils.log("OnTouchEvent","ACTION_MOVE",mTouchState,offx,offy);
 			}
 			mLastMotionY = y;
 			break;
@@ -178,21 +176,10 @@ public class PageView extends View {
 		Log.e("lmf", "updatePageInfo>>>" + dir);
 		switch (dir) {
 		case DIR_PRE_PAGE:
-			try {
-				pagefactory.updatePrePage();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			pagefactory.updatePageModePrePage();
 			break;
 		case DIR_NEXT_PAGE:
-			try {
-				pagefactory.updateNextPage();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			pagefactory.updatePageModeNextPage();
 			break;
 		case DIR_UP_SCROLL:
 			break;

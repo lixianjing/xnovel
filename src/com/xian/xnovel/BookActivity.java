@@ -1,6 +1,7 @@
 package com.xian.xnovel;
 
 import com.xian.xnovel.domain.CatalogInfo;
+import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.PageView;
 
