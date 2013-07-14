@@ -259,7 +259,7 @@ public class BookPageFactory {
 				LogUtils.log("BookPageFactory", "drawContent", "previous",
 						"load");
 				mContentVector.clear();
-				mContentVector = scrollLoadContentNext();
+				mContentVector = scrollLoadContentPrevious();
 				y = topHeight+scrollY;
 			}
 		} else if (y + curContentHeight < mVisibleHeight) {
@@ -768,7 +768,7 @@ public class BookPageFactory {
 
 	public Vector<String> scrollLoadContentPrevious() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "loadContentNext");
+		LogUtils.log(TAG, "=========begin=========","scrollLoadContentPrevious",mBufBegin,mBufEnd);
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufEnd=mBufBegin;
@@ -844,6 +844,7 @@ public class BookPageFactory {
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
 		scrollY=mVisibleHeight-curContentHeight;
+		LogUtils.log(TAG, "=========begin=========","scrollLoadContentPrevious",mBufBegin,mBufEnd,scrollY);
 		return lines;
 	}
 	
