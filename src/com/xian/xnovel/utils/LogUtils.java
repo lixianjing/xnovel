@@ -5,7 +5,7 @@ import android.util.Log;
 public class LogUtils {
 
 	private static final String TAG = "lmf";
-	private static final String SLIP = ">>>";
+	private static final String SLIP = ">>>>>>";
 
 	public static final int DEBUG = 1;
 	public static final int INFO = 2;

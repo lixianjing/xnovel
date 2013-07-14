@@ -26,8 +26,13 @@ import android.graphics.Paint.Align;
 import android.util.Log;
 
 public class BookPageFactory {
+
 	private static final String TAG = "BookPageFactory";
 	private static final int ASC_NEWLINE = 0x0A;// new line
+
+	private final static int LOAD_MODE_SCROLL = 0;
+	private final static int LOAD_MODE_PAGE = 1;
+	private int loadMode = LOAD_MODE_SCROLL;
 
 	private String mCharsetName = "UTF-8";
 	private Context mContext;
@@ -44,9 +49,9 @@ public class BookPageFactory {
 	private int lineCountPerPage; // 每页可以显示的行数
 	private int preLoadPage = 2; // 预加载页数
 	private int preLoadLineCount;
-	private int curContentHeight = mHeight;// 当前加载内容的长度;
+	private int curContentHeight;// 当前加载内容的长度;
 	private float curProgress = 0;// 当前的进度
-	private float mVisibleHeight; // 绘制内容的宽
+	private float mVisibleHeight; // 绘制内容的高
 	private float mVisibleWidth; // 绘制内容的宽
 
 	// 布局设置
@@ -234,29 +239,41 @@ public class BookPageFactory {
 	}
 
 	private void drawContent(Canvas canvas) {
-		LogUtils.log(TAG, "drawContent");
-		if (mContentVector.size() == 0)
-			mContentVector = pageMode.loadContentNext();
+		if (mContentVector.size() == 0) {
+			if (loadMode == LOAD_MODE_SCROLL) {
+				mContentVector = scrollInitLoadContent();
+			} else {
+				mContentVector = pageMode.loadContentNext();
+			}
+
+		}
 		float y = topHeight + scrollY;
+		LogUtils.log(TAG, "drawContent", "=============",y,topHeight,scrollY);
 		if (y > topHeight) {
 
-			if (mBufEnd == mBufLen) {
+			if (mBufBegin == 0) {
+				scrollY=0;
 				LogUtils.log(TAG, "drawContent", "it is first page");
 				y = topHeight;
 			} else {
 				LogUtils.log("BookPageFactory", "drawContent", "previous",
 						"load");
-				y = topHeight;
-//				scrollMode.updatePrePage();
+				mContentVector.clear();
+				mContentVector = scrollLoadContentNext();
+				y = topHeight+scrollY;
 			}
 		} else if (y + curContentHeight < mVisibleHeight) {
+			
 			if (mBufEnd == mBufLen) {
 				LogUtils.log(TAG, "drawContent", "it is last page");
 				y = topHeight;
 			} else {
 				LogUtils.log("BookPageFactory", "drawContent", "next", "load");
 				y = topHeight;
-//				scrollMode.updateNextPage();
+				scrollY = 0;
+				mContentVector.clear();
+				mContentVector = scrollLoadContentNext();
+				
 			}
 		}
 		LogUtils.log(TAG, "drawContent", y);
@@ -504,8 +521,8 @@ public class BookPageFactory {
 			LogUtils.log(TAG, "loadContentPrevious");
 			if (mBufBegin < 0)
 				mBufBegin = 0;
-			Vector<String> lines = new Vector<String>();
 			String strParagraph = "";
+			Vector<String> lines = new Vector<String>();
 			while (lines.size() < lineCountPerPage && mBufBegin > 0) {
 				Vector<String> paraLines = new Vector<String>();
 				byte[] paraBuf = readParagraphBack(mBufBegin);
@@ -627,4 +644,207 @@ public class BookPageFactory {
 
 	}
 
+	public Vector<String> scrollInitLoadContent() {
+		// TODO Auto-generated method stub
+		LogUtils.log(TAG, "loadContentNext");
+		String strParagraph = "";
+		Vector<String> lines = new Vector<String>();
+		mBufBegin = mBufEnd;
+		while (lines.size() < preLoadLineCount && mBufEnd < mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufEnd += paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= preLoadLineCount) {
+					break;
+				}
+			}
+			if (strParagraph.length() != 0) {
+				try {
+					mBufEnd -= strParagraph.getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
+		return lines;
+	}
+
+	public Vector<String> scrollLoadContentNext() {
+		// TODO Auto-generated method stub
+		LogUtils.log(TAG, "========begin==========","scrollLoadContentNext",mBufBegin,mBufEnd);
+		Vector<String> lines = new Vector<String>();
+		String strParagraph = "";
+		mBufBegin = mBufEnd;
+		while (lines.size() < lineCountPerPage && mBufBegin > 0) {
+			Vector<String> paraLines = new Vector<String>();
+			byte[] paraBuf = readParagraphBack(mBufBegin);
+			mBufBegin -= paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				paraLines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+			}
+			lines.addAll(0, paraLines);
+		}
+		while (lines.size() > lineCountPerPage) {
+			try {
+				mBufBegin += lines.get(0).getBytes(mCharsetName).length;
+				lines.remove(0);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+//		mBufEnd = mBufBegin;
+//		for (String str : lines) {
+//			try {
+//				mBufEnd += str.getBytes(mCharsetName).length;
+//			} catch (UnsupportedEncodingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+
+		while (lines.size() < preLoadLineCount 
+				&& mBufEnd < mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufEnd += paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= preLoadLineCount) {
+					break;
+				}
+			}
+			if (strParagraph.length() != 0) {
+				try {
+					mBufEnd -= strParagraph.getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
+		LogUtils.log(TAG, "=========end=========","scrollLoadContentNext",mBufBegin,mBufEnd);
+		return lines;
+	}
+
+	public Vector<String> scrollLoadContentPrevious() {
+		// TODO Auto-generated method stub
+		LogUtils.log(TAG, "loadContentNext");
+		String strParagraph = "";
+		Vector<String> lines = new Vector<String>();
+		mBufEnd=mBufBegin;
+		int loadCount=preLoadLineCount+1; //多加载一行
+		while (lines.size() < loadCount && mBufEnd < mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufEnd += paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true,
+						mVisibleWidth, null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= loadCount) {
+					break;
+				}
+			}
+			if (strParagraph.length() != 0) {
+				try {
+					mBufEnd -= strParagraph.getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		while (lines.size() < lineCountPerPage && mBufBegin > 0) {
+			Vector<String> paraLines = new Vector<String>();
+			byte[] paraBuf = readParagraphBack(mBufBegin);
+			mBufBegin -= paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true,
+						mVisibleWidth, null);
+				paraLines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+			}
+			lines.addAll(0, paraLines);
+		}
+		while (lines.size() > preLoadLineCount) {
+			try {
+				mBufBegin += lines.get(0).getBytes(mCharsetName).length;
+				lines.remove(0);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		mBufEnd = mBufBegin;
+		for (String str : lines) {
+			try {
+				mBufEnd += str.getBytes(mCharsetName).length;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
+		scrollY=mVisibleHeight-curContentHeight;
+		return lines;
+	}
+	
 }

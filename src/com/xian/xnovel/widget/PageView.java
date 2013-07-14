@@ -1,23 +1,16 @@
 package com.xian.xnovel.widget;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.LogUtils;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 public class PageView extends View {
 
@@ -78,7 +71,7 @@ public class PageView extends View {
 		pagefactory.draw(canvas);
 		super.onDraw(canvas);
 		long end = System.currentTimeMillis();
-		LogUtils.log("PageView", "onDraw", "TIME", end - begin);
+//		LogUtils.log("PageView", "onDraw", "TIME", end - begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -173,7 +166,6 @@ public class PageView extends View {
 	}
 
 	private void updatePageInfo(int dir) {
-		Log.e("lmf", "updatePageInfo>>>" + dir);
 		switch (dir) {
 		case DIR_PRE_PAGE:
 			pagefactory.updatePageModePrePage();
