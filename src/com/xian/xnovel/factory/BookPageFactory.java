@@ -247,27 +247,24 @@ public class BookPageFactory {
 			}
 
 		}
-		float y = topHeight + scrollY;
-		LogUtils.log(TAG, "drawContent", "=============",y,topHeight,scrollY);
-		if (scrollY>0) {
+		float y = 0;
+		LogUtils.log(TAG, "drawContent", "=============", mVisibleHeight,
+				curContentHeight, scrollY);
+		if (scrollY > 0) {
 
 			if (mBufBegin == 0) {
-				scrollY=0;
+				scrollY = 0;
 				LogUtils.log(TAG, "drawContent", "it is first page");
 				y = topHeight;
-			} else if(scrollY==0){
+			} else {
 				LogUtils.log("BookPageFactory", "drawContent", "previous",
 						"load");
 				mContentVector.clear();
 				mContentVector = scrollLoadContentPrevious();
-				y = topHeight+scrollY;
-			}else{
-				y = topHeight;
-				LogUtils.log("BookPageFactory", "drawContent", "previous",
-						"else");
+				y = topHeight + scrollY;
 			}
 		} else if (scrollY + curContentHeight < mVisibleHeight) {
-			
+
 			if (mBufEnd == mBufLen) {
 				LogUtils.log(TAG, "drawContent", "it is last page");
 				y = topHeight;
@@ -276,13 +273,13 @@ public class BookPageFactory {
 				y = topHeight;
 				mContentVector.clear();
 				mContentVector = scrollLoadContentNext();
-				
+
 			}
-		}else{
+		} else {
 			y = topHeight;
 		}
-		LogUtils.log(TAG, "drawContent", "y=",y);
-
+		LogUtils.log(TAG, "drawContent", "y=", y);
+		y += scrollY;
 		if (mContentVector.size() > 0) {
 			canvas.save();
 			canvas.clipRect(marginWidth, topHeight, mWidth - marginWidth,
@@ -652,6 +649,7 @@ public class BookPageFactory {
 	public Vector<String> scrollInitLoadContent() {
 		// TODO Auto-generated method stub
 		LogUtils.log(TAG, "loadContentNext");
+		scrollY = 0;
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufBegin = mBufEnd;
@@ -688,18 +686,19 @@ public class BookPageFactory {
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
 		for (String strLine : lines) {
-			LogUtils.log(TAG, "==================","init",strLine);
+			LogUtils.log(TAG, "==================", "init", strLine);
 		}
 		return lines;
 	}
 
 	public Vector<String> scrollLoadContentNext() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "========begin==========","scrollLoadContentNext",mBufBegin,mBufEnd);
+		LogUtils.log(TAG, "========begin==========", "scrollLoadContentNext",
+				mBufBegin, mBufEnd);
 		Vector<String> lines = new Vector<String>();
 		String strParagraph = "";
 		mBufBegin = mBufEnd;
-		int loadCount=preLoadLineCount+1; //多加载一行
+		int loadCount = lineCountPerPage + 1; // 多加载一行
 		while (lines.size() < loadCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
 			byte[] paraBuf = readParagraphBack(mBufBegin);
@@ -728,21 +727,21 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
-		
-		scrollY = loadCount* (spaceLineSize + contentFontSize)-mVisibleHeight;
-		
-//		mBufEnd = mBufBegin;
-//		for (String str : lines) {
-//			try {
-//				mBufEnd += str.getBytes(mCharsetName).length;
-//			} catch (UnsupportedEncodingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
 
-		while (lines.size() < preLoadLineCount 
-				&& mBufEnd < mBufLen) {
+		scrollY = mVisibleHeight - loadCount
+				* (spaceLineSize + contentFontSize);
+
+		// mBufEnd = mBufBegin;
+		// for (String str : lines) {
+		// try {
+		// mBufEnd += str.getBytes(mCharsetName).length;
+		// } catch (UnsupportedEncodingException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+
+		while (lines.size() < preLoadLineCount && mBufEnd < mBufLen) {
 			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
 			mBufEnd += paraBuf.length;
 			try {
@@ -774,20 +773,23 @@ public class BookPageFactory {
 			}
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
-		LogUtils.log(TAG, "=========end=========","scrollLoadContentNext",mBufBegin,mBufEnd);
+		LogUtils.log(TAG, "=========end=========", "scrollLoadContentNext",
+				mBufBegin, mBufEnd);
 		for (String strLine : lines) {
-			LogUtils.log(TAG, "==================","scrollLoadContentNext",strLine);
+			LogUtils.log(TAG, "==================", "scrollLoadContentNext",
+					strLine);
 		}
 		return lines;
 	}
 
 	public Vector<String> scrollLoadContentPrevious() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "=========begin=========","scrollLoadContentPrevious",mBufBegin,mBufEnd);
+		LogUtils.log(TAG, "=========begin=========",
+				"scrollLoadContentPrevious", mBufBegin, mBufEnd);
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
-		mBufEnd=mBufBegin;
-		int loadCount=preLoadLineCount+1; //多加载一行
+		mBufEnd = mBufBegin;
+		int loadCount = preLoadLineCount + 1; // 多加载一行
 		while (lines.size() < loadCount && mBufEnd < mBufLen) {
 			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
 			mBufEnd += paraBuf.length;
@@ -802,8 +804,8 @@ public class BookPageFactory {
 				lines.add(strParagraph);
 			}
 			while (strParagraph.length() > 0) {
-				int nSize = mPaint.breakText(strParagraph, true,
-						mVisibleWidth, null);
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
 				lines.add(strParagraph.substring(0, nSize));
 				strParagraph = strParagraph.substring(nSize);
 				if (lines.size() >= loadCount) {
@@ -819,7 +821,7 @@ public class BookPageFactory {
 				}
 			}
 		}
-		
+
 		while (lines.size() < lineCountPerPage && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
 			byte[] paraBuf = readParagraphBack(mBufBegin);
@@ -832,8 +834,8 @@ public class BookPageFactory {
 			}
 
 			while (strParagraph.length() > 0) {
-				int nSize = mPaint.breakText(strParagraph, true,
-						mVisibleWidth, null);
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
 				paraLines.add(strParagraph.substring(0, nSize));
 				strParagraph = strParagraph.substring(nSize);
 			}
@@ -858,12 +860,14 @@ public class BookPageFactory {
 			}
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
-		scrollY=mVisibleHeight-curContentHeight;
-		LogUtils.log(TAG, "=========begin=========","scrollLoadContentPrevious",mBufBegin,mBufEnd,scrollY);
+		scrollY = mVisibleHeight - curContentHeight;
+		LogUtils.log(TAG, "=========end=========", "scrollLoadContentPrevious",
+				mBufBegin, mBufEnd, scrollY);
 		for (String strLine : lines) {
-			LogUtils.log(TAG, "==================","scrollLoadContentPrevious",strLine);
+			LogUtils.log(TAG, "==================",
+					"scrollLoadContentPrevious", strLine);
 		}
 		return lines;
 	}
-	
+
 }
