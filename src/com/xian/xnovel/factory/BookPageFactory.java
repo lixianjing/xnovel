@@ -9,6 +9,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.Date;
 import java.util.Vector;
 
@@ -21,6 +22,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.FloatMath;
+import android.util.Log;
 
 public class BookPageFactory {
 
@@ -48,8 +51,8 @@ public class BookPageFactory {
 	private int preLoadLineCount;
 	private int curContentHeight;// 当前加载内容的长度;
 	private float curProgress = 0;// 当前的进度
-	private float mVisibleHeight; // 绘制内容的高
-	private float mVisibleWidth; // 绘制内容的宽
+	private int mVisibleHeight; // 绘制内容的高
+	private int mVisibleWidth; // 绘制内容的宽
 
 	// 布局设置
 	private int marginWidth = 20; // 左右与边缘的距离
@@ -133,6 +136,9 @@ public class BookPageFactory {
 		mVisibleHeight = mHeight - topHeight - bottomHeight;
 		int totalSize = contentFontSize + spaceLineSize;
 		lineCountPerPage = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
+		if (mVisibleHeight - lineCountPerPage * totalSize > contentFontSize) {
+			lineCountPerPage++;
+		}
 		preLoadLineCount = preLoadPage * lineCountPerPage;
 	}
 
@@ -221,6 +227,16 @@ public class BookPageFactory {
 	public void updatePageModePrePage() {
 		if (loadMode == LOAD_MODE_SCROLL) {
 			loadMode = LOAD_MODE_PAGE;
+			int scollLine = (int) FloatMath
+					.ceil((-scrollY / (spaceLineSize + contentFontSize)));
+			for (int i = 0; i < scollLine; i++) {
+				try {
+					mBufBegin += mContentVector.get(i).getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			scrollY = 0;
 		}
 		updatePrePage();
@@ -230,6 +246,17 @@ public class BookPageFactory {
 	public void updatePageModeNextPage() {
 		if (loadMode == LOAD_MODE_SCROLL) {
 			loadMode = LOAD_MODE_PAGE;
+			int scollLine = (int) ((scrollY + curContentHeight - mVisibleHeight) / (spaceLineSize + contentFontSize)) + 1;
+			int lastIndex = mContentVector.size() - 1;
+			for (int i = lastIndex; i > lastIndex - scollLine; i--) {
+				try {
+					mBufEnd -= mContentVector.get(i).getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			scrollY = 0;
 		}
 		updateNextPage();
@@ -363,7 +390,11 @@ public class BookPageFactory {
 		contentFontSize = size;
 		mPaint.setTextSize(size);
 		int totalSize = contentFontSize + spaceLineSize;
-		lineCountPerPage = (int) (mVisibleHeight / totalSize); // 可显示的行数
+		lineCountPerPage = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
+		if (mVisibleHeight - lineCountPerPage * totalSize > contentFontSize) {
+			lineCountPerPage++;
+		}
+		preLoadLineCount = preLoadPage * lineCountPerPage;
 	}
 
 	public void setFileName(String fileName) {
@@ -425,7 +456,6 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
-		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
 		return lines;
 	}
 
@@ -466,11 +496,10 @@ public class BookPageFactory {
 				}
 			}
 		}
-		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
 		return lines;
 	}
 
-	public void updatePrePage() {
+	private void updatePrePage() {
 		// TODO Auto-generated method stub
 		LogUtils.log(TAG, "updatePrePage");
 
@@ -487,7 +516,7 @@ public class BookPageFactory {
 		LogUtils.log(TAG, "updatePrePage", mBufBegin, mBufEnd);
 	}
 
-	public void updateNextPage() {
+	private void updateNextPage() {
 		// TODO Auto-generated method stub
 		LogUtils.log(TAG, "updateNextPage");
 		if (mBufEnd >= mBufLen) {
@@ -544,7 +573,7 @@ public class BookPageFactory {
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
 		for (String strLine : lines) {
-			LogUtils.log(TAG, "==================", "init", strLine);
+			LogUtils.log(TAG, "init", strLine);
 		}
 		return lines;
 	}
@@ -634,7 +663,7 @@ public class BookPageFactory {
 		LogUtils.log(TAG, "=========end=========", "scrollLoadContentNext",
 				mBufBegin, mBufEnd);
 		for (String strLine : lines) {
-			LogUtils.log(TAG, "==================", "scrollLoadContentNext",
+			LogUtils.log(TAG,  "scrollLoadContentNext",
 					strLine);
 		}
 		return lines;
@@ -647,7 +676,7 @@ public class BookPageFactory {
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufEnd = mBufBegin;
-		int loadCount = lineCountPerPage + 1; // 多加载一行
+		int loadCount = lineCountPerPage+1 ; // 多加载一行
 		while (lines.size() < loadCount && mBufEnd < mBufLen) {
 			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
 			mBufEnd += paraBuf.length;
@@ -718,10 +747,9 @@ public class BookPageFactory {
 			}
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
-		scrollY = mVisibleHeight
-				- curContentHeight
-				+ (mVisibleHeight - (spaceLineSize + contentFontSize)
-						* lineCountPerPage);
+		scrollY = -(preLoadLineCount - loadCount)
+				* (spaceLineSize + contentFontSize);
+		
 		if (scrollY > 0)
 			scrollY = 0;
 		LogUtils.log(TAG, "===end===", "scrollLoadContentPrevious", mBufBegin,
