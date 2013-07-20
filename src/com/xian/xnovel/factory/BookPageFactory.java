@@ -280,7 +280,10 @@ public class BookPageFactory {
 				if (mBufBegin == 0) {
 					scrollY = 0;
 					LogUtils.log(TAG, "drawContent", "it is first page");
+					isFirstPage=true;
 				} else {
+					isLastPage=false;
+					isFirstPage=false;
 					LogUtils.log("BookPageFactory", "drawContent", "previous",
 							"load");
 					mContentVector.clear();
@@ -290,7 +293,10 @@ public class BookPageFactory {
 
 				if (mBufEnd == mBufLen) {
 					LogUtils.log(TAG, "drawContent", "it is last page");
+					isLastPage=true;
 				} else {
+					isLastPage=false;
+					isFirstPage=false;
 					LogUtils.log("BookPageFactory", "drawContent", "next",
 							"load");
 					mContentVector.clear();
@@ -403,7 +409,12 @@ public class BookPageFactory {
 
 	public void setOffsetY(float offsetY) {
 		this.offsetY = offsetY;
-		scrollY += offsetY;
+		if (!isLastPage||scrollY + curContentHeight >mVisibleHeight||offsetY>0) {
+			scrollY += offsetY;
+		}else{
+			DialogManager.showToast(mContext, "已经是最后一页了", 2);
+		}
+		
 		if (loadMode == LOAD_MODE_PAGE) {
 			loadMode = LOAD_MODE_SCROLL;
 			mContentVector = scrollInitLoadContent(mBufBegin);
@@ -447,6 +458,7 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
+
 		mBufEnd = mBufBegin;
 		for (String str : lines) {
 			try {
@@ -456,6 +468,38 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
+		while (lines.size() < lineCountPerPage && mBufEnd < mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufEnd += paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= lineCountPerPage) {
+					break;
+				}
+			}
+			if (strParagraph.length() != 0) {
+				try {
+					mBufEnd -= strParagraph.getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
 		return lines;
 	}
 
@@ -663,8 +707,7 @@ public class BookPageFactory {
 		LogUtils.log(TAG, "=========end=========", "scrollLoadContentNext",
 				mBufBegin, mBufEnd);
 		for (String strLine : lines) {
-			LogUtils.log(TAG,  "scrollLoadContentNext",
-					strLine);
+			LogUtils.log(TAG, "scrollLoadContentNext", strLine);
 		}
 		return lines;
 	}
@@ -676,7 +719,7 @@ public class BookPageFactory {
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufEnd = mBufBegin;
-		int loadCount = lineCountPerPage+1 ; // 多加载一行
+		int loadCount = lineCountPerPage + 1; // 多加载一行
 		while (lines.size() < loadCount && mBufEnd < mBufLen) {
 			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
 			mBufEnd += paraBuf.length;
@@ -708,7 +751,7 @@ public class BookPageFactory {
 				}
 			}
 		}
-
+		loadCount=lines.size();
 		while (lines.size() < preLoadLineCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
 			byte[] paraBuf = readParagraphBack(mBufBegin);
@@ -746,10 +789,11 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
-		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
+		
+		curContentHeight = preLoadLineCount * (spaceLineSize + contentFontSize);
 		scrollY = -(preLoadLineCount - loadCount)
 				* (spaceLineSize + contentFontSize);
-		
+
 		if (scrollY > 0)
 			scrollY = 0;
 		LogUtils.log(TAG, "===end===", "scrollLoadContentPrevious", mBufBegin,
