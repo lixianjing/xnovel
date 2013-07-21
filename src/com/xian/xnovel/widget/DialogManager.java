@@ -1182,18 +1182,25 @@ public class DialogManager extends Dialog {
 	 * Toast manager
 	 */
 	private static Toast toast;
+	private static long toastTime;
+	private static int oldDur;
 
 	public static void showToast(Context context, int res, int dur) {
 		showToast(context, context.getString(res), dur);
 	}
 
 	public static void showToast(Context context, String str, int dur) {
+		if (System.currentTimeMillis() - toastTime < oldDur) {
+			return;
+		}
 		if (toast == null) {
 			toast = Toast.makeText(context, str, dur);
-		} 
+		}
 		toast.cancel();
-		toast=Toast.makeText(context, str, dur);
+		toast = Toast.makeText(context, str, dur);
 		toast.show();
+		toastTime = System.currentTimeMillis();
+		oldDur = dur;
 	}
 
 	public static void cancelToast() {

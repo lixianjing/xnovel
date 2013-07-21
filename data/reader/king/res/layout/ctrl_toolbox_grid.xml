@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.kingreader.framework.os.android.ui.uicontrols.ToolboxGrid android:layout_width="fill_parent" android:layout_height="fill_parent" style="@style/Widget.GridView.Toolbox"
-  xmlns:android="http://schemas.android.com/apk/res/android" />

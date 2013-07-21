@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merge android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView android:gravity="center" android:background="@drawable/bs_title_small_bkg" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/download_page" style="@style/Widget.TextView.Nav.Title" />
-    <com.kingreader.framework.os.android.ui.uicontrols.BookList android:id="@id/download_list" android:background="@color/book_list_bkc" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0" />
-</merge>

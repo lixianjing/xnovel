@@ -1,5 +1,6 @@
 package com.xian.xnovel;
 
+import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 
@@ -9,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 import android.util.Log;
-
 public class MainApplication extends Application {
 	public static int sWidth, sHeight;
 	private Context mContext;
@@ -27,6 +27,8 @@ public class MainApplication extends Application {
 		Long startTime=System.currentTimeMillis();
 		super.onCreate();
 		mContext=this;
+        AppDatabaseHelper mDbHelper = new AppDatabaseHelper(this);
+        mDbHelper.getWritableDatabase();
 		SharedPreferences pre = this.getSharedPreferences(
 				AppSettings.Settings, Context.MODE_PRIVATE);
 		sWidth = pre.getInt(AppSettings.settings_width, 0);

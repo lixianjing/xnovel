@@ -5,23 +5,25 @@ package com.xian.xnovel.domain;
  */
 public class CatalogInfo {
 
-	public static final String ID="id";
-	public static final String PID="pid";
-	public static final String TITLE="title";
-	
+	public static final String ID = "id";
+	public static final String TITLE = "title";
+	public static final String CONTENT = "content";
+
 	private int id;
 	private int pid;
 	private String title;
+	private String content;
 
 	public CatalogInfo() {
 		super();
 	}
 
-	public CatalogInfo(int id, int pid, String title) {
+	public CatalogInfo(int id, int pid, String title, String content) {
 		super();
 		this.id = id;
 		this.pid = pid;
 		this.title = title;
+		this.content = content;
 	}
 
 	public int getId() {
@@ -48,5 +50,18 @@ public class CatalogInfo {
 		this.title = title;
 	}
 
-	
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Override
+	public String toString() {
+		return "CatalogInfo [id=" + id + ", pid=" + pid + ", title=" + title
+				+ ", content=" + content + "]";
+	}
+
 }

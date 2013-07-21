@@ -1,13 +1,10 @@
 package com.xian.xnovel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.ViewGroup;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 	private List<Fragment> fragmentsList;

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_item_top_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_select" >
 
     <ImageView
         android:id="@+id/list_cata_icon1"
@@ -11,20 +12,46 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip" />
+        android:layout_marginRight="15dip"
+        android:src="@drawable/sub_cat_icon" />
 
-    <TextView
-        android:id="@+id/list_cata_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/list_cata_icon2"
         android:layout_toRightOf="@+id/list_cata_icon1"
-        android:textColor="@color/cata_text_se"
-        android:maxLines="2"
-        android:ellipsize="marquee"
-        android:textStyle="bold"
-        android:textSize="18.0sp" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/list_cata_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="@color/cata_text_se"
+            android:textSize="18.0sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/list_cata_content1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/cata_text_se"
+            android:textSize="18.0sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/list_cata_content2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:singleLine="true"
+            android:textColor="@color/cata_text_se"
+            android:textSize="18.0sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/list_cata_icon2"

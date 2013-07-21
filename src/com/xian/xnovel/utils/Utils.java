@@ -166,82 +166,8 @@ public class Utils {
 		return null;
 	}
 
-	public static List<CatalogInfo> getJsonListFromAssetsFile(Context context,
-			String fileName) {
-		AssetManager am = context.getResources().getAssets();
-		InputStream inputStream = null;
-		try {
-			inputStream = am.open(fileName);
-			return getJsonListFromStream(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
-	}
 
-	@SuppressLint("NewApi")
-	public static List<CatalogInfo> getJsonListFromStream(InputStream stream) {
-		JsonReader reader = null;
-		try {
-			reader = new JsonReader(new InputStreamReader(stream, "UTF-8"));
-			return readMessagesArray(reader);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return null;
 
-	}
-
-	public static List<CatalogInfo> readMessagesArray(JsonReader reader)
-			throws IOException {
-		List<CatalogInfo> infos = new ArrayList<CatalogInfo>();
-
-		reader.beginArray();
-		while (reader.hasNext()) {
-			infos.add(readMessage(reader));
-		}
-		reader.endArray();
-		return infos;
-	}
-
-	public static CatalogInfo readMessage(JsonReader reader) throws IOException {
-		int id = 0;
-		int pid = 0;
-		String title = null;
-		reader.beginObject();
-		while (reader.hasNext()) {
-			String name = reader.nextName();
-			if (CatalogInfo.ID.equals(name)) {
-				id = reader.nextInt();
-			} else if (CatalogInfo.PID.equals(name)) {
-				pid = reader.nextInt();
-			} else if (CatalogInfo.TITLE.equals(name)) {
-				title = reader.nextString();
-			} else {
-				reader.skipValue();
-			}
-		}
-		reader.endObject();
-		return new CatalogInfo(id, pid, title);
-	}
 
 	/***********************************************************
 	 * file control end

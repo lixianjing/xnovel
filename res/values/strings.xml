@@ -31,5 +31,7 @@
     <string name="str_cancel">Cancel</string>
     <string name="str_error">Error</string>
     <string name="str_confirm">Confirm</string>
+    
+      <string name="exit">退出</string>
 
 </resources>

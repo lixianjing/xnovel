@@ -21,8 +21,6 @@ public class BookActivity extends Activity {
 
 	private PageView mPageView;
 	private BookPageFactory pagefactory;
-	final String[] font = new String[] { "20", "24", "26", "30", "32", "36",
-			"40", "46", "50", "56", "60", "66", "70" };
 	int curPostion;
 	private Context mContext;
 	private String bookTitle;
@@ -79,21 +77,5 @@ public class BookActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onStop();
 	}
-
-	// private void setFontSize(int size) {
-	// pagefactory.setFontSize(size);
-	// int pos = pagefactory.getCurPostionBeg();
-	// pagefactory.setBeginPos(pos);
-	// try {
-	// pagefactory.nextPage();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// setContentView(mPageWidget);
-	// pagefactory.onDraw(mNextPageCanvas);
-	// mPageWidget.setBitmaps(mNextPageBitmap, mNextPageBitmap);
-	// mPageWidget.invalidate();
-	// }
 
 }

@@ -49,23 +49,38 @@ public class ListViewAdapter extends BaseAdapter {
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.list_cata_item, null);
-			holder.icon = (ImageView) convertView
-					.findViewById(R.id.list_cata_icon1);
 			holder.title = (TextView) convertView
 					.findViewById(R.id.list_cata_title);
+			holder.content1 = (TextView) convertView
+					.findViewById(R.id.list_cata_content1);
+			holder.content2 = (TextView) convertView
+					.findViewById(R.id.list_cata_content2);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-
-		holder.icon.setBackgroundResource(R.drawable.sub_cat_icon);
-		holder.title.setText(dataList.get(position).getTitle());
+		CatalogInfo info = dataList.get(position);
+		
+		holder.title.setText(info.getTitle());
+		String[] strs = info.getContent().split(" ");
+		holder.content1.setText(strs[0]);
+		holder.content2.setText(strs[1]);
 		return convertView;
 	}
 
 	public final class ViewHolder {
-		public ImageView icon;
 		public TextView title;
+		public TextView content1;
+		public TextView content2;
 	}
 
+	public List<CatalogInfo> getDataList() {
+		return dataList;
+	}
+
+	public void setDataList(List<CatalogInfo> dataList) {
+		this.dataList = dataList;
+	}
+
+	
 }

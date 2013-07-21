@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merge android:orientation="horizontal" android:id="@id/toolbar_panel" android:layout_width="fill_parent" android:layout_height="wrap_content"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <include android:id="@id/toolbar_item1" layout="@layout/ctrl_icon_toolbar_item" />
-    <include android:id="@id/toolbar_item2" layout="@layout/ctrl_icon_toolbar_item" />
-    <include android:id="@id/toolbar_item3" layout="@layout/ctrl_icon_toolbar_item" />
-    <include android:id="@id/toolbar_item4" layout="@layout/ctrl_icon_toolbar_item" />
-    <include android:id="@id/toolbar_item5" layout="@layout/ctrl_icon_toolbar_item" />
-</merge>

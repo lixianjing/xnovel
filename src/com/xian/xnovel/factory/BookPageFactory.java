@@ -273,37 +273,6 @@ public class BookPageFactory {
 			if (mContentVector.size() == 0) {
 				mContentVector = scrollInitLoadContent(0);
 			}
-			LogUtils.log(TAG, "drawContent", "=============", mVisibleHeight,
-					curContentHeight, scrollY);
-			if (scrollY > 0) {
-
-				if (mBufBegin == 0) {
-					scrollY = 0;
-					LogUtils.log(TAG, "drawContent", "it is first page");
-					isFirstPage=true;
-				} else {
-					isLastPage=false;
-					isFirstPage=false;
-					LogUtils.log("BookPageFactory", "drawContent", "previous",
-							"load");
-					mContentVector.clear();
-					mContentVector = scrollLoadContentPrevious();
-				}
-			} else if (scrollY + curContentHeight < mVisibleHeight) {
-
-				if (mBufEnd == mBufLen) {
-					LogUtils.log(TAG, "drawContent", "it is last page");
-					isLastPage=true;
-				} else {
-					isLastPage=false;
-					isFirstPage=false;
-					LogUtils.log("BookPageFactory", "drawContent", "next",
-							"load");
-					mContentVector.clear();
-					mContentVector = scrollLoadContentNext();
-
-				}
-			}
 			y += scrollY;
 		} else {
 			if (mContentVector.size() == 0) {
@@ -409,15 +378,48 @@ public class BookPageFactory {
 
 	public void setOffsetY(float offsetY) {
 		this.offsetY = offsetY;
-		if (!isLastPage||scrollY + curContentHeight >mVisibleHeight||offsetY>0) {
+		if (!isLastPage || scrollY + curContentHeight > mVisibleHeight
+				|| offsetY > 0) {
 			scrollY += offsetY;
-		}else{
-			DialogManager.showToast(mContext, "已经是最后一页了", 2);
 		}
-		
+
 		if (loadMode == LOAD_MODE_PAGE) {
 			loadMode = LOAD_MODE_SCROLL;
 			mContentVector = scrollInitLoadContent(mBufBegin);
+		} else {
+			LogUtils.log(TAG, "drawContent", "=============", mVisibleHeight,
+					curContentHeight, scrollY);
+			if (scrollY > 0) {
+
+				if (mBufBegin == 0) {
+					scrollY = 0;
+					LogUtils.log(TAG, "drawContent", "it is first page");
+					isFirstPage = true;
+					DialogManager.showToast(mContext, "已经是第一页了", 2);
+				} else {
+					isLastPage = false;
+					isFirstPage = false;
+					LogUtils.log("BookPageFactory", "drawContent", "previous",
+							"load");
+					mContentVector.clear();
+					mContentVector = scrollLoadContentPrevious();
+				}
+			} else if (scrollY + curContentHeight < mVisibleHeight) {
+
+				if (mBufEnd == mBufLen) {
+					LogUtils.log(TAG, "drawContent", "it is last page");
+					isLastPage = true;
+					DialogManager.showToast(mContext, "已经是最后一页了", 2);
+				} else {
+					isLastPage = false;
+					isFirstPage = false;
+					LogUtils.log("BookPageFactory", "drawContent", "next",
+							"load");
+					mContentVector.clear();
+					mContentVector = scrollLoadContentNext();
+
+				}
+			}
 		}
 
 		LogUtils.log(TAG, "setOffsetY", scrollY);
@@ -506,6 +508,8 @@ public class BookPageFactory {
 	public Vector<String> loadContentNext() {
 		// TODO Auto-generated method stub
 		LogUtils.log(TAG, "loadContentNext");
+		LogUtils.log(TAG, "loadContentNext=========", mBufBegin, mBufEnd,
+				mBufLen);
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufBegin = mBufEnd;
@@ -540,6 +544,8 @@ public class BookPageFactory {
 				}
 			}
 		}
+		LogUtils.log(TAG, "loadContentNext=========", mBufBegin, mBufEnd,
+				mBufLen);
 		return lines;
 	}
 
@@ -562,7 +568,8 @@ public class BookPageFactory {
 
 	private void updateNextPage() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "updateNextPage");
+		LogUtils.log(TAG, "updateNextPage》》》》》》》》》");
+		LogUtils.log(TAG, "updateNextPage", mBufBegin, mBufEnd, mBufLen);
 		if (mBufEnd >= mBufLen) {
 			isLastPage = true;
 			DialogManager.showToast(mContext, "已经是最后一页了", 2);
@@ -751,7 +758,7 @@ public class BookPageFactory {
 				}
 			}
 		}
-		loadCount=lines.size();
+		loadCount = lines.size();
 		while (lines.size() < preLoadLineCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
 			byte[] paraBuf = readParagraphBack(mBufBegin);
@@ -789,9 +796,9 @@ public class BookPageFactory {
 				e.printStackTrace();
 			}
 		}
-		
-		curContentHeight = preLoadLineCount * (spaceLineSize + contentFontSize);
-		scrollY = -(preLoadLineCount - loadCount)
+
+		curContentHeight = lines.size()  * (spaceLineSize + contentFontSize);
+		scrollY = -(lines.size()  - loadCount)
 				* (spaceLineSize + contentFontSize);
 
 		if (scrollY > 0)

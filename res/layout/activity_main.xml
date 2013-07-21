@@ -28,18 +28,12 @@
             android:orientation="horizontal" >
 
             <TextView
-                style="@style/titleFirst"
+                style="@style/mainTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/app_name" />
 
-            <TextView
-                android:id="@+id/main_title_second"
-                style="@style/titleSecond"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical" />
         </LinearLayout>
 
         <Button
@@ -88,11 +82,6 @@
             android:drawableTop="@drawable/tabicon_history"
             android:text="@string/tab_history_text" />
 
-        <TextView
-            android:id="@+id/tab_btn_setting"
-            style="@style/TabIcon"
-            android:drawableTop="@drawable/tabicon_setting"
-            android:text="@string/tab_setting_text" />
 
         <TextView
             android:id="@+id/tab_btn_more"

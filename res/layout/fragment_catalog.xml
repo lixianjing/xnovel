@@ -9,8 +9,10 @@
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fadingEdge="vertical"
         android:background="@drawable/main_layout_bkg"
+        android:divider="@drawable/base_list_divider_drawable"
+        android:fadingEdge="vertical"
+        android:focusable="true"
         android:scrollbars="none" >
     </ListView>
 

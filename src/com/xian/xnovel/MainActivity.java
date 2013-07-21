@@ -1,11 +1,13 @@
 package com.xian.xnovel;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
+import com.xian.xnovel.widget.DialogManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +15,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -22,34 +26,31 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 public class MainActivity extends FragmentActivity {
-	private final int TABS_COUNT = 5;
+	private final int TABS_COUNT = 4;
 	private int currIndex = 0;
 	private ViewPager mPager;
 	private List<Fragment> fragmentsList;
 	private List<TextView> tabsList;
-	private TextView tvTitleSecond;
 	private Context mContext;
 
-	private static final int[] tabsTitleRes = new int[] {
-			R.string.tab_cate_text, R.string.tab_bookmark_text,
-			R.string.tab_history_text, R.string.tab_setting_text,
-			R.string.tab_more_text };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>start>>"+System.currentTimeMillis());
-		long startTime=System.currentTimeMillis();
+		Log.e("lmf",
+				"MainActivity>>>>>>onCreate>>>>start>>"
+						+ System.currentTimeMillis());
+		long startTime = System.currentTimeMillis();
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		mContext = this;
-		if(MainApplication.sWidth==0){
-			//we should calatue;
+		if (MainApplication.sWidth == 0) {
+			// we should calatue;
 			DisplayMetrics dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
 			SharedPreferences pre = mContext.getSharedPreferences(
 					AppSettings.Settings, Context.MODE_PRIVATE);
-			Editor editor=pre.edit();
+			Editor editor = pre.edit();
 			editor.putInt(AppSettings.settings_width, dm.widthPixels);
 			editor.putInt(AppSettings.settings_height, dm.heightPixels);
 			editor.commit();
@@ -58,8 +59,9 @@ public class MainActivity extends FragmentActivity {
 		}
 		initView();
 		initData();
-		Long endTime=System.currentTimeMillis();
-		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>end>>"+(endTime-startTime));
+		Long endTime = System.currentTimeMillis();
+		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>end>>"
+				+ (endTime - startTime));
 	}
 
 	private void initView() {
@@ -67,14 +69,11 @@ public class MainActivity extends FragmentActivity {
 		tabsList.add((TextView) findViewById(R.id.tab_btn_category));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_bookmark));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_history));
-		tabsList.add((TextView) findViewById(R.id.tab_btn_setting));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_more));
 
 		for (int i = 0; i < TABS_COUNT; i++) {
 			tabsList.get(i).setOnClickListener(new MyOnClickListener(i));
 		}
-
-		tvTitleSecond = (TextView) findViewById(R.id.main_title_second);
 
 		InitViewPager();
 		mPager.setCurrentItem(0);
@@ -92,14 +91,12 @@ public class MainActivity extends FragmentActivity {
 
 		Fragment groupFragment = TestFragment.newInstance("书签");
 		Fragment friendsFragment = TestFragment.newInstance("历史");
-		Fragment chatFragment = TestFragment.newInstance("设置");
 		Fragment fragmentMore = new FragmentMore();
 		Fragment fragmentCata = new FragmentCatalog();
 
 		fragmentsList.add(fragmentCata);
 		fragmentsList.add(groupFragment);
 		fragmentsList.add(friendsFragment);
-		fragmentsList.add(chatFragment);
 		fragmentsList.add(fragmentMore);
 
 		mPager.setAdapter(new MyFragmentPagerAdapter(
@@ -140,7 +137,36 @@ public class MainActivity extends FragmentActivity {
 
 	private void setCurrentPage(int index) {
 		tabsList.get(index).setSelected(true);
-		tvTitleSecond.setText("---" + getString(tabsTitleRes[index]));
 		currIndex = index;
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main_activity, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		this.finish();
+		return super.onOptionsItemSelected(item);
+	}
+
+	// 退出功能
+	private long exitTime;
+	private static final int EXIT_DURATION = 2;
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		if (System.currentTimeMillis() - exitTime < EXIT_DURATION * 1000) {
+			DialogManager.cancelToast();
+			this.finish();
+		} else {
+			DialogManager.showToast(mContext, "在按一次退出应用", EXIT_DURATION);
+			exitTime = System.currentTimeMillis();
+		}
+	}
+
 }

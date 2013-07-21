@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper android:id="@id/flipper" android:layout_width="fill_parent" android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.kingreader.framework.os.android.ui.uicontrols.BookList android:id="@id/recommend_list" android:background="@color/nbs_page_bkc" android:paddingLeft="7.0dip" android:paddingRight="7.0dip" android:paddingBottom="5.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0" />
-    <com.kingreader.framework.os.android.ui.page.NBSBookList android:id="@id/book_list_page" android:background="@color/nbs_page_bkc" android:paddingLeft="7.0dip" android:paddingRight="7.0dip" android:paddingBottom="5.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0" />
-    <com.kingreader.framework.os.android.ui.page.NBSBookDetailList android:id="@id/detail_page" android:background="@color/nbs_page_bkc" android:paddingLeft="7.0dip" android:paddingRight="7.0dip" android:paddingBottom="5.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1.0" />
-</ViewFlipper>
