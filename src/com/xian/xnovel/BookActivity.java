@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 public class BookActivity extends Activity {
@@ -18,6 +19,9 @@ public class BookActivity extends Activity {
 	public final static int OPENMARK = 0;
 	public final static int SAVEMARK = 1;
 	public final static int TEXTSET = 2;
+
+	public final static int VOLUME_UP_KEYCODE = 24;
+	public final static int VOLUME_DOWN_KEYCODE = 25;
 
 	private PageView mPageView;
 	private BookPageFactory pagefactory;
@@ -34,8 +38,8 @@ public class BookActivity extends Activity {
 		mContext = this;
 
 		pagefactory = BookPageFactory.getInstance(mContext);
-//		pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
-//				R.drawable.theme_1));
+		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
+		// R.drawable.theme_1));
 
 		Intent intent = getIntent();
 		bookTitle = intent.getStringExtra(CatalogInfo.TITLE);
@@ -46,9 +50,9 @@ public class BookActivity extends Activity {
 			setContentView(mPageView);
 			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID,bookTitle);
+					AppSettings.BOOK_FILE_PREFIX + bookID, bookTitle);
 
-//			pagefactory.drawPageBitmap();
+			// pagefactory.drawPageBitmap();
 			mPageView.invalidate();
 
 		} else {
@@ -76,6 +80,37 @@ public class BookActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onKeyup" + keyCode);
+		switch (keyCode) {
+		case VOLUME_UP_KEYCODE:
+			return true;
+		case VOLUME_DOWN_KEYCODE:
+			return true;
+
+		default:
+			return super.onKeyUp(keyCode, event);
+		}
+
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onKeyDown" + keyCode);
+		switch (keyCode) {
+		case VOLUME_UP_KEYCODE:
+			return true;
+		case VOLUME_DOWN_KEYCODE:
+			return true;
+
+		default:
+			return super.onKeyDown(keyCode, event);
+		}
 	}
 
 }

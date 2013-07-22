@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
-        android:src="@drawable/sub_cat_icon" />
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:src="@drawable/list_catalog_item" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,8 +59,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dip"
-        android:layout_marginRight="15dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
         android:src="@drawable/arrow_right_se" />
 
 </RelativeLayout>
