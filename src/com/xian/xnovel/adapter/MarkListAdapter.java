@@ -1,8 +1,12 @@
-package com.xian.xnovel;
+package com.xian.xnovel.adapter;
 
 import java.util.List;
 
+import com.xian.xnovel.R;
+import com.xian.xnovel.R.id;
+import com.xian.xnovel.R.layout;
 import com.xian.xnovel.domain.CatalogInfo;
+import com.xian.xnovel.domain.MarkInfo;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,13 +17,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ListViewAdapter extends BaseAdapter {
+public class MarkListAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
-	private List<CatalogInfo> dataList;
+	private List<MarkInfo> dataList;
 	private Context mContext;
 
-	public ListViewAdapter(Context context, List<CatalogInfo> list) {
+	public MarkListAdapter(Context context, List<MarkInfo> list) {
 		this.mInflater = LayoutInflater.from(context);
 		dataList = list;
 		mContext = context;
@@ -59,7 +63,7 @@ public class ListViewAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		CatalogInfo info = dataList.get(position);
+		MarkInfo info = dataList.get(position);
 		
 		holder.title.setText(info.getTitle());
 		String[] strs = info.getContent().split(" ");
@@ -74,11 +78,11 @@ public class ListViewAdapter extends BaseAdapter {
 		public TextView content2;
 	}
 
-	public List<CatalogInfo> getDataList() {
+	public List<MarkInfo> getDataList() {
 		return dataList;
 	}
 
-	public void setDataList(List<CatalogInfo> dataList) {
+	public void setDataList(List<MarkInfo> dataList) {
 		this.dataList = dataList;
 	}
 

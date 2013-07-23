@@ -5,6 +5,7 @@ import java.util.Currency;
 import java.util.List;
 
 import com.xian.xnovel.R;
+import com.xian.xnovel.adapter.MyFragmentPagerAdapter;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
@@ -89,14 +90,14 @@ public class MainActivity extends FragmentActivity {
 		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 
-		Fragment groupFragment = TestFragment.newInstance("书签");
-		Fragment friendsFragment = TestFragment.newInstance("历史");
+		Fragment fragmentMark = new FragmentMark();
+		Fragment fragmentHistory =new FragmentMark();
 		Fragment fragmentMore = new FragmentMore();
 		Fragment fragmentCata = new FragmentCatalog();
 
 		fragmentsList.add(fragmentCata);
-		fragmentsList.add(groupFragment);
-		fragmentsList.add(friendsFragment);
+		fragmentsList.add(fragmentMark);
+		fragmentsList.add(fragmentHistory);
 		fragmentsList.add(fragmentMore);
 
 		mPager.setAdapter(new MyFragmentPagerAdapter(

@@ -1,4 +1,4 @@
-package com.xian.xnovel;
+package com.xian.xnovel.adapter;
 
 import java.util.List;
 

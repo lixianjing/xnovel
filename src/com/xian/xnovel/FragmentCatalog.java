@@ -2,6 +2,7 @@ package com.xian.xnovel;
 
 import java.util.List;
 
+import com.xian.xnovel.adapter.CatalogListAdapter;
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.CatalogInfo;
@@ -27,7 +28,7 @@ public class FragmentCatalog extends ListFragment {
 	private static final String TAG = "FragmentCatalog";
 
 	private Context mContext;
-	private ListViewAdapter adapter;
+	private CatalogListAdapter adapter;
 	private List<CatalogInfo> catalogInfos;
 	private AppDBControl dbControl;
 	private long startTime;
@@ -84,7 +85,7 @@ public class FragmentCatalog extends ListFragment {
 					catalogInfos = dbControl.queryCatalog(0, 10);
 				}
 				if (adapter == null) {
-					adapter = new ListViewAdapter(mContext, catalogInfos);
+					adapter = new CatalogListAdapter(mContext, catalogInfos);
 				}
 				FragmentCatalog.this.setListAdapter(adapter);
 			};

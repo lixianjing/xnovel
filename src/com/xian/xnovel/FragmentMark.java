@@ -2,9 +2,12 @@ package com.xian.xnovel;
 
 import java.util.List;
 
+import com.xian.xnovel.adapter.CatalogListAdapter;
+import com.xian.xnovel.adapter.MarkListAdapter;
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.CatalogInfo;
+import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 
@@ -24,11 +27,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class FragmentMark extends ListFragment {
-	private static final String TAG = "FragmentCatalog";
+	private static final String TAG = "FragmentMark";
 
 	private Context mContext;
-	private ListViewAdapter adapter;
-	private List<CatalogInfo> catalogInfos;
+	private MarkListAdapter adapter;
+	private List<MarkInfo> markInfos;
 	private AppDBControl dbControl;
 	private long startTime;
 
@@ -49,7 +52,7 @@ public class FragmentMark extends ListFragment {
 		Log.d("lmf",
 				"FragmentCatalog-----onCreateView>>"
 						+ System.currentTimeMillis());
-		View view = inflater.inflate(R.layout.fragment_catalog, container,
+		View view = inflater.inflate(R.layout.fragment_mark, container,
 				false);
 		long endTime = System.currentTimeMillis();
 		Log.d("lmf", "FragmentCatalog-----onCreateView>>"
@@ -67,8 +70,8 @@ public class FragmentMark extends ListFragment {
 	public void onListItemClick(ListView parent, View v, int position, long id) {
 		Intent intent = new Intent(mContext, BookActivity.class);
 
-		CatalogInfo tempInfo = catalogInfos.get(position);
-		intent.putExtra(CatalogInfo.ID, tempInfo.getId());
+		MarkInfo tempInfo = markInfos.get(position);
+		intent.putExtra(CatalogInfo.ID, tempInfo.getCid());
 		intent.putExtra(CatalogInfo.TITLE, tempInfo.getTitle());
 		intent.putExtra(CatalogInfo.CONTENT, tempInfo.getContent());
 		mContext.startActivity(intent);
@@ -77,28 +80,28 @@ public class FragmentMark extends ListFragment {
 	}
 
 	private void loadData() {
-		new AsyncTask<Void, Void, List<CatalogInfo>>() {
+		new AsyncTask<Void, Void, List<MarkInfo>>() {
 			protected void onPreExecute() {
 				Log.e("lmf", "onPreExecute--------------+callLog==null=");
-				if (catalogInfos == null) {
-					catalogInfos = dbControl.queryCatalog(0, 10);
+				if (markInfos == null) {
+					markInfos = dbControl.queryMark(MarkInfo.TYPE_MARK);
 				}
 				if (adapter == null) {
-					adapter = new ListViewAdapter(mContext, catalogInfos);
+					adapter = new MarkListAdapter(mContext, markInfos);
 				}
 				FragmentMark.this.setListAdapter(adapter);
 			};
 
 			@Override
-			protected List<CatalogInfo> doInBackground(Void... params) {
-				return dbControl.queryCatalog();
+			protected List<MarkInfo> doInBackground(Void... params) {
+				return dbControl.queryMark(MarkInfo.TYPE_MARK);
 			}
 
-			protected void onPostExecute(java.util.List<CatalogInfo> result) {
+			protected void onPostExecute(java.util.List<MarkInfo> result) {
 				Log.e("lmf", "onPostExecute--------");
-				catalogInfos = result;
-				Log.e("lmf", "onPostExecute--------" + catalogInfos.size());
-				adapter.setDataList(catalogInfos);
+				markInfos = result;
+				Log.e("lmf", "onPostExecute--------" + markInfos.size());
+				adapter.setDataList(markInfos);
 				adapter.notifyDataSetChanged();
 				// FragmentCatalog.this.getListView().postInvalidate();
 			};

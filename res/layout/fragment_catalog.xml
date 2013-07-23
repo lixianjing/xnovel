@@ -12,7 +12,8 @@
         android:background="@drawable/main_layout_bkg"
         android:divider="@drawable/base_list_divider_drawable"
         android:fadingEdge="vertical"
-        android:focusable="true"
+        android:fadingEdgeLength="1dp"
+        android:listSelector="@android:color/transparent"
         android:scrollbars="none" >
     </ListView>
 
