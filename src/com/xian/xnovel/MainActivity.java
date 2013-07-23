@@ -14,6 +14,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -23,10 +25,17 @@ import android.view.Window;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 public class MainActivity extends FragmentActivity {
+
+	public static final int CATALOG_MESSAGE_TYPE = 0;
+	public static final int MARK_MESSAGE_TYPE = 1;
+	public static final int HISTORY_MESSAGE_TYPE = 2;
+	public static final int ABOUT_MESSAGE_TYPE = 3;
+
 	private final int TABS_COUNT = 4;
 	private int currIndex = 0;
 	private ViewPager mPager;
@@ -34,6 +43,44 @@ public class MainActivity extends FragmentActivity {
 	private List<TextView> tabsList;
 	private Context mContext;
 
+	private FragmentMark fragmentMark;
+	private FragmentMark fragmentHistory;
+	private Fragment fragmentMore;
+	private Fragment fragmentCata;
+
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+
+			switch (msg.what) {
+			case CATALOG_MESSAGE_TYPE:
+
+				break;
+			case MARK_MESSAGE_TYPE:
+				if (msg.arg1 == 0) {
+					fragmentMark.getMarkTV().setVisibility(View.VISIBLE);
+					fragmentMark.getListView().setVisibility(View.GONE);
+				} else {
+					fragmentMark.getMarkTV().setVisibility(View.GONE);
+					fragmentMark.getListView().setVisibility(View.VISIBLE);
+				}
+				break;
+			case HISTORY_MESSAGE_TYPE:
+
+				break;
+			case ABOUT_MESSAGE_TYPE:
+
+				break;
+
+			default:
+				break;
+			}
+
+		}
+
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,10 +137,10 @@ public class MainActivity extends FragmentActivity {
 		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 
-		Fragment fragmentMark = new FragmentMark();
-		Fragment fragmentHistory =new FragmentMark();
-		Fragment fragmentMore = new FragmentMore();
-		Fragment fragmentCata = new FragmentCatalog();
+		fragmentMark = new FragmentMark(mHandler);
+		fragmentHistory = new FragmentMark(mHandler);
+		fragmentMore = new FragmentMore();
+		fragmentCata = new FragmentCatalog();
 
 		fragmentsList.add(fragmentCata);
 		fragmentsList.add(fragmentMark);

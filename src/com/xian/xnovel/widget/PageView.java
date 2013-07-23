@@ -1,6 +1,5 @@
 package com.xian.xnovel.widget;
 
-
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.LogUtils;
 
@@ -8,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -23,11 +23,15 @@ public class PageView extends View {
 	private static final int DIR_DOWN_SCROLL = 4;
 
 	private static int SNAP_VELOCITY = 600;
-	private static final int SNAP_DISTANCE = 50;
+	private static final int TOUCH_SLOP = 20;
 
 	private final static int TOUCH_STATE_REST = 0;
 	private final static int TOUCH_STATE_SCROLLING = 1;
 	private int mTouchState = TOUCH_STATE_REST;
+
+	private final static long ONCLICK_TIME = 500;
+	private boolean isOnclick;
+	private long onclickTime;
 
 	// 处理触摸的速率
 	private VelocityTracker mVelocityTracker = null;
@@ -71,7 +75,7 @@ public class PageView extends View {
 		pagefactory.draw(canvas);
 		super.onDraw(canvas);
 		long end = System.currentTimeMillis();
-//		LogUtils.log("PageView", "onDraw", "TIME", end - begin);
+		// LogUtils.log("PageView", "onDraw", "TIME", end - begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -91,7 +95,7 @@ public class PageView extends View {
 			mDownY = y;
 			mTouchX = x;
 			mTouchY = y;
-
+			isOnclick = true;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mTouchX = x;
@@ -103,18 +107,28 @@ public class PageView extends View {
 				msg.arg1 = (int) offy;
 				mHandler.sendMessage(msg);
 			} else {
-				int offx = (int) (mTouchX - mDownX);
-				int offy = (int) (mTouchY - mDownY);
-				if (Math.abs(offx) < Math.abs(offy)) {
+
+				float diffx = Math.abs((mTouchX - mDownX));
+				float diffy = Math.abs((mTouchY - mDownY));
+
+				if (diffx < diffy && diffy > TOUCH_SLOP) {
 					mTouchState = TOUCH_STATE_SCROLLING;
+					isOnclick = false;
+				} else if (isOnclick) {
+					if (Math.sqrt(diffx * diffx + diffy * diffy) > TOUCH_SLOP) {
+						isOnclick = false;
+					}
 				}
 			}
+
 			mLastMotionY = y;
+
 			break;
 		case MotionEvent.ACTION_UP:
-
-			if (mTouchState == TOUCH_STATE_SCROLLING) {
-			} else {
+			if (isOnclick
+					&& System.currentTimeMillis() - onclickTime < onclickTime) {
+				Log.e("lmf", "onclick>>>>>>>>>>>>>>>");
+			} else if (mTouchState != TOUCH_STATE_SCROLLING) {
 
 				final VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000);
@@ -155,9 +169,9 @@ public class PageView extends View {
 		int offx = (int) (mTouchX - mDownX);
 		int offy = (int) (mTouchY - mDownY);
 		if (Math.abs(offx) > Math.abs(offy)) {
-			if (offx > SNAP_DISTANCE) {
+			if (offx > TOUCH_SLOP) {
 				updatePageInfo(DIR_PRE_PAGE);
-			} else if (offx < -SNAP_DISTANCE) {
+			} else if (offx < -TOUCH_SLOP) {
 				updatePageInfo(DIR_NEXT_PAGE);
 			} else {
 				// do nothing
