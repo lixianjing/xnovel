@@ -104,8 +104,12 @@ public class BookActivity extends Activity {
 		Log.e("lmf", "onKeyDown" + keyCode);
 		switch (keyCode) {
 		case VOLUME_UP_KEYCODE:
+			pagefactory.updatePageModePrePage();
+			mPageView.invalidate();
 			return true;
 		case VOLUME_DOWN_KEYCODE:
+			pagefactory.updatePageModeNextPage();
+			mPageView.invalidate();
 			return true;
 
 		default:

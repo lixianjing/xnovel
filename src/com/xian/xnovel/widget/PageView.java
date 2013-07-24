@@ -1,5 +1,6 @@
 package com.xian.xnovel.widget;
 
+import com.xian.xnovel.MainApplication;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.LogUtils;
 
@@ -19,8 +20,6 @@ public class PageView extends View {
 
 	private static final int DIR_PRE_PAGE = 1;
 	private static final int DIR_NEXT_PAGE = 2;
-	private static final int DIR_UP_SCROLL = 3;
-	private static final int DIR_DOWN_SCROLL = 4;
 
 	private static int SNAP_VELOCITY = 600;
 	private static final int TOUCH_SLOP = 20;
@@ -96,6 +95,7 @@ public class PageView extends View {
 			mTouchX = x;
 			mTouchY = y;
 			isOnclick = true;
+			onclickTime = System.currentTimeMillis();
 			break;
 		case MotionEvent.ACTION_MOVE:
 			mTouchX = x;
@@ -126,8 +126,21 @@ public class PageView extends View {
 			break;
 		case MotionEvent.ACTION_UP:
 			if (isOnclick
-					&& System.currentTimeMillis() - onclickTime < onclickTime) {
-				Log.e("lmf", "onclick>>>>>>>>>>>>>>>");
+					&& System.currentTimeMillis() - onclickTime < ONCLICK_TIME) {
+				int temp = MainApplication.sWidth / 3;
+				if (mDownX < temp) {
+					Log.e("lmf",
+							"uppage>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+					updatePageInfo(DIR_PRE_PAGE);
+				} else if (mDownX < temp * 2) {
+					Log.e("lmf",
+							"popmenu>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				} else {
+					Log.e("lmf",
+							"nextpage>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+					updatePageInfo(DIR_NEXT_PAGE);
+				}
+
 			} else if (mTouchState != TOUCH_STATE_SCROLLING) {
 
 				final VelocityTracker velocityTracker = mVelocityTracker;
@@ -186,10 +199,6 @@ public class PageView extends View {
 			break;
 		case DIR_NEXT_PAGE:
 			pagefactory.updatePageModeNextPage();
-			break;
-		case DIR_UP_SCROLL:
-			break;
-		case DIR_DOWN_SCROLL:
 			break;
 		default:
 			break;
