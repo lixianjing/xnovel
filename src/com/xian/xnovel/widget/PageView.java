@@ -39,14 +39,12 @@ public class PageView extends View {
 	private float mTouchX, mTouchY, mDownX, mDownY, mLastMotionY;
 	private BookPageFactory pagefactory;
 	private Handler mHandler;
-	private MenuWindow menuWindow;
 	
 	public PageView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		mContext = context;
 		pagefactory = BookPageFactory.getInstance(context);
-		menuWindow = new MenuWindow(context);
 		mHandler = new Handler() {
 
 			@Override
@@ -134,7 +132,6 @@ public class PageView extends View {
 							"uppage>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 					updatePageInfo(DIR_PRE_PAGE);
 				} else if (mDownX < temp * 2) {
-					menuWindow.show(this);
 					Log.e("lmf",
 							"popmenu>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 				} else {

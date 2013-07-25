@@ -8,8 +8,5 @@
     <dimen name="main_title_layout_height">45.0dip</dimen>
     <dimen name="iphone_dlg_promot_btn_size">10sp</dimen>
     
-    <dimen name="popmenu_h">230.0dip</dimen>
-    <dimen name="popmenu_yoff">5.0dip</dimen>
-    <dimen name="indicatoroffset">10dip</dimen>
 
 </resources>
