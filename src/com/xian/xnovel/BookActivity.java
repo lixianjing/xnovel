@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -30,13 +32,17 @@ public class BookActivity extends Activity {
 	private String bookTitle;
 	private int bookID;
 
+	private PowerManager powerManager = null;
+	private WakeLock wakeLock = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e("lmf", "onCreate>>>>>>>>>");
 
 		mContext = this;
-
+		  powerManager = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
+		  wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
 		pagefactory = BookPageFactory.getInstance(mContext);
 		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
 		// R.drawable.theme_1));
@@ -73,12 +79,14 @@ public class BookActivity extends Activity {
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
+		wakeLock.acquire();
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
+		wakeLock.release();
 		super.onStop();
 	}
 
