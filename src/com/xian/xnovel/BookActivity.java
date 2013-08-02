@@ -1,6 +1,8 @@
 package com.xian.xnovel;
 
+import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
+import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.PageView;
@@ -29,9 +31,9 @@ public class BookActivity extends Activity {
 	private BookPageFactory pagefactory;
 	int curPostion;
 	private Context mContext;
-	private String bookTitle;
+	private String bookTitle, bookContent;
 	private int bookID;
-
+	private long position;
 	private PowerManager powerManager = null;
 	private WakeLock wakeLock = null;
 
@@ -41,22 +43,27 @@ public class BookActivity extends Activity {
 		Log.e("lmf", "onCreate>>>>>>>>>");
 
 		mContext = this;
-		  powerManager = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
-		  wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
+		powerManager = (PowerManager) this
+				.getSystemService(Context.POWER_SERVICE);
+		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
+				"My Lock");
 		pagefactory = BookPageFactory.getInstance(mContext);
 		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
 		// R.drawable.theme_1));
 
 		Intent intent = getIntent();
-		bookTitle = intent.getStringExtra(CatalogInfo.TITLE);
-		bookID = intent.getIntExtra(CatalogInfo.ID, 0);
+		bookTitle = intent.getStringExtra(AppSettings.TITLE);
+		bookContent = intent.getStringExtra(AppSettings.TITLE);
+		bookID = intent.getIntExtra(AppSettings.ID, 0);
+		position = intent.getLongExtra(AppSettings.POSITION, 0);
 		if (bookID != 0) {
-			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookTitle + ":" + bookID);
+			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookContent + ":"
+					+ bookID);
 			mPageView = new PageView(this);
 			setContentView(mPageView);
 			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID, bookTitle);
+					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
 
 			// pagefactory.drawPageBitmap();
 			mPageView.invalidate();
@@ -87,6 +94,10 @@ public class BookActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		wakeLock.release();
+		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
+				pagefactory.getPostion(), System.currentTimeMillis(),
+				MarkInfo.TYPE_HISTORY);
+		AppDBControl.getInstance(mContext).insertMark(info);
 		super.onStop();
 	}
 

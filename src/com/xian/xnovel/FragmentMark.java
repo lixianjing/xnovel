@@ -6,6 +6,7 @@ import com.xian.xnovel.adapter.MarkListAdapter;
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
+import com.xian.xnovel.utils.AppSettings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,26 +26,26 @@ import android.widget.Toast;
 public class FragmentMark extends ListFragment {
 	private static final String TAG = "FragmentMark";
 
+	private int type;
+
 	private Context mContext;
 	private MarkListAdapter adapter;
 	private List<MarkInfo> markInfos;
 	private TextView markTV;
 	private AppDBControl dbControl;
 	private int dataSize;
-	private long startTime;
 	private Handler handler;
-	
-	public FragmentMark(Handler handler){
-		this.handler=handler;
+
+	public FragmentMark(Handler handler, int type) {
+		this.handler = handler;
+		this.type = type;
 	}
-	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d("lmf",
 				"FragmentCatalog-----onCreate>>" + System.currentTimeMillis());
-		startTime = System.currentTimeMillis();
 		mContext = this.getActivity();
 		dbControl = AppDBControl.getInstance(mContext);
 		loadData();
@@ -53,15 +54,8 @@ public class FragmentMark extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("lmf",
-				"FragmentCatalog-----onCreateView>>"
-						+ System.currentTimeMillis());
 		View view = inflater.inflate(R.layout.fragment_mark, container, false);
 		markTV = (TextView) view.findViewById(R.id.mark_tv);
-		handler.sendEmptyMessage(0);
-		long endTime = System.currentTimeMillis();
-		Log.d("lmf", "FragmentCatalog-----onCreateView>>"
-				+ (endTime - startTime));
 		return view;
 
 	}
@@ -76,9 +70,10 @@ public class FragmentMark extends ListFragment {
 		Intent intent = new Intent(mContext, BookActivity.class);
 
 		MarkInfo tempInfo = markInfos.get(position);
-		intent.putExtra(CatalogInfo.ID, tempInfo.getCid());
-		intent.putExtra(CatalogInfo.TITLE, tempInfo.getTitle());
-		intent.putExtra(CatalogInfo.CONTENT, tempInfo.getContent());
+		intent.putExtra(AppSettings.ID, tempInfo.getCid());
+		intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
+		intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
+		intent.putExtra(AppSettings.POSITION, tempInfo.getPosition());
 		mContext.startActivity(intent);
 		Toast.makeText(getActivity(), "You have selected " + position,
 				Toast.LENGTH_SHORT).show();
@@ -87,17 +82,19 @@ public class FragmentMark extends ListFragment {
 	private void loadData() {
 		new AsyncTask<Void, Void, List<MarkInfo>>() {
 			protected void onPreExecute() {
-				Log.e("lmf", "onPreExecute--------------+callLog==null=");
 				if (markInfos == null) {
 					markInfos = dbControl.queryMark(MarkInfo.TYPE_MARK, 0, 10);
 				}
 				dataSize = markInfos.size();
+				Log.e("lmf","FragmentMark>>>>>>>loadData>>>>>>"+dataSize);
 				if (dataSize != 0) {
 					if (adapter == null) {
 						adapter = new MarkListAdapter(mContext, markInfos);
 					}
 					FragmentMark.this.setListAdapter(adapter);
-
+					Message msg = handler.obtainMessage();
+					msg.what = type;
+					handler.sendMessage(msg);
 				}
 			};
 
@@ -113,12 +110,12 @@ public class FragmentMark extends ListFragment {
 
 			protected void onPostExecute(java.util.List<MarkInfo> result) {
 				if (dataSize != 0) {
-					Log.e("lmf", "onPostExecute--------");
 					markInfos = result;
-					Log.e("lmf", "onPostExecute--------" + markInfos.size());
 					adapter.setDataList(markInfos);
 					adapter.notifyDataSetChanged();
+					Log.e("lmf","FragmentMark>>>>>>>loadData>>>>>>"+markInfos.size());
 				}
+
 
 			};
 
@@ -126,10 +123,8 @@ public class FragmentMark extends ListFragment {
 
 	}
 
-
 	public TextView getMarkTV() {
 		return markTV;
 	}
 
-	
 }

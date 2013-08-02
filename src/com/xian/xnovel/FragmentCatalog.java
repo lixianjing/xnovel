@@ -69,9 +69,9 @@ public class FragmentCatalog extends ListFragment {
 		Intent intent = new Intent(mContext, BookActivity.class);
 
 		CatalogInfo tempInfo = catalogInfos.get(position);
-		intent.putExtra(CatalogInfo.ID, tempInfo.getId());
-		intent.putExtra(CatalogInfo.TITLE, tempInfo.getTitle());
-		intent.putExtra(CatalogInfo.CONTENT, tempInfo.getContent());
+		intent.putExtra(AppSettings.ID, tempInfo.getId());
+		intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
+		intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
 		mContext.startActivity(intent);
 		Toast.makeText(getActivity(), "You have selected " + position,
 				Toast.LENGTH_SHORT).show();
@@ -80,7 +80,6 @@ public class FragmentCatalog extends ListFragment {
 	private void loadData() {
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
 			protected void onPreExecute() {
-				Log.e("lmf", "onPreExecute--------------+callLog==null=");
 				if (catalogInfos == null) {
 					catalogInfos = dbControl.queryCatalog(0, 10);
 				}

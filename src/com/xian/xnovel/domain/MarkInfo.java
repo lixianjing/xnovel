@@ -29,6 +29,17 @@ public class MarkInfo {
 		this.date = date;
 		this.type = type;
 	}
+	
+	public MarkInfo( int cid, String title, String content,
+			long position, long date, int type) {
+		super();
+		this.cid = cid;
+		this.title = title;
+		this.content = content;
+		this.position = position;
+		this.date = date;
+		this.type = type;
+	}
 
 	public int getId() {
 		return id;

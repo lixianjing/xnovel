@@ -1,5 +1,8 @@
 package com.xian.xnovel.adapter;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import com.xian.xnovel.R;
@@ -21,12 +24,13 @@ public class MarkListAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
 	private List<MarkInfo> dataList;
-	private Context mContext;
+	private SimpleDateFormat formatter;
 
 	public MarkListAdapter(Context context, List<MarkInfo> list) {
 		this.mInflater = LayoutInflater.from(context);
 		dataList = list;
-		mContext = context;
+		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	}
 
 	@Override
@@ -52,30 +56,47 @@ public class MarkListAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		if (convertView == null) {
 			holder = new ViewHolder();
-			convertView = mInflater.inflate(R.layout.list_cata_item, null);
-			holder.title = (TextView) convertView
-					.findViewById(R.id.list_cata_title);
-			holder.content1 = (TextView) convertView
-					.findViewById(R.id.list_cata_content1);
-			holder.content2 = (TextView) convertView
-					.findViewById(R.id.list_cata_content2);
+			convertView = mInflater.inflate(R.layout.list_mark_item, null);
+			holder.iconIv = (ImageView) convertView
+					.findViewById(R.id.list_mark_iv_head);
+			holder.positionTv = (TextView) convertView
+					.findViewById(R.id.list_mark_tv_position);
+			holder.dateTv = (TextView) convertView
+					.findViewById(R.id.list_mark_tv_date);
+			holder.titleTv = (TextView) convertView
+					.findViewById(R.id.list_mark_tv_title);
+			holder.content1Tv = (TextView) convertView
+					.findViewById(R.id.list_mark_tv_content1);
+			holder.content2Tv = (TextView) convertView
+					.findViewById(R.id.list_mark_tv_content2);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		MarkInfo info = dataList.get(position);
-		
-		holder.title.setText(info.getTitle());
+
+		if (info.getType() == MarkInfo.TYPE_HISTORY) {
+			holder.iconIv.setImageResource(R.drawable.history_item_icon);
+		} else {
+			holder.iconIv.setImageResource(R.drawable.bookmark_icon);
+		}
+
+		holder.positionTv.setText(info.getPosition() + "");
+		holder.dateTv.setText(formatter.format(new Date(info.getDate())));
+		holder.titleTv.setText(info.getTitle());
 		String[] strs = info.getContent().split(" ");
-		holder.content1.setText(strs[0]);
-		holder.content2.setText(strs[1]);
+		holder.content1Tv.setText(strs[0]);
+		holder.content2Tv.setText(strs[1]);
 		return convertView;
 	}
 
 	public final class ViewHolder {
-		public TextView title;
-		public TextView content1;
-		public TextView content2;
+		public ImageView iconIv;
+		public TextView positionTv;
+		public TextView dateTv;
+		public TextView titleTv;
+		public TextView content1Tv;
+		public TextView content2Tv;
 	}
 
 	public List<MarkInfo> getDataList() {
@@ -86,5 +107,4 @@ public class MarkListAdapter extends BaseAdapter {
 		this.dataList = dataList;
 	}
 
-	
 }

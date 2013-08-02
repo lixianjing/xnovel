@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MyFragmentPagerAdapter;
+import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
@@ -68,7 +69,13 @@ public class MainActivity extends FragmentActivity {
 				}
 				break;
 			case HISTORY_MESSAGE_TYPE:
-
+				if (msg.arg1 == 0) {
+					fragmentHistory.getMarkTV().setVisibility(View.VISIBLE);
+					fragmentHistory.getListView().setVisibility(View.GONE);
+				} else {
+					fragmentHistory.getMarkTV().setVisibility(View.GONE);
+					fragmentHistory.getListView().setVisibility(View.VISIBLE);
+				}
 				break;
 			case ABOUT_MESSAGE_TYPE:
 
@@ -137,8 +144,8 @@ public class MainActivity extends FragmentActivity {
 		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 
-		fragmentMark = new FragmentMark(mHandler);
-		fragmentHistory = new FragmentMark(mHandler);
+		fragmentMark = new FragmentMark(mHandler,MarkInfo.TYPE_MARK);
+		fragmentHistory = new FragmentMark(mHandler,MarkInfo.TYPE_HISTORY);
 		fragmentMore = new FragmentMore();
 		fragmentCata = new FragmentCatalog();
 
@@ -194,7 +201,6 @@ public class MainActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.main_activity, menu);
 		return true;
 	}
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

@@ -344,13 +344,21 @@ public class BookPageFactory {
 		return isLastPage;
 	}
 
-	public int getCurPostion() {
-		return mBufEnd;
+	public int getPostion() {
+		int position=mBufBegin;
+		int scollLine = (int) FloatMath
+				.ceil((-scrollY / (spaceLineSize + contentFontSize)));
+		for (int i = 0; i < scollLine; i++) {
+			try {
+				position += mContentVector.get(i).getBytes(mCharsetName).length;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return position;
 	}
 
-	public int getCurPostionBeg() {
-		return mBufBegin;
-	}
 
 	public void setBeginPos(int pos) {
 		mBufEnd = pos;
@@ -810,5 +818,7 @@ public class BookPageFactory {
 		}
 		return lines;
 	}
+
+	
 
 }
