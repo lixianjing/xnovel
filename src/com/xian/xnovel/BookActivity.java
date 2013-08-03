@@ -53,7 +53,7 @@ public class BookActivity extends Activity {
 
 		Intent intent = getIntent();
 		bookTitle = intent.getStringExtra(AppSettings.TITLE);
-		bookContent = intent.getStringExtra(AppSettings.TITLE);
+		bookContent = intent.getStringExtra(AppSettings.CONTENT);
 		bookID = intent.getIntExtra(AppSettings.ID, 0);
 		position = intent.getLongExtra(AppSettings.POSITION, 0);
 		if (bookID != 0) {
@@ -95,8 +95,8 @@ public class BookActivity extends Activity {
 		// TODO Auto-generated method stub
 		wakeLock.release();
 		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
-				pagefactory.getPostion(), System.currentTimeMillis(),
-				MarkInfo.TYPE_HISTORY);
+				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
+				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
 		AppDBControl.getInstance(mContext).insertMark(info);
 		super.onStop();
 	}

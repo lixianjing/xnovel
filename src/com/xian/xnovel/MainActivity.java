@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
@@ -30,12 +31,15 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	public static final int CATALOG_MESSAGE_TYPE = 0;
 	public static final int MARK_MESSAGE_TYPE = 1;
 	public static final int HISTORY_MESSAGE_TYPE = 2;
 	public static final int ABOUT_MESSAGE_TYPE = 3;
+
+	public static final int MSG_NO_DATA = 0;
+	public static final int MSG_HAVE_DATA = 1;
 
 	private final int TABS_COUNT = 4;
 	private int currIndex = 0;
@@ -60,21 +64,22 @@ public class MainActivity extends FragmentActivity {
 
 				break;
 			case MARK_MESSAGE_TYPE:
-				if (msg.arg1 == 0) {
+				if (msg.arg1 == MSG_NO_DATA) {
 					fragmentMark.getMarkTV().setVisibility(View.VISIBLE);
-					fragmentMark.getListView().setVisibility(View.GONE);
+					fragmentMark.getMarkLV().setVisibility(View.GONE);
 				} else {
 					fragmentMark.getMarkTV().setVisibility(View.GONE);
-					fragmentMark.getListView().setVisibility(View.VISIBLE);
+					fragmentMark.getMarkLV().setVisibility(View.VISIBLE);
 				}
 				break;
 			case HISTORY_MESSAGE_TYPE:
-				if (msg.arg1 == 0) {
+				Log.e("lmf", ">>>>>HISTORY_MESSAGE_TYPE>>>>>>>>>>>>" + msg.arg1);
+				if (msg.arg1 == MSG_NO_DATA) {
 					fragmentHistory.getMarkTV().setVisibility(View.VISIBLE);
-					fragmentHistory.getListView().setVisibility(View.GONE);
+					fragmentHistory.getMarkLV().setVisibility(View.GONE);
 				} else {
 					fragmentHistory.getMarkTV().setVisibility(View.GONE);
-					fragmentHistory.getListView().setVisibility(View.VISIBLE);
+					fragmentHistory.getMarkLV().setVisibility(View.VISIBLE);
 				}
 				break;
 			case ABOUT_MESSAGE_TYPE:
@@ -127,7 +132,7 @@ public class MainActivity extends FragmentActivity {
 		tabsList.add((TextView) findViewById(R.id.tab_btn_more));
 
 		for (int i = 0; i < TABS_COUNT; i++) {
-			tabsList.get(i).setOnClickListener(new MyOnClickListener(i));
+			tabsList.get(i).setOnClickListener(this);
 		}
 
 		InitViewPager();
@@ -144,8 +149,8 @@ public class MainActivity extends FragmentActivity {
 		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
 
-		fragmentMark = new FragmentMark(mHandler,MarkInfo.TYPE_MARK);
-		fragmentHistory = new FragmentMark(mHandler,MarkInfo.TYPE_HISTORY);
+		fragmentMark = new FragmentMark(mHandler, MarkInfo.TYPE_MARK);
+		fragmentHistory = new FragmentMark(mHandler, MarkInfo.TYPE_HISTORY);
 		fragmentMore = new FragmentMore();
 		fragmentCata = new FragmentCatalog();
 
@@ -163,36 +168,39 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public void onPageSelected(int arg0) {
-
+			Log.e("lmf", "onPageSelected>>>>>>>>>>>>");
 			tabsList.get(currIndex).setSelected(false);
 			setCurrentPage(arg0);
 		}
 
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			Log.e("lmf", "onPageScrolled>>>>>>>>>>>>");
 		}
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
+			Log.e("lmf", "onPageScrollStateChanged>>>>>>>>>>>>");
 		}
 	}
-
-	public class MyOnClickListener implements View.OnClickListener {
-		private int index = 0;
-
-		public MyOnClickListener(int i) {
-			index = i;
-		}
-
-		@Override
-		public void onClick(View v) {
-			mPager.setCurrentItem(index);
-		}
-	};
 
 	private void setCurrentPage(int index) {
 		tabsList.get(index).setSelected(true);
 		currIndex = index;
+		switch (index) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			fragmentHistory.update();
+			break;
+		case 3:
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -223,6 +231,30 @@ public class MainActivity extends FragmentActivity {
 			DialogManager.showToast(mContext, "在按一次退出应用", EXIT_DURATION);
 			exitTime = System.currentTimeMillis();
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.tab_btn_category:
+			mPager.setCurrentItem(0);
+			break;
+		case R.id.tab_btn_bookmark:
+			mPager.setCurrentItem(1);
+			break;
+		case R.id.tab_btn_history:
+			mPager.setCurrentItem(2);
+			fragmentHistory.update();
+			break;
+		case R.id.tab_btn_more:
+			mPager.setCurrentItem(3);
+			break;
+
+		default:
+			break;
+		}
+
 	}
 
 }

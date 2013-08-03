@@ -9,7 +9,6 @@ import com.xian.xnovel.db.AppDBManager.Tables;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -123,6 +122,8 @@ public class AppDBControl {
 									.getColumnIndex(BookCatalogColumns.CONTENT)),
 							cursor.getLong(cursor
 									.getColumnIndex(BookMarkColumns.POSITION)),
+							cursor.getString(cursor
+									.getColumnIndex(BookMarkColumns.PERCENT)),
 							cursor.getLong(cursor
 									.getColumnIndex(BookMarkColumns.DATE)),
 							cursor.getInt(cursor
@@ -147,6 +148,8 @@ public class AppDBControl {
 		builder.append(" ,");
 		builder.append(BookMarkColumns.POSITION);
 		builder.append(" ,");
+		builder.append(BookMarkColumns.PERCENT);
+		builder.append(" ,");
 		builder.append(BookMarkColumns.DATE);
 		builder.append(" ,");
 		builder.append(BookMarkColumns.TYPE);
@@ -154,7 +157,9 @@ public class AppDBControl {
 		builder.append(info.getCid());
 		builder.append(",");
 		builder.append(info.getPosition());
-		builder.append(",");
+		builder.append(",'");
+		builder.append(info.getPercent());
+		builder.append("',");
 		builder.append(System.currentTimeMillis());
 		builder.append(",");
 		builder.append(info.getType());

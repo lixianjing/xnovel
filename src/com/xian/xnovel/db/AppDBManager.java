@@ -53,8 +53,10 @@ public class AppDBManager {
 		builder.append(" INTEGER ,");
 		builder.append(BookMarkColumns.POSITION);
 		builder.append(" INTEGER ,");
-		builder.append(BookMarkColumns.DATE);
+		builder.append(BookMarkColumns.PERCENT);
 		builder.append(" TEXT ,");
+		builder.append(BookMarkColumns.DATE);
+		builder.append(" LONG ,");
 		builder.append(BookMarkColumns.TYPE);
 		builder.append(" INTEGER DEFAULT 0  );");
 		
@@ -229,6 +231,7 @@ public class AppDBManager {
 		public static final String _ID = "_id";
 		public static final String CID = "cid";
 		public static final String POSITION = "position";
+		public static final String PERCENT = "percent";
 		public static final String DATE = "date";
 		public static final String TYPE = "type";
 	}

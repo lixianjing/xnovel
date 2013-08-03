@@ -5,6 +5,7 @@ import java.util.List;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 	private List<Fragment> fragmentsList;
@@ -25,6 +26,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int arg0) {
+		Log.e("lmf", ">>>>>>getItem>>>>>>>>");
 		return fragmentsList.get(arg0);
 	}
 

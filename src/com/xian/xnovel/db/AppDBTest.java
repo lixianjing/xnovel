@@ -32,7 +32,7 @@ public class AppDBTest extends AndroidTestCase {
 
 	public void testInsertMark() throws Throwable {
 		AppDBControl control = AppDBControl.getInstance(this.getContext());
-		MarkInfo info = new MarkInfo(10, 15, "test", "content", 2000,
+		MarkInfo info = new MarkInfo(10, 15, "test", "content", 2000,"20.15%",
 				System.currentTimeMillis(), 0);
 		control.insertMark(info);
 	}

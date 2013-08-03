@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
-        android:src="@drawable/list_catalog_item" />
+        android:src="@drawable/list_catalog_icon_selector" />
 
     <LinearLayout
         android:layout_width="match_parent"

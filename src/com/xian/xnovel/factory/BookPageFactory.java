@@ -50,10 +50,10 @@ public class BookPageFactory {
 	private int preLoadPage = 2; // 预加载页数
 	private int preLoadLineCount;
 	private int curContentHeight;// 当前加载内容的长度;
-	private float curProgress = 0;// 当前的进度
 	private int mVisibleHeight; // 绘制内容的高
 	private int mVisibleWidth; // 绘制内容的宽
-
+	private int curPosition;
+	private String curPercent;
 	// 布局设置
 	private int marginWidth = 20; // 左右与边缘的距离
 	private int marginHeight = 20; // 上下与边缘的距离
@@ -79,7 +79,6 @@ public class BookPageFactory {
 	private SimpleDateFormat timeFormatter;
 	private Date curDate;
 
-	private float offsetY;
 	private float scrollY = 0f;
 
 	private static BookPageFactory factory;
@@ -300,8 +299,9 @@ public class BookPageFactory {
 	}
 
 	private void drawBottom(Canvas canvas) {
-		canvas.drawText(getCurrentProcessStr(), mWidth - marginWidth
-				- getProcessWidth(), getBottomDrawHeight(), bottomPaint);
+		calCurProcess();
+		canvas.drawText(curPercent, mWidth - marginWidth - getProcessWidth(),
+				getBottomDrawHeight(), bottomPaint);
 
 		curDate.setTime(System.currentTimeMillis());
 		canvas.drawText(timeFormatter.format(curDate), marginWidth,
@@ -312,11 +312,23 @@ public class BookPageFactory {
 				bottomPaint);
 	}
 
-	public String getCurrentProcessStr() {
-		String strPercent = null;
-		curProgress = (float) (mBufBegin * 1.0 / mBufLen);
-		strPercent = percentFormatter.format(curProgress);
-		return strPercent;
+	public void calCurProcess() {
+		float curProgress = 0f;
+		curPosition = mBufBegin;
+		if (scrollY != 0) {
+			int scollLine = (int) FloatMath
+					.ceil((-scrollY / (spaceLineSize + contentFontSize)));
+			for (int i = 0; i < scollLine; i++) {
+				try {
+					curPosition += mContentVector.get(i).getBytes(mCharsetName).length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		curProgress = (float) (curPosition * 1.0 / mBufLen);
+		curPercent = percentFormatter.format(curProgress);
 	}
 
 	public int getProcessWidth() {
@@ -344,21 +356,14 @@ public class BookPageFactory {
 		return isLastPage;
 	}
 
-	public int getPostion() {
-		int position=mBufBegin;
-		int scollLine = (int) FloatMath
-				.ceil((-scrollY / (spaceLineSize + contentFontSize)));
-		for (int i = 0; i < scollLine; i++) {
-			try {
-				position += mContentVector.get(i).getBytes(mCharsetName).length;
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return position;
+	
+	public int getCurPosition() {
+		return curPosition;
 	}
 
+	public String getCurPercent() {
+		return curPercent;
+	}
 
 	public void setBeginPos(int pos) {
 		mBufEnd = pos;
@@ -385,7 +390,6 @@ public class BookPageFactory {
 	}
 
 	public void setOffsetY(float offsetY) {
-		this.offsetY = offsetY;
 		if (!isLastPage || scrollY + curContentHeight > mVisibleHeight
 				|| offsetY > 0) {
 			scrollY += offsetY;
@@ -805,8 +809,8 @@ public class BookPageFactory {
 			}
 		}
 
-		curContentHeight = lines.size()  * (spaceLineSize + contentFontSize);
-		scrollY = -(lines.size()  - loadCount)
+		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
+		scrollY = -(lines.size() - loadCount)
 				* (spaceLineSize + contentFontSize);
 
 		if (scrollY > 0)
@@ -818,7 +822,5 @@ public class BookPageFactory {
 		}
 		return lines;
 	}
-
-	
 
 }

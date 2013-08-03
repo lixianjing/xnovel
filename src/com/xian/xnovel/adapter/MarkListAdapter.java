@@ -24,12 +24,14 @@ public class MarkListAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
 	private List<MarkInfo> dataList;
-	private SimpleDateFormat formatter;
+	private SimpleDateFormat dateFormatter;
+	private SimpleDateFormat timeFormatter;
 
 	public MarkListAdapter(Context context, List<MarkInfo> list) {
 		this.mInflater = LayoutInflater.from(context);
 		dataList = list;
-		formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		timeFormatter = new SimpleDateFormat("HH:mm:ss");
 
 	}
 
@@ -76,13 +78,14 @@ public class MarkListAdapter extends BaseAdapter {
 		MarkInfo info = dataList.get(position);
 
 		if (info.getType() == MarkInfo.TYPE_HISTORY) {
-			holder.iconIv.setImageResource(R.drawable.history_item_icon);
+			holder.iconIv.setImageResource(R.drawable.list_history_icon_selector);
 		} else {
-			holder.iconIv.setImageResource(R.drawable.bookmark_icon);
+			holder.iconIv.setImageResource(R.drawable.list_mark_icon_selector);
 		}
 
 		holder.positionTv.setText(info.getPosition() + "");
-		holder.dateTv.setText(formatter.format(new Date(info.getDate())));
+		Date date=new Date(info.getDate());
+		holder.dateTv.setText(dateFormatter.format(date)+"\n"+timeFormatter.format(date));
 		holder.titleTv.setText(info.getTitle());
 		String[] strs = info.getContent().split(" ");
 		holder.content1Tv.setText(strs[0]);

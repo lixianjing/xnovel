@@ -1,44 +1,54 @@
 package com.xian.xnovel.domain;
 
-
 public class MarkInfo {
-	
-	public static final int TYPE_HISTORY=0;
-	public static final int TYPE_MARK=1;
-	
+
+	public static final int TYPE_HISTORY = 0;
+	public static final int TYPE_MARK = 1;
+
 	private int id;
 	private int cid;
 	private String title;
 	private String content;
 	private long position;
+	private String percent;
 	private long date;
 	private int type;
-	
+
 	public MarkInfo() {
 		super();
 	}
 
 	public MarkInfo(int id, int cid, String title, String content,
-			long position, long date, int type) {
+			long position, String percent, long date, int type) {
 		super();
 		this.id = id;
 		this.cid = cid;
 		this.title = title;
 		this.content = content;
 		this.position = position;
+		this.percent = percent;
 		this.date = date;
 		this.type = type;
 	}
-	
-	public MarkInfo( int cid, String title, String content,
-			long position, long date, int type) {
+
+	public MarkInfo(int cid, String title, String content, long position,
+			String percent, long date, int type) {
 		super();
 		this.cid = cid;
 		this.title = title;
 		this.content = content;
 		this.position = position;
+		this.percent = percent;
 		this.date = date;
 		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		return "MarkInfo [id=" + id + ", cid=" + cid + ", title=" + title
+				+ ", content=" + content + ", position=" + position
+				+ ", percent=" + percent + ", date=" + date + ", type=" + type
+				+ "]";
 	}
 
 	public int getId() {
@@ -97,14 +107,12 @@ public class MarkInfo {
 		this.type = type;
 	}
 
-	@Override
-	public String toString() {
-		return "MarkInfo [id=" + id + ", cid=" + cid + ", title=" + title
-				+ ", content=" + content + ", position=" + position + ", date="
-				+ date + ", type=" + type + "]";
+	public String getPercent() {
+		return percent;
 	}
-	
-	
 
-	
+	public void setPercent(String percent) {
+		this.percent = percent;
+	}
+
 }
