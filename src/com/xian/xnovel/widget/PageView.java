@@ -128,15 +128,9 @@ public class PageView extends View {
 					&& System.currentTimeMillis() - onclickTime < ONCLICK_TIME) {
 				int temp = MainApplication.sWidth / 3;
 				if (mDownX < temp) {
-					Log.e("lmf",
-							"uppage>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 					updatePageInfo(DIR_PRE_PAGE);
 				} else if (mDownX < temp * 2) {
-					Log.e("lmf",
-							"popmenu>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 				} else {
-					Log.e("lmf",
-							"nextpage>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 					updatePageInfo(DIR_NEXT_PAGE);
 				}
 

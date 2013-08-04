@@ -83,7 +83,7 @@ public class MarkListAdapter extends BaseAdapter {
 			holder.iconIv.setImageResource(R.drawable.list_mark_icon_selector);
 		}
 
-		holder.positionTv.setText(info.getPosition() + "");
+		holder.positionTv.setText(info.getPercent());
 		Date date=new Date(info.getDate());
 		holder.dateTv.setText(dateFormatter.format(date)+"\n"+timeFormatter.format(date));
 		holder.titleTv.setText(info.getTitle());

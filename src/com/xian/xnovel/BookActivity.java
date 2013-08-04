@@ -26,21 +26,21 @@ public class BookActivity extends Activity {
 
 	public final static int VOLUME_UP_KEYCODE = 24;
 	public final static int VOLUME_DOWN_KEYCODE = 25;
+	public final static int BACK_KEYCODE = 4;
 
 	private PageView mPageView;
 	private BookPageFactory pagefactory;
-	int curPostion;
 	private Context mContext;
 	private String bookTitle, bookContent;
 	private int bookID;
 	private long position;
 	private PowerManager powerManager = null;
 	private WakeLock wakeLock = null;
+	private boolean isSaveHistory = true;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.e("lmf", "onCreate>>>>>>>>>");
 
 		mContext = this;
 		powerManager = (PowerManager) this
@@ -57,14 +57,14 @@ public class BookActivity extends Activity {
 		bookID = intent.getIntExtra(AppSettings.ID, 0);
 		position = intent.getLongExtra(AppSettings.POSITION, 0);
 		if (bookID != 0) {
-			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookContent + ":"
-					+ bookID);
+			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookID + ":"
+					+ bookContent + ":" + position);
 			mPageView = new PageView(this);
 			setContentView(mPageView);
 			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
-
+			pagefactory.setBeginPos((int) position);
 			// pagefactory.drawPageBitmap();
 			mPageView.invalidate();
 
@@ -79,7 +79,6 @@ public class BookActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "BookActivity>>>>>>>>>>>>onDestroy");
 		super.onDestroy();
 	}
 
@@ -94,17 +93,16 @@ public class BookActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		wakeLock.release();
-		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
-				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
-				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
-		AppDBControl.getInstance(mContext).insertMark(info);
+		if (isSaveHistory) {
+			saveHistory();
+			isSaveHistory = false;
+		}
 		super.onStop();
 	}
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "onKeyup" + keyCode);
 		switch (keyCode) {
 		case VOLUME_UP_KEYCODE:
 			return true;
@@ -120,7 +118,6 @@ public class BookActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "onKeyDown" + keyCode);
 		switch (keyCode) {
 		case VOLUME_UP_KEYCODE:
 			pagefactory.updatePageModePrePage();
@@ -130,10 +127,22 @@ public class BookActivity extends Activity {
 			pagefactory.updatePageModeNextPage();
 			mPageView.invalidate();
 			return true;
-
+		case BACK_KEYCODE:
+			if (isSaveHistory) {
+				saveHistory();
+				isSaveHistory = false;
+			}
+			return super.onKeyDown(keyCode, event);
 		default:
 			return super.onKeyDown(keyCode, event);
 		}
+	}
+
+	private void saveHistory() {
+		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
+				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
+				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
+		AppDBControl.getInstance(mContext).insertMark(info);
 	}
 
 }

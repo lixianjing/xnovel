@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,8 +49,7 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("lmf",
-				"FragmentCatalog-----onCreate>>" + System.currentTimeMillis());
+		Log.d("lmf", "FragmentMark-----onCreate>>" + System.currentTimeMillis());
 		mContext = this.getActivity();
 		dbControl = AppDBControl.getInstance(mContext);
 
@@ -58,12 +58,30 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Log.d("lmf",
+				"FragmentMark-----onCreateView>>" + System.currentTimeMillis());
 		View view = inflater.inflate(R.layout.fragment_mark, container, false);
 		markTV = (TextView) view.findViewById(R.id.mark_tv);
 		markLV = (ListView) view.findViewById(R.id.mark_lv);
 		markLV.setOnItemClickListener(this);
 		markLV.setOnItemLongClickListener(this);
 		return view;
+	}
+
+	@Override
+	public void onResume() {
+		Log.d("lmf", "FragmentMark-----onResume>>" + System.currentTimeMillis());
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
+	@Override
+	public void onStart() {
+		Log.d("lmf", "FragmentMark-----onStart>>" + System.currentTimeMillis());
+		loadData();
+
+		// TODO Auto-generated method stub
+		super.onStart();
 	}
 
 	@Override
@@ -77,26 +95,26 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 			protected void onPreExecute() {
 				if (markInfos == null || markInfos.size() == 0) {
 					markInfos = dbControl.queryMark(type, 0, 10);
-				}
-				dataSize = markInfos.size();
-				Log.e("lmf", "FragmentMark>>>>>>>loadData>>>>>>" + dataSize);
-				if (dataSize != 0) {
-					if (adapter == null) {
-						adapter = new MarkListAdapter(mContext, markInfos);
+					dataSize = markInfos.size();
+					if (dataSize != 0) {
+						if (adapter == null) {
+							adapter = new MarkListAdapter(mContext, markInfos);
+						}
+						markLV.setAdapter(adapter);
+						Message msg = handler.obtainMessage();
+						msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
+								: MainActivity.MARK_MESSAGE_TYPE;
+						msg.arg1 = MainActivity.MSG_HAVE_DATA;
+						handler.sendMessage(msg);
+					} else {
+						Message msg = handler.obtainMessage();
+						msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
+								: MainActivity.MARK_MESSAGE_TYPE;
+						msg.arg1 = MainActivity.MSG_NO_DATA;
+						handler.sendMessage(msg);
 					}
-					markLV.setAdapter(adapter);
-					Message msg = handler.obtainMessage();
-					msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
-							: MainActivity.MARK_MESSAGE_TYPE;
-					msg.arg1 = MainActivity.MSG_HAVE_DATA;
-					handler.sendMessage(msg);
-				} else {
-					Message msg = handler.obtainMessage();
-					msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
-							: MainActivity.MARK_MESSAGE_TYPE;
-					msg.arg1 = MainActivity.MSG_NO_DATA;
-					handler.sendMessage(msg);
 				}
+
 			};
 
 			@Override
@@ -114,8 +132,6 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 					markInfos = result;
 					adapter.setDataList(markInfos);
 					adapter.notifyDataSetChanged();
-					Log.e("lmf", "FragmentMark>>>>>>>loadData>>>>>>"
-							+ markInfos.size());
 				}
 
 			};
@@ -159,7 +175,5 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 				Toast.LENGTH_SHORT).show();
 
 	}
-	public void update(){
-		loadData();
-	}
+
 }

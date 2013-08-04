@@ -95,9 +95,7 @@ public class FragmentCatalog extends ListFragment {
 			}
 
 			protected void onPostExecute(java.util.List<CatalogInfo> result) {
-				Log.e("lmf", "onPostExecute--------");
 				catalogInfos = result;
-				Log.e("lmf", "onPostExecute--------" + catalogInfos.size());
 				adapter.setDataList(catalogInfos);
 				adapter.notifyDataSetChanged();
 				// FragmentCatalog.this.getListView().postInvalidate();

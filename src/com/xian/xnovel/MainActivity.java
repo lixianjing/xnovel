@@ -1,14 +1,12 @@
 package com.xian.xnovel;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MyFragmentPagerAdapter;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
-import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
 
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.view.Window;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
@@ -47,7 +44,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private List<Fragment> fragmentsList;
 	private List<TextView> tabsList;
 	private Context mContext;
-
+	
 	private FragmentMark fragmentMark;
 	private FragmentMark fragmentHistory;
 	private Fragment fragmentMore;
@@ -73,7 +70,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				}
 				break;
 			case HISTORY_MESSAGE_TYPE:
-				Log.e("lmf", ">>>>>HISTORY_MESSAGE_TYPE>>>>>>>>>>>>" + msg.arg1);
 				if (msg.arg1 == MSG_NO_DATA) {
 					fragmentHistory.getMarkTV().setVisibility(View.VISIBLE);
 					fragmentHistory.getMarkLV().setVisibility(View.GONE);
@@ -96,10 +92,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.e("lmf",
-				"MainActivity>>>>>>onCreate>>>>start>>"
-						+ System.currentTimeMillis());
-		long startTime = System.currentTimeMillis();
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
@@ -119,9 +111,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 		initView();
 		initData();
-		Long endTime = System.currentTimeMillis();
-		Log.e("lmf", "MainActivity>>>>>>onCreate>>>>end>>"
-				+ (endTime - startTime));
 	}
 
 	private void initView() {
@@ -168,39 +157,35 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 		@Override
 		public void onPageSelected(int arg0) {
-			Log.e("lmf", "onPageSelected>>>>>>>>>>>>");
 			tabsList.get(currIndex).setSelected(false);
 			setCurrentPage(arg0);
 		}
 
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			Log.e("lmf", "onPageScrolled>>>>>>>>>>>>");
 		}
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
-			Log.e("lmf", "onPageScrollStateChanged>>>>>>>>>>>>");
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 	private void setCurrentPage(int index) {
 		tabsList.get(index).setSelected(true);
 		currIndex = index;
-		switch (index) {
-		case 0:
-			break;
-		case 1:
-			break;
-		case 2:
-			fragmentHistory.update();
-			break;
-		case 3:
-			break;
 
-		default:
-			break;
-		}
 	}
 
 	@Override
@@ -245,7 +230,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.tab_btn_history:
 			mPager.setCurrentItem(2);
-			fragmentHistory.update();
 			break;
 		case R.id.tab_btn_more:
 			mPager.setCurrentItem(3);

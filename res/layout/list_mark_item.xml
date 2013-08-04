@@ -35,8 +35,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="@color/cata_text_se"
-                android:textSize="18.0sp" />
+                android:textColor="@color/mark_tv_percent_se"
+                android:textSize="20.0sp" />
 
             <TextView
                 android:id="@+id/list_mark_tv_date"

@@ -26,7 +26,6 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int arg0) {
-		Log.e("lmf", ">>>>>>getItem>>>>>>>>");
 		return fragmentsList.get(arg0);
 	}
 

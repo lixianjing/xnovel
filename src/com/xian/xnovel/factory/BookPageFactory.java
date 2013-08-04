@@ -66,8 +66,8 @@ public class BookPageFactory {
 	private int spaceLineSize = 20;// 行间距大小
 
 	// 底部文字设置
-	private int bottomFontSize = 15;// 底部文字大小
-	private int bottomHeight = 25;// 底部文字高度
+	private int bottomFontSize = 20;// 底部文字大小
+	private int bottomHeight = 30;// 底部文字高度
 
 	private boolean isFirstPage, isLastPage;
 	private String fileName = null;
@@ -270,7 +270,7 @@ public class BookPageFactory {
 		float y = topHeight;
 		if (loadMode == LOAD_MODE_SCROLL) {
 			if (mContentVector.size() == 0) {
-				mContentVector = scrollInitLoadContent(0);
+				mContentVector = scrollInitLoadContent(mBufBegin);
 			}
 			y += scrollY;
 		} else {
@@ -597,7 +597,7 @@ public class BookPageFactory {
 
 	public Vector<String> scrollInitLoadContent(int begin) {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "loadContentNext");
+		LogUtils.log(TAG, "scrollInitLoadContent",mBufBegin,mBufEnd);
 		scrollY = 0;
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
