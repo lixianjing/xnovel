@@ -24,7 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class FragmentCatalog extends ListFragment {
+public class CatalogLinearLayout extends ListFragment {
 	private static final String TAG = "FragmentCatalog";
 
 	private Context mContext;
@@ -76,7 +76,7 @@ public class FragmentCatalog extends ListFragment {
 				if (adapter == null) {
 					adapter = new CatalogListAdapter(mContext, catalogInfos);
 				}
-				FragmentCatalog.this.setListAdapter(adapter);
+				CatalogLinearLayout.this.setListAdapter(adapter);
 			};
 
 			@Override

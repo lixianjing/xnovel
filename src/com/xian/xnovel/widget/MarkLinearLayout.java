@@ -39,22 +39,27 @@ public class MarkLinearLayout extends LinearLayout implements
 	public MarkLinearLayout(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		mContext = context;
+		init(context);
 	}
 
 	public MarkLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
-		mContext = context;
+		init(context);
 	}
 
 	public MarkLinearLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
+		init(context);
 
 	}
 
-	private void init() {
+	private void init(Context context) {
+		mContext = context;
+	}
+
+	public void initView() {
 		dbControl = AppDBControl.getInstance(mContext);
 		markTV = (TextView) this.findViewById(R.id.mark_tv);
 		markLV = (ListView) this.findViewById(R.id.mark_lv);
@@ -77,7 +82,6 @@ public class MarkLinearLayout extends LinearLayout implements
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 		Intent intent = new Intent(mContext, BookActivity.class);
-
 		MarkInfo tempInfo = markInfos.get(arg2);
 		intent.putExtra(AppSettings.ID, tempInfo.getCid());
 		intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());

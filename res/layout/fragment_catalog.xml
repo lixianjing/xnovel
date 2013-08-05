@@ -6,7 +6,7 @@
     android:padding="@dimen/padding_medium" >
 
     <ListView
-        android:id="@id/android:list"
+        android:id="@+id/catalog_lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/main_layout_bkg"
