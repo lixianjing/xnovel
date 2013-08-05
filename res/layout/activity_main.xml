@@ -1,93 +1,113 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
     <RelativeLayout
-        android:id="@+id/main_title_view"
+        android:id="@+id/main_rl_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/main_title_layout_height"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/title_bar_bkg"
-        android:gravity="center_vertical" >
+        android:layout_height="match_parent" >
 
-        <Button
+        <RelativeLayout
+            android:id="@+id/main_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_title_layout_height"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/title_bar_bkg"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/mainTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/app_name" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_body_pager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="center_vertical"
-            android:visibility="gone" />
+            android:layout_above="@+id/main_card_tab_view"
+            android:layout_below="@id/main_title_view"
+            android:layout_gravity="center"
+            android:background="#000000"
+            android:flipInterval="30"
+            android:persistentDrawingCache="animation" />
 
         <LinearLayout
+            android:id="@+id/main_card_tab_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
+            android:layout_height="@dimen/main_tab_layout_height"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/tabmenu_background"
+            android:gravity="fill_horizontal|bottom|center"
             android:orientation="horizontal" >
 
             <TextView
-                style="@style/mainTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@string/app_name" />
+                android:id="@+id/tab_btn_category"
+                style="@style/TabIcon"
+                android:drawableTop="@drawable/tabicon_category"
+                android:text="@string/tab_cate_text" />
 
+            <TextView
+                android:id="@+id/tab_btn_bookmark"
+                style="@style/TabIcon"
+                android:drawableTop="@drawable/tabicon_bookmark"
+                android:text="@string/tab_bookmark_text" />
+
+            <TextView
+                android:id="@+id/tab_btn_history"
+                style="@style/TabIcon"
+                android:drawableTop="@drawable/tabicon_history"
+                android:text="@string/tab_history_text" />
+
+            <TextView
+                android:id="@+id/tab_btn_more"
+                style="@style/TabIcon"
+                android:drawableTop="@drawable/tabicon_more"
+                android:text="@string/tab_more_text" />
         </LinearLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:gravity="center_vertical"
-            android:visibility="gone" />
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/main_body_pager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/main_card_tab_view"
-        android:layout_below="@id/main_title_view"
-        android:layout_gravity="center"
-        android:background="#000000"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation" />
-
-    <LinearLayout
-        android:id="@+id/main_card_tab_view"
+    <RelativeLayout
+        android:id="@+id/main_rl_cover"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/main_tab_layout_height"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/tabmenu_background"
-        android:gravity="fill_horizontal|bottom|center"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent"
+        android:background="@drawable/main_cover" >
 
         <TextView
-            android:id="@+id/tab_btn_category"
-            style="@style/TabIcon"
-            android:drawableTop="@drawable/tabicon_category"
-            android:text="@string/tab_cate_text" />
+            android:id="@+id/main_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"
+            android:text="初始化中" />
+    </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tab_btn_bookmark"
-            style="@style/TabIcon"
-            android:drawableTop="@drawable/tabicon_bookmark"
-            android:text="@string/tab_bookmark_text" />
-
-        <TextView
-            android:id="@+id/tab_btn_history"
-            style="@style/TabIcon"
-            android:drawableTop="@drawable/tabicon_history"
-            android:text="@string/tab_history_text" />
-
-
-        <TextView
-            android:id="@+id/tab_btn_more"
-            style="@style/TabIcon"
-            android:drawableTop="@drawable/tabicon_more"
-            android:text="@string/tab_more_text" />
-    </LinearLayout>
-
-</RelativeLayout>
+</FrameLayout>

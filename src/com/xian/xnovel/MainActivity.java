@@ -142,7 +142,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		fragmentHistory = new FragmentMark(mHandler, MarkInfo.TYPE_HISTORY);
 		fragmentMore = new FragmentMore();
 		fragmentCata = new FragmentCatalog();
-
 		fragmentsList.add(fragmentCata);
 		fragmentsList.add(fragmentMark);
 		fragmentsList.add(fragmentHistory);
