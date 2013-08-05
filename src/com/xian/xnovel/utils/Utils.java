@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.domain.CatalogInfo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,7 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.util.JsonReader;
+import android.util.Log;
 
 /**
  * @author limingfeng
@@ -104,6 +103,7 @@ public class Utils {
 
 	public static boolean copyFileFromAssets(Context context, String fileName,
 			String srcPath) {
+		Log.e("lmf","copyFileFromAssets>>>>>>>>>"+fileName+":"+srcPath);
 		try {
 
 			InputStream inStream = context.getAssets().open(srcPath);
@@ -165,9 +165,6 @@ public class Utils {
 		}
 		return null;
 	}
-
-
-
 
 	/***********************************************************
 	 * file control end
@@ -239,4 +236,5 @@ public class Utils {
 			}
 		}
 	}
+
 }

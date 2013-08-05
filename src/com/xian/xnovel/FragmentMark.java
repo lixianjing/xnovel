@@ -39,10 +39,10 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 	private ListView markLV;
 	private AppDBControl dbControl;
 	private int dataSize;
-	private Handler handler;
 
-	public FragmentMark(Handler handler, int type) {
-		this.handler = handler;
+	// private Handler handler;
+
+	public FragmentMark(int type) {
 		this.type = type;
 	}
 
@@ -101,17 +101,12 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 							adapter = new MarkListAdapter(mContext, markInfos);
 						}
 						markLV.setAdapter(adapter);
-						Message msg = handler.obtainMessage();
-						msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
-								: MainActivity.MARK_MESSAGE_TYPE;
-						msg.arg1 = MainActivity.MSG_HAVE_DATA;
-						handler.sendMessage(msg);
+						markTV.setVisibility(View.GONE);
+						markLV.setVisibility(View.VISIBLE);
 					} else {
-						Message msg = handler.obtainMessage();
-						msg.what = type == MarkInfo.TYPE_HISTORY ? MainActivity.HISTORY_MESSAGE_TYPE
-								: MainActivity.MARK_MESSAGE_TYPE;
-						msg.arg1 = MainActivity.MSG_NO_DATA;
-						handler.sendMessage(msg);
+						markTV.setVisibility(View.VISIBLE);
+						markLV.setVisibility(View.GONE);
+
 					}
 				}
 
