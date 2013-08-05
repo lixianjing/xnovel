@@ -20,13 +20,13 @@ public class ViewPagerAdapter extends PagerAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return 0;
+		return viewsList.size();
 	}
 
 	@Override
 	public boolean isViewFromObject(View arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		return false;
+		 return arg0==arg1;  
 	}
 
 	@Override
