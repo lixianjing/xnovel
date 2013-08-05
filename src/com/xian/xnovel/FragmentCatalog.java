@@ -31,14 +31,10 @@ public class FragmentCatalog extends ListFragment {
 	private CatalogListAdapter adapter;
 	private List<CatalogInfo> catalogInfos;
 	private AppDBControl dbControl;
-	private long startTime;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("lmf",
-				"FragmentCatalog-----onCreate>>" + System.currentTimeMillis());
-		startTime = System.currentTimeMillis();
 		mContext = this.getActivity();
 		dbControl = AppDBControl.getInstance(mContext);
 		loadData();
@@ -47,14 +43,8 @@ public class FragmentCatalog extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("lmf",
-				"FragmentCatalog-----onCreateView>>"
-						+ System.currentTimeMillis());
 		View view = inflater.inflate(R.layout.fragment_catalog, container,
 				false);
-		long endTime = System.currentTimeMillis();
-		Log.d("lmf", "FragmentCatalog-----onCreateView>>"
-				+ (endTime - startTime));
 		return view;
 
 	}

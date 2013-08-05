@@ -40,7 +40,6 @@ public class FragmentMark extends Fragment implements OnItemClickListener,
 	private AppDBControl dbControl;
 	private int dataSize;
 
-	// private Handler handler;
 
 	public FragmentMark(int type) {
 		this.type = type;

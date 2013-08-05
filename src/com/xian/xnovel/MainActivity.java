@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.adapter.MyFragmentPagerAdapter;
+import com.xian.xnovel.adapter.ViewPagerAdapter;
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
+import com.xian.xnovel.widget.MarkLinearLayout;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +34,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener {
 
 	public static final int MSG_TYPE_MAIN_INIT = 0;
 	public static final int MSG_TYPE_CATALOG = 101;
@@ -45,16 +48,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private final int TABS_COUNT = 4;
 	private int currIndex = 0;
 	private ViewPager mPager;
-	private List<Fragment> fragmentsList;
+	private List<View> viewsList;
 	private List<TextView> tabsList;
 	private Context mContext;
 	private boolean initData = true;
 	private boolean initFragment=false;
 
-	private FragmentMark fragmentMark;
-	private FragmentMark fragmentHistory;
-	private Fragment fragmentMore;
-	private Fragment fragmentCata;
+	private View catalogView,markView,historyView,moreView;
+//	private Fragment fragmentMore;
+//	private Fragment fragmentCata;
 	private RelativeLayout coverLayout, containerLayout;
 	private TextView coverTV;
 
@@ -130,19 +132,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		coverTV = (TextView) findViewById(R.id.main_tv_cover);
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
 
-		fragmentMark = new FragmentMark(MarkInfo.TYPE_MARK);
-		fragmentHistory = new FragmentMark(MarkInfo.TYPE_HISTORY);
-		fragmentMore = new FragmentMore();
-		fragmentCata = new FragmentCatalog();
 
-		new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				InitViewPager();
-			}
-		}).start();
+		InitViewPager();
 
 	}
 
@@ -150,6 +142,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 
 	private void InitViewPager() {
+		
+		LayoutInflater inflater=getLayoutInflater();
+		catalogView=inflater.inflate(R.layout.fragment_mark, null);
+		markView=inflater.inflate(R.layout.fragment_mark, null);
+		historyView=inflater.inflate(R.layout.fragment_mark, null);
+		moreView=inflater.inflate(R.layout.fragment_mark, null);
+		
 
 		tabsList = new ArrayList<TextView>(TABS_COUNT);
 		tabsList.add((TextView) findViewById(R.id.tab_btn_category));
@@ -162,15 +161,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 
 		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
-		fragmentsList = new ArrayList<Fragment>(TABS_COUNT);
+		viewsList = new ArrayList<View>(TABS_COUNT);
 
-		fragmentsList.add(fragmentCata);
-		fragmentsList.add(fragmentMark);
-		fragmentsList.add(fragmentHistory);
-		fragmentsList.add(fragmentMore);
+		viewsList.add(catalogView);
+		viewsList.add(markView);
+		viewsList.add(historyView);
+		viewsList.add(moreView);
 
-		mPager.setAdapter(new MyFragmentPagerAdapter(
-				getSupportFragmentManager(), fragmentsList));
+		mPager.setAdapter(new ViewPagerAdapter(viewsList));
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
 		mPager.setCurrentItem(0);
