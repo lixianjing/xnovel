@@ -70,7 +70,7 @@ public class BookPageFactory {
 	private int bottomHeight = 30;// 底部文字高度
 
 	private boolean isFirstPage, isLastPage;
-	private String fileName = null;
+	private String title = null;
 
 	private Paint mPaint;
 	private Paint bottomPaint;// 底部文字绘制
@@ -121,7 +121,7 @@ public class BookPageFactory {
 		mBufBegin = 0;
 		mBufEnd = 0;
 		mContentVector.clear();
-		fileName = null;
+		title = null;
 		if (mFileBuf != null) {
 			mFileBuf.clear();
 			mFileBuf = null;
@@ -149,16 +149,17 @@ public class BookPageFactory {
 		factory = null;
 	}
 
-	public void openbook(String filePath, String file, String fileName) {
+	public void openbook(String filePath, String file, String title) {
+		Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>"+filePath+":"+file+":"+title);
 		initFileDate();
-		this.fileName = fileName;
+		this.title = title;
 		try {
 			File book_file = new File(filePath, file);
 			long lLen = book_file.length();
 			mBufLen = (int) lLen;
 			mFileBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
-
+			Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>"+lLen);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -307,8 +308,8 @@ public class BookPageFactory {
 		canvas.drawText(timeFormatter.format(curDate), marginWidth,
 				getBottomDrawHeight(), bottomPaint);
 
-		canvas.drawText("《" + fileName + "》",
-				(mWidth - getFileNameWidth()) / 2, getBottomDrawHeight(),
+		canvas.drawText("《" + title + "》",
+				(mWidth - getTitleWidth()) / 2, getBottomDrawHeight(),
 				bottomPaint);
 	}
 
@@ -335,8 +336,8 @@ public class BookPageFactory {
 		return (int) bottomPaint.measureText("99.9%") + 1;
 	}
 
-	public int getFileNameWidth() {
-		return (int) bottomPaint.measureText("《" + fileName + "》") + 1;
+	public int getTitleWidth() {
+		return (int) bottomPaint.measureText("《" + title + "》") + 1;
 	}
 
 	public int getBottomDrawHeight() {
@@ -386,7 +387,7 @@ public class BookPageFactory {
 	}
 
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.title = fileName;
 	}
 
 	public void setOffsetY(float offsetY) {
