@@ -23,7 +23,8 @@
             android:id="@+id/list_mark_rl_content1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
 
@@ -51,9 +52,9 @@
 
         <LinearLayout
             android:id="@+id/list_mark_ll_content2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:orientation="vertical" >
 
             <TextView
@@ -61,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:textColor="@color/cata_text_se"
                 android:textSize="16.0sp"
                 android:textStyle="bold" />
