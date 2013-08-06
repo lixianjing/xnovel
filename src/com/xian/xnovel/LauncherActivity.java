@@ -42,32 +42,48 @@ public class LauncherActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
 		mContext = this;
-		SharedPreferences pre = this.getSharedPreferences(AppSettings.Settings,
-				Context.MODE_PRIVATE);
-		MainApplication.sWidth = pre.getInt(AppSettings.settings_width, 0);
-		MainApplication.sHeight = pre.getInt(AppSettings.settings_height, 0);
-
-		if (MainApplication.sWidth == 0) {
-			// we should calatue;
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			Editor editor = pre.edit();
-			editor.putInt(AppSettings.settings_width, dm.widthPixels);
-			editor.putInt(AppSettings.settings_height, dm.heightPixels);
-			editor.commit();
-			MainApplication.sWidth = dm.widthPixels;
-			MainApplication.sHeight = dm.heightPixels;
-			AppDatabaseHelper mDbHelper = new AppDatabaseHelper(this);
-			mDbHelper.getWritableDatabase();
-			initBookContent(mContext, 5);
-		} else {
-			mHandler.sendEmptyMessageDelayed(0, 1000);
-		}
-
+		initView();
+		initData();
 	}
 
 	private void initView() {
 		coverTV = (TextView) findViewById(R.id.main_tv_cover);
+	}
+
+	private void initData() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				SharedPreferences pre = mContext.getSharedPreferences(
+						AppSettings.Settings, Context.MODE_PRIVATE);
+				MainApplication.sWidth = pre.getInt(AppSettings.settings_width,
+						0);
+				MainApplication.sHeight = pre.getInt(
+						AppSettings.settings_height, 0);
+
+				if (MainApplication.sWidth == 0) {
+					coverTV.setText(R.string.launcher_first_load);
+					// we should calatue;
+					DisplayMetrics dm = new DisplayMetrics();
+					getWindowManager().getDefaultDisplay().getMetrics(dm);
+					Editor editor = pre.edit();
+					editor.putInt(AppSettings.settings_width, dm.widthPixels);
+					editor.putInt(AppSettings.settings_height, dm.heightPixels);
+					editor.commit();
+					MainApplication.sWidth = dm.widthPixels;
+					MainApplication.sHeight = dm.heightPixels;
+					AppDatabaseHelper mDbHelper = new AppDatabaseHelper(
+							mContext);
+					mDbHelper.getWritableDatabase();
+					initBookContent(mContext, 5);
+				} else {
+					coverTV.setText(R.string.launcher_load);
+					mHandler.sendEmptyMessageDelayed(0, 1000);
+				}
+			}
+		}).start();
 	}
 
 	private void initBookContent(Context context, int num) {

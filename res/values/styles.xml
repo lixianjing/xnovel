@@ -1,6 +1,5 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Light" />
 
     <drawable name="translucent_background">#00ffffff</drawable>
 
@@ -38,5 +37,15 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
-    
+        <style name="AppTheme" parent="android:Theme.Light">
+        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="AnimationActivity"  parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/back_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/back_exit</item>
+    </style>
 </resources>

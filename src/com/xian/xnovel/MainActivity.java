@@ -67,7 +67,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	private View catalogView, markView, historyView, moreView;
 
 
-	private long time;
 	// catalog
 	private CatalogListAdapter catalogAdapter;
 	private List<CatalogInfo> catalogInfos;
@@ -118,7 +117,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		time = System.currentTimeMillis();
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
@@ -131,23 +129,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void initView() {
 
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
-		time = System.currentTimeMillis();
 		InitViewPager();
-		Log.e("lmf", "initView>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - time));
-		time = System.currentTimeMillis();
 		initCatalogView();
-		Log.e("lmf", "initView>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - time));
-		time = System.currentTimeMillis();
 		initHistoryView();
-		Log.e("lmf", "initView>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - time));
-		time = System.currentTimeMillis();
 		initMoreView();
-		Log.e("lmf", "initView>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - time));
-		time = System.currentTimeMillis();
 	}
 
 	private void updateData() {

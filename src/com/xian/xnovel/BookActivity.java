@@ -16,6 +16,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class BookActivity extends Activity {
@@ -41,7 +42,9 @@ public class BookActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		//设置全屏  
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); 
 		mContext = this;
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
