@@ -103,7 +103,7 @@ public class Utils {
 
 	public static boolean copyFileFromAssets(Context context, String fileName,
 			String srcPath) {
-		Log.e("lmf","copyFileFromAssets>>>>>>>>>"+fileName+":"+srcPath);
+		Log.e("lmf","Utils copyFileFromAssets>>>>>>>>"+fileName+":"+srcPath);
 		try {
 
 			InputStream inStream = context.getAssets().open(srcPath);

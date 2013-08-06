@@ -63,13 +63,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	private List<View> viewsList;
 	private List<TextView> tabsList;
 	private Context mContext;
-	private boolean initData = true;
-	private boolean initFragment = false;
 	private AppDBControl dbControl;
 	private View catalogView, markView, historyView, moreView;
-	private RelativeLayout coverLayout, containerLayout;
-	private TextView coverTV;
 
+
+	private long time;
 	// catalog
 	private CatalogListAdapter catalogAdapter;
 	private List<CatalogInfo> catalogInfos;
@@ -97,12 +95,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			switch (msg.what) {
 			case MSG_TYPE_MAIN_INIT:
-				if (containerLayout.getVisibility() != View.VISIBLE && initData
-						&& initFragment) {
-					Log.e("lmf", "hello>>>>>>>>>>>");
-					containerLayout.setVisibility(View.VISIBLE);
-					coverLayout.setVisibility(View.GONE);
-				}
 				break;
 			case MSG_TYPE_CATALOG:
 
@@ -126,50 +118,36 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		long begin = System.currentTimeMillis();
+		time = System.currentTimeMillis();
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		mContext = this;
-		SharedPreferences pre = this.getSharedPreferences(AppSettings.Settings,
-				Context.MODE_PRIVATE);
-		MainApplication.sWidth = pre.getInt(AppSettings.settings_width, 0);
-		MainApplication.sHeight = pre.getInt(AppSettings.settings_height, 0);
-		Log.e("lmf", "MainActivity>>>>>>>>>>>>sWidth>>>>>>>>>>>>"
-				+ MainApplication.sWidth);
-		if (MainApplication.sWidth == 0) {
-			Log.e("lmf", "MainActivity>>>>>>>>>>>>init>>>>>>>>>>>>");
-			// we should calatue;
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			Editor editor = pre.edit();
-			editor.putInt(AppSettings.settings_width, dm.widthPixels);
-			editor.putInt(AppSettings.settings_height, dm.heightPixels);
-			editor.commit();
-			MainApplication.sWidth = dm.widthPixels;
-			MainApplication.sHeight = dm.heightPixels;
-			AppDatabaseHelper mDbHelper = new AppDatabaseHelper(this);
-			mDbHelper.getWritableDatabase();
-			initBookContent(mContext, 5);
-			initData = false;
-		}
 		dbControl = AppDBControl.getInstance(mContext);
 		initView();
-		Log.e("lmf", "onResume>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - begin));
 	}
+
 
 	private void initView() {
 
-		coverLayout = (RelativeLayout) findViewById(R.id.main_rl_cover);
-		containerLayout = (RelativeLayout) findViewById(R.id.main_rl_container);
-		coverTV = (TextView) findViewById(R.id.main_tv_cover);
 		mPager = (ViewPager) findViewById(R.id.main_body_pager);
-
+		time = System.currentTimeMillis();
 		InitViewPager();
+		Log.e("lmf", "initView>>>>>>>>>>>>>>"
+				+ (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 		initCatalogView();
+		Log.e("lmf", "initView>>>>>>>>>>>>>>"
+				+ (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 		initHistoryView();
+		Log.e("lmf", "initView>>>>>>>>>>>>>>"
+				+ (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 		initMoreView();
+		Log.e("lmf", "initView>>>>>>>>>>>>>>"
+				+ (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 	}
 
 	private void updateData() {
@@ -385,41 +363,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	}
 
-	public void initBookContent(Context context, int num) {
-		for (int i = 1; i <= num; i++) {
-			new LoadBookThread(context, i, num, AppSettings.BOOK_FILE_COUNT)
-					.start();
-		}
-	}
-
-	public class LoadBookThread extends Thread {
-		private int id;
-		private int offset;
-		private int max;
-		private Context context;
-
-		LoadBookThread(Context context, int id, int offset, int max) {
-			this.id = id;
-			this.offset = offset;
-			this.max = max;
-			this.context = context;
-		}
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			int i = id;
-			while (i <= max) {
-				Utils.copyFileFromAssets(context, AppSettings.BOOK_FILE_PREFIX
-						+ i, AppSettings.ASSETS_FILE_PATH + i);
-				i += offset;
-
-			}
-			initData = true;
-			mHandler.sendEmptyMessage(MSG_TYPE_MAIN_INIT);
-		}
-
-	}
+	
 
 	private void catalogLoadData() {
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
@@ -431,8 +375,6 @@ public class MainActivity extends Activity implements OnClickListener {
 					catalogAdapter = new CatalogListAdapter(mContext,
 							catalogInfos);
 				}
-				initFragment = true;
-				mHandler.sendEmptyMessage(MSG_TYPE_MAIN_INIT);
 				catalogLv.setAdapter(catalogAdapter);
 			};
 
