@@ -30,64 +30,51 @@ public class BookActivity extends Activity {
 	public final static int BACK_KEYCODE = 4;
 
 	private PageView mPageView;
+	private BookPageFactory pagefactory;
 	private Context mContext;
 	private String bookTitle, bookContent;
 	private int bookID;
 	private long position;
 	private PowerManager powerManager = null;
 	private WakeLock wakeLock = null;
+	private boolean isSaveHistory = true;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// 设置全屏
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		//设置全屏  
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); 
 		mContext = this;
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
 				"My Lock");
+		pagefactory = BookPageFactory.getInstance(mContext);
+		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
+		// R.drawable.theme_1));
 
-		mPageView = new PageView(this);
-		setContentView(mPageView);
+		Intent intent = getIntent();
+		bookTitle = intent.getStringExtra(AppSettings.TITLE);
+		bookContent = intent.getStringExtra(AppSettings.CONTENT);
+		bookID = intent.getIntExtra(AppSettings.ID, 0);
+		position = intent.getLongExtra(AppSettings.POSITION, 0);
+		if (bookID != 0) {
+			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookID + ":"
+					+ bookContent + ":" + position);
+			mPageView = new PageView(this);
+			setContentView(mPageView);
+			mPageView.setBackgroundResource(R.drawable.theme_1);
+			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+			pagefactory.setBeginPos((int) position);
+			// pagefactory.drawPageBitmap();
+			mPageView.invalidate();
 
-		if (savedInstanceState != null) {
-			bookTitle = savedInstanceState.getString(AppSettings.TITLE);
-			bookContent = savedInstanceState.getString(AppSettings.CONTENT);
-			bookID = savedInstanceState.getInt(AppSettings.ID, 0);
-			position = savedInstanceState.getLong(AppSettings.POSITION, 0);
-			if (bookID != 0) {
-				Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookID + ":"
-						+ bookContent + ":" + position);
-				mPageView.loadBook(bookID, bookContent, position);
-				mPageView.setBackgroundResource(R.drawable.theme_1);
-				mPageView.invalidate();
-
-			} else {
-				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-						.show();
-				BookActivity.this.finish();
-			}
 		} else {
-			Intent intent = getIntent();
-			bookTitle = intent.getStringExtra(AppSettings.TITLE);
-			bookContent = intent.getStringExtra(AppSettings.CONTENT);
-			bookID = intent.getIntExtra(AppSettings.ID, 0);
-			position = intent.getLongExtra(AppSettings.POSITION, 0);
-
-			if (bookID != 0) {
-				Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookID + ":"
-						+ bookContent + ":" + position);
-				mPageView.loadBook(bookID, bookContent, position);
-				mPageView.setBackgroundResource(R.drawable.theme_1);
-				mPageView.invalidate();
-
-			} else {
-				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-						.show();
-				BookActivity.this.finish();
-			}
+			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+					.show();
+			BookActivity.this.finish();
 		}
 
 	}
@@ -109,6 +96,10 @@ public class BookActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		wakeLock.release();
+		if (isSaveHistory) {
+			saveHistory();
+			isSaveHistory = false;
+		}
 		super.onStop();
 	}
 
@@ -132,13 +123,18 @@ public class BookActivity extends Activity {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case VOLUME_UP_KEYCODE:
-			mPageView.updatePageModePrePage();
+			pagefactory.updatePageModePrePage();
+			mPageView.invalidate();
 			return true;
 		case VOLUME_DOWN_KEYCODE:
-			mPageView.updatePageModeNextPage();
+			pagefactory.updatePageModeNextPage();
+			mPageView.invalidate();
 			return true;
 		case BACK_KEYCODE:
-			saveHistory();
+			if (isSaveHistory) {
+				saveHistory();
+				isSaveHistory = false;
+			}
 			return super.onKeyDown(keyCode, event);
 		default:
 			return super.onKeyDown(keyCode, event);
@@ -147,20 +143,9 @@ public class BookActivity extends Activity {
 
 	private void saveHistory() {
 		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
-				mPageView.getCurPosition(), mPageView.getCurPercent(),
+				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
 				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
 		AppDBControl.getInstance(mContext).insertMark(info);
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
-		Log.e("lmf", "onSaveInstanceState>>>>>>>>>>>>>>>>>>>>>>>>..");
-		outState.putInt(AppSettings.ID, bookID);
-		outState.putString(AppSettings.TITLE, bookTitle);
-		outState.putString(AppSettings.CONTENT, bookContent);
-		outState.putLong(AppSettings.POSITION, position);
-		super.onSaveInstanceState(outState);
 	}
 
 }
