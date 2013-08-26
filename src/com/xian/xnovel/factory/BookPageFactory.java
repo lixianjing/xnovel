@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -42,8 +43,8 @@ public class BookPageFactory {
 	private int mBufBegin = 0; // 文件起始位置
 	private int mBufEnd = 0;
 
-	private int mWidth = MainApplication.sWidth;
-	private int mHeight = MainApplication.sHeight;
+	private int mWidth;
+	private int mHeight;
 
 	private Vector<String> mContentVector = new Vector<String>();
 	private int lineCountPerPage; // 每页可以显示的行数
@@ -111,8 +112,22 @@ public class BookPageFactory {
 		percentFormatter = new DecimalFormat("#0.0%");
 		timeFormatter = new SimpleDateFormat("HH:mm");
 		curDate = new Date();
-		updateComposition();
+
 		scrollY = 0f;
+	}
+
+	public void init(int width, int height) {
+		mWidth = width;
+		mHeight = height;
+		topHeight = marginHeight + adHeight;
+		mVisibleWidth = mWidth - marginWidth * 2;
+		mVisibleHeight = mHeight - topHeight - bottomHeight;
+		int totalSize = contentFontSize + spaceLineSize;
+		lineCountPerPage = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
+		if (mVisibleHeight - lineCountPerPage * totalSize > contentFontSize) {
+			lineCountPerPage++;
+		}
+		preLoadLineCount = preLoadPage * lineCountPerPage;
 	}
 
 	private void initFileDate() {
@@ -129,18 +144,6 @@ public class BookPageFactory {
 
 	}
 
-	private void updateComposition() {
-		topHeight = marginHeight + adHeight;
-		mVisibleWidth = mWidth - marginWidth * 2;
-		mVisibleHeight = mHeight - topHeight - bottomHeight;
-		int totalSize = contentFontSize + spaceLineSize;
-		lineCountPerPage = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
-		if (mVisibleHeight - lineCountPerPage * totalSize > contentFontSize) {
-			lineCountPerPage++;
-		}
-		preLoadLineCount = preLoadPage * lineCountPerPage;
-	}
-
 	public void release() {
 		if (mFileBuf != null) {
 			mFileBuf.clear();
@@ -150,7 +153,8 @@ public class BookPageFactory {
 	}
 
 	public void openbook(String filePath, String file, String title) {
-		Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>"+filePath+":"+file+":"+title);
+		Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>" + filePath + ":"
+				+ file + ":" + title);
 		initFileDate();
 		this.title = title;
 		try {
@@ -159,7 +163,7 @@ public class BookPageFactory {
 			mBufLen = (int) lLen;
 			mFileBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
-			Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>"+lLen);
+			Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>" + lLen);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -308,9 +312,8 @@ public class BookPageFactory {
 		canvas.drawText(timeFormatter.format(curDate), marginWidth,
 				getBottomDrawHeight(), bottomPaint);
 
-		canvas.drawText("《" + title + "》",
-				(mWidth - getTitleWidth()) / 2, getBottomDrawHeight(),
-				bottomPaint);
+		canvas.drawText("《" + title + "》", (mWidth - getTitleWidth()) / 2,
+				getBottomDrawHeight(), bottomPaint);
 	}
 
 	public void calCurProcess() {
@@ -357,7 +360,6 @@ public class BookPageFactory {
 		return isLastPage;
 	}
 
-	
 	public int getCurPosition() {
 		return curPosition;
 	}
@@ -598,7 +600,7 @@ public class BookPageFactory {
 
 	public Vector<String> scrollInitLoadContent(int begin) {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "scrollInitLoadContent",mBufBegin,mBufEnd);
+		LogUtils.log(TAG, "scrollInitLoadContent", mBufBegin, mBufEnd);
 		scrollY = 0;
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();

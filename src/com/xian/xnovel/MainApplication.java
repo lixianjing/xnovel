@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.res.Configuration;
 
 public class MainApplication extends Application {
-	public static int sWidth, sHeight;
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {

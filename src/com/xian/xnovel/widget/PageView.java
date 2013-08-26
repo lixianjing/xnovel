@@ -40,7 +40,8 @@ public class PageView extends View {
 	private float mTouchX, mTouchY, mDownX, mDownY, mLastMotionY;
 	private BookPageFactory pagefactory;
 	private Handler mHandler;
-	
+	private int mWidth, mHeight;
+
 	public PageView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -127,7 +128,7 @@ public class PageView extends View {
 		case MotionEvent.ACTION_UP:
 			if (isOnclick
 					&& System.currentTimeMillis() - onclickTime < ONCLICK_TIME) {
-				int temp = MainApplication.sWidth / 3;
+				int temp = mWidth / 3;
 				if (mDownX < temp) {
 					updatePageInfo(DIR_PRE_PAGE);
 				} else if (mDownX < temp * 2) {
@@ -198,6 +199,14 @@ public class PageView extends View {
 			break;
 		}
 		this.invalidate();
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// TODO Auto-generated method stub
+		mWidth = MeasureSpec.getSize(widthMeasureSpec);
+		mHeight = MeasureSpec.getSize(heightMeasureSpec);
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 }

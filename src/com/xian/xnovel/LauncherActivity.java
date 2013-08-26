@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -56,24 +57,15 @@ public class LauncherActivity extends Activity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				SharedPreferences pre = mContext.getSharedPreferences(
+				SharedPreferences pref = mContext.getSharedPreferences(
 						AppSettings.Settings, Context.MODE_PRIVATE);
-				MainApplication.sWidth = pre.getInt(AppSettings.settings_width,
-						0);
-				MainApplication.sHeight = pre.getInt(
-						AppSettings.settings_height, 0);
-
-				if (MainApplication.sWidth == 0) {
+				String lastVersion = pref.getString(
+						AppSettings.SETTINGS_VERSION, "");
+				if (!AppSettings.VERSION.equals(lastVersion)) {
+					pref.edit()
+							.putString(AppSettings.SETTINGS_VERSION,
+									AppSettings.VERSION).commit();
 					coverTV.setText(R.string.launcher_first_load);
-					// we should calatue;
-					DisplayMetrics dm = new DisplayMetrics();
-					getWindowManager().getDefaultDisplay().getMetrics(dm);
-					Editor editor = pre.edit();
-					editor.putInt(AppSettings.settings_width, dm.widthPixels);
-					editor.putInt(AppSettings.settings_height, dm.heightPixels);
-					editor.commit();
-					MainApplication.sWidth = dm.widthPixels;
-					MainApplication.sHeight = dm.heightPixels;
 					AppDatabaseHelper mDbHelper = new AppDatabaseHelper(
 							mContext);
 					mDbHelper.getWritableDatabase();

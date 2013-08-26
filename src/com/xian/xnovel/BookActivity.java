@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -50,10 +51,15 @@ public class BookActivity extends Activity {
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
 				"My Lock");
+		DisplayMetrics dm = new DisplayMetrics();
+		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
 		pagefactory = BookPageFactory.getInstance(mContext);
+		
+		pagefactory.init(dm.widthPixels, dm.heightPixels);
 		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
 		// R.drawable.theme_1));
 
+		
 		Intent intent = getIntent();
 		bookTitle = intent.getStringExtra(AppSettings.TITLE);
 		bookContent = intent.getStringExtra(AppSettings.CONTENT);
