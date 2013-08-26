@@ -81,19 +81,9 @@ public class BookPageFactory {
 
 	private float scrollY = 0f;
 
-	private static BookPageFactory factory;
 
-	public static BookPageFactory getInstance(Context context) {
-		if (factory != null) {
-			return factory;
-		} else {
-			factory = new BookPageFactory(context);
-			return factory;
-		}
 
-	}
-
-	private BookPageFactory(Context context) {
+	public BookPageFactory(Context context) {
 
 		mContext = context;
 
@@ -146,7 +136,6 @@ public class BookPageFactory {
 			mFileBuf.clear();
 			mFileBuf = null;
 		}
-		factory = null;
 	}
 
 	public void openbook(String filePath, String file, String title) {

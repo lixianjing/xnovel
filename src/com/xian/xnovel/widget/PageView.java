@@ -2,6 +2,7 @@ package com.xian.xnovel.widget;
 
 import com.xian.xnovel.MainApplication;
 import com.xian.xnovel.factory.BookPageFactory;
+import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.LogUtils;
 
 import android.content.Context;
@@ -39,12 +40,11 @@ public class PageView extends View {
 	private float mTouchX, mTouchY, mDownX, mDownY, mLastMotionY;
 	private BookPageFactory pagefactory;
 	private Handler mHandler;
-	
+
 	public PageView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		mContext = context;
-		pagefactory = BookPageFactory.getInstance(context);
 		mHandler = new Handler() {
 
 			@Override
@@ -64,6 +64,15 @@ public class PageView extends View {
 			}
 
 		};
+	}
+
+	public void loadBook(int bookID, String title, long position) {
+		if (pagefactory == null) {
+			pagefactory = new BookPageFactory(mContext);
+		}
+		pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+				AppSettings.BOOK_FILE_PREFIX + bookID, title);
+		pagefactory.setBeginPos((int) position);
 	}
 
 	@Override
@@ -199,4 +208,21 @@ public class PageView extends View {
 		this.invalidate();
 	}
 
+	public void updatePageModePrePage() {
+		pagefactory.updatePageModePrePage();
+		this.invalidate();
+	}
+
+	public void updatePageModeNextPage() {
+		pagefactory.updatePageModeNextPage();
+		this.invalidate();
+	}
+
+	public int getCurPosition() {
+		return pagefactory.getCurPosition();
+	}
+
+	public String getCurPercent() {
+		return pagefactory.getCurPercent();
+	}
 }
