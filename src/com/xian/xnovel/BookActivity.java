@@ -43,9 +43,9 @@ public class BookActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//设置全屏  
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
-                WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+		// 设置全屏
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		mContext = this;
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
@@ -54,33 +54,48 @@ public class BookActivity extends Activity {
 		DisplayMetrics dm = new DisplayMetrics();
 		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
 		pagefactory = BookPageFactory.getInstance(mContext);
-		
+
 		pagefactory.init(dm.widthPixels, dm.heightPixels);
-		// pagefactory.setBgBitmap(BitmapFactory.decodeResource(getResources(),
-		// R.drawable.theme_1));
 
-		
-		Intent intent = getIntent();
-		bookTitle = intent.getStringExtra(AppSettings.TITLE);
-		bookContent = intent.getStringExtra(AppSettings.CONTENT);
-		bookID = intent.getIntExtra(AppSettings.ID, 0);
-		position = intent.getLongExtra(AppSettings.POSITION, 0);
-		if (bookID != 0) {
-			Log.e("lmf", "BookActivity>>>>>>>>>>>>" + bookID + ":"
-					+ bookContent + ":" + position);
-			mPageView = new PageView(this);
-			setContentView(mPageView);
-			mPageView.setBackgroundResource(R.drawable.theme_1);
-			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
-			pagefactory.setBeginPos((int) position);
-			// pagefactory.drawPageBitmap();
-			mPageView.invalidate();
+		if (savedInstanceState != null) {
+			bookTitle = savedInstanceState.getString(AppSettings.TITLE);
+			bookContent = savedInstanceState.getString(AppSettings.CONTENT);
+			bookID = savedInstanceState.getInt(AppSettings.ID, 0);
+			position = savedInstanceState.getLong(AppSettings.POSITION, 0);
+			if (bookID != 0) {
+				mPageView = new PageView(this);
+				setContentView(mPageView);
+				mPageView.setBackgroundResource(R.drawable.theme_1);
+				pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+						AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+				pagefactory.setBeginPos((int) position);
+				mPageView.invalidate();
 
+			} else {
+				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+						.show();
+				BookActivity.this.finish();
+			}
 		} else {
-			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-					.show();
-			BookActivity.this.finish();
+			Intent intent = getIntent();
+			bookTitle = intent.getStringExtra(AppSettings.TITLE);
+			bookContent = intent.getStringExtra(AppSettings.CONTENT);
+			bookID = intent.getIntExtra(AppSettings.ID, 0);
+			position = intent.getLongExtra(AppSettings.POSITION, 0);
+			if (bookID != 0) {
+				mPageView = new PageView(this);
+				setContentView(mPageView);
+				mPageView.setBackgroundResource(R.drawable.theme_1);
+				pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+						AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+				pagefactory.setBeginPos((int) position);
+				mPageView.invalidate();
+
+			} else {
+				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+						.show();
+				BookActivity.this.finish();
+			}
 		}
 
 	}
@@ -152,6 +167,18 @@ public class BookActivity extends Activity {
 				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
 				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
 		AppDBControl.getInstance(mContext).insertMark(info);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+
+		outState.putString(AppSettings.TITLE, bookTitle);
+		outState.putString(AppSettings.CONTENT, bookContent);
+		outState.putInt(AppSettings.ID, bookID);
+		outState.putLong(AppSettings.POSITION, pagefactory.getCurPosition());
+
+		super.onSaveInstanceState(outState);
 	}
 
 }
