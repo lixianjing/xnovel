@@ -57,45 +57,24 @@ public class BookActivity extends Activity {
 
 		pagefactory.init(dm.widthPixels, dm.heightPixels);
 
-		if (savedInstanceState != null) {
-			bookTitle = savedInstanceState.getString(AppSettings.TITLE);
-			bookContent = savedInstanceState.getString(AppSettings.CONTENT);
-			bookID = savedInstanceState.getInt(AppSettings.ID, 0);
-			position = savedInstanceState.getLong(AppSettings.POSITION, 0);
-			if (bookID != 0) {
-				mPageView = new PageView(this);
-				setContentView(mPageView);
-				mPageView.setBackgroundResource(R.drawable.theme_1);
-				pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-						AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
-				pagefactory.setBeginPos((int) position);
-				mPageView.invalidate();
+		Intent intent = getIntent();
+		bookTitle = intent.getStringExtra(AppSettings.TITLE);
+		bookContent = intent.getStringExtra(AppSettings.CONTENT);
+		bookID = intent.getIntExtra(AppSettings.ID, 0);
+		position = intent.getLongExtra(AppSettings.POSITION, 0);
+		if (bookID != 0) {
+			mPageView = new PageView(this);
+			setContentView(mPageView);
+			mPageView.setBackgroundResource(R.drawable.theme_1);
+			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+			pagefactory.setBeginPos((int) position);
+			mPageView.invalidate();
 
-			} else {
-				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-						.show();
-				BookActivity.this.finish();
-			}
 		} else {
-			Intent intent = getIntent();
-			bookTitle = intent.getStringExtra(AppSettings.TITLE);
-			bookContent = intent.getStringExtra(AppSettings.CONTENT);
-			bookID = intent.getIntExtra(AppSettings.ID, 0);
-			position = intent.getLongExtra(AppSettings.POSITION, 0);
-			if (bookID != 0) {
-				mPageView = new PageView(this);
-				setContentView(mPageView);
-				mPageView.setBackgroundResource(R.drawable.theme_1);
-				pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-						AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
-				pagefactory.setBeginPos((int) position);
-				mPageView.invalidate();
-
-			} else {
-				Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-						.show();
-				BookActivity.this.finish();
-			}
+			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+					.show();
+			BookActivity.this.finish();
 		}
 
 	}
@@ -167,6 +146,30 @@ public class BookActivity extends Activity {
 				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
 				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
 		AppDBControl.getInstance(mContext).insertMark(info);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		bookTitle = savedInstanceState.getString(AppSettings.TITLE);
+		bookContent = savedInstanceState.getString(AppSettings.CONTENT);
+		bookID = savedInstanceState.getInt(AppSettings.ID, 0);
+		position = savedInstanceState.getLong(AppSettings.POSITION, 0);
+		if (bookID != 0) {
+			mPageView = new PageView(this);
+			setContentView(mPageView);
+			mPageView.setBackgroundResource(R.drawable.theme_1);
+			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+			pagefactory.setBeginPos((int) position);
+			mPageView.invalidate();
+
+		} else {
+			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
+					.show();
+			BookActivity.this.finish();
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 	@Override

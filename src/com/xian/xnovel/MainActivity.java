@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -135,6 +136,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void initCatalogView() {
 		catalogLv = (ListView) catalogView.findViewById(R.id.catalog_lv);
+		catalogLv.addHeaderView(new View(this), null, false);
 		catalogLv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -417,4 +419,5 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		}.execute();
 	}
+
 }

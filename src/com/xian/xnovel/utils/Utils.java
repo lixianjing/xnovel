@@ -23,6 +23,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 
 /**
  * @author limingfeng
@@ -235,6 +237,16 @@ public class Utils {
 				}
 			}
 		}
+	}
+	/**
+	 * 创建view 为了间距
+	 * @param context
+	 * @return
+	 */
+	public static View createViewForPadding(Context context){
+		View view =new View(context);
+		view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 3));
+		return view;
 	}
 
 }
