@@ -8,7 +8,6 @@ import com.xian.xnovel.adapter.CatalogListAdapter;
 import com.xian.xnovel.adapter.MarkListAdapter;
 import com.xian.xnovel.adapter.ViewPagerAdapter;
 import com.xian.xnovel.db.AppDBControl;
-import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
@@ -28,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -36,7 +34,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
@@ -59,7 +56,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Context mContext;
 	private AppDBControl dbControl;
 	private View catalogView, markView, historyView, moreView;
-
 
 	// catalog
 	private CatalogListAdapter catalogAdapter;
@@ -117,8 +113,39 @@ public class MainActivity extends Activity implements OnClickListener {
 		mContext = this;
 		dbControl = AppDBControl.getInstance(mContext);
 		initView();
+		catalogLoadData();
 	}
 
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onStart>>>>>>>>>>>>>");
+		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		long begin = System.currentTimeMillis();
+		historyLoadData();
+		Log.e("lmf", "onResume>>>>>>>>>>>>>>"
+				+ (System.currentTimeMillis() - begin));
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onDestroy>>>>>>>>>>>>>>");
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onStop>>>>>>>>>>>>>>");
+		super.onStop();
+	}
 
 	private void initView() {
 
@@ -129,29 +156,20 @@ public class MainActivity extends Activity implements OnClickListener {
 		initMoreView();
 	}
 
-	private void updateData() {
-		catalogLoadData();
-		historyLoadData();
-	}
-
 	private void initCatalogView() {
 		catalogLv = (ListView) catalogView.findViewById(R.id.catalog_lv);
 		catalogLv.addHeaderView(new View(this), null, false);
+		catalogLv.addFooterView(new View(this), null, false);
 		catalogLv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(mContext, BookActivity.class);
-
-				CatalogInfo tempInfo = catalogInfos.get(arg2);
-				intent.putExtra(AppSettings.ID, tempInfo.getId());
-				intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
-				intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
-				mContext.startActivity(intent);
-				Toast.makeText(mContext, "You have selected " + arg2,
-						Toast.LENGTH_SHORT).show();
+				// because it is need cal the header so arg2-1
+				CatalogInfo tempInfo = catalogInfos.get(arg2 - 1);
+				statrtBookActivity(tempInfo.getId(), tempInfo.getTitle(),
+						tempInfo.getContent(), 0);
 			}
 		});
 	}
@@ -159,21 +177,18 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void initHistoryView() {
 		historyTv = (TextView) historyView.findViewById(R.id.mark_tv);
 		historyLv = (ListView) historyView.findViewById(R.id.mark_lv);
+		historyLv.addHeaderView(new View(this), null, false);
+		historyLv.addFooterView(new View(this), null, false);
 		historyLv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(mContext, BookActivity.class);
 				MarkInfo tempInfo = historyInfos.get(arg2);
-				intent.putExtra(AppSettings.ID, tempInfo.getCid());
-				intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
-				intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
-				intent.putExtra(AppSettings.POSITION, tempInfo.getPosition());
-				mContext.startActivity(intent);
-				Toast.makeText(mContext, "You have selected " + arg2,
-						Toast.LENGTH_SHORT).show();
+				statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(),
+						tempInfo.getContent(), tempInfo.getPosition());
+
 			}
 		});
 		historyLv.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -254,22 +269,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		long begin = System.currentTimeMillis();
-		updateData();
-		Log.e("lmf", "onResume>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - begin));
-		super.onResume();
-	}
-
 	private void setCurrentPage(int index) {
 		tabsList.get(index).setSelected(true);
 		currIndex = index;
@@ -342,8 +341,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 
 	}
-
-	
 
 	private void catalogLoadData() {
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
@@ -418,6 +415,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			};
 
 		}.execute();
+	}
+
+	private void statrtBookActivity(int id, String title, String content,
+			long pos) {
+		Intent intent = new Intent(mContext, BookActivity.class);
+		intent.putExtra(AppSettings.ID, id);
+		intent.putExtra(AppSettings.TITLE, title);
+		intent.putExtra(AppSettings.CONTENT, content);
+		intent.putExtra(AppSettings.POSITION, pos);
+		this.startActivity(intent);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.xian.xnovel;
 
 import com.xian.xnovel.db.AppDBControl;
-import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
@@ -10,12 +9,10 @@ import com.xian.xnovel.widget.PageView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -56,12 +53,7 @@ public class BookActivity extends Activity {
 		pagefactory = BookPageFactory.getInstance(mContext);
 
 		pagefactory.init(dm.widthPixels, dm.heightPixels);
-
-		Intent intent = getIntent();
-		bookTitle = intent.getStringExtra(AppSettings.TITLE);
-		bookContent = intent.getStringExtra(AppSettings.CONTENT);
-		bookID = intent.getIntExtra(AppSettings.ID, 0);
-		position = intent.getLongExtra(AppSettings.POSITION, 0);
+		getIntentData(getIntent());
 		if (bookID != 0) {
 			mPageView = new PageView(this);
 			setContentView(mPageView);
@@ -77,6 +69,13 @@ public class BookActivity extends Activity {
 			BookActivity.this.finish();
 		}
 
+	}
+
+	private void getIntentData(Intent intent) {
+		bookTitle = intent.getStringExtra(AppSettings.TITLE);
+		bookContent = intent.getStringExtra(AppSettings.CONTENT);
+		bookID = intent.getIntExtra(AppSettings.ID, 0);
+		position = intent.getLongExtra(AppSettings.POSITION, 0);
 	}
 
 	@Override
@@ -111,7 +110,9 @@ public class BookActivity extends Activity {
 			return true;
 		case VOLUME_DOWN_KEYCODE:
 			return true;
-
+		case BACK_KEYCODE:
+			BookActivity.this.finish();
+			return true;
 		default:
 			return super.onKeyUp(keyCode, event);
 		}
@@ -135,7 +136,7 @@ public class BookActivity extends Activity {
 				saveHistory();
 				isSaveHistory = false;
 			}
-			return super.onKeyDown(keyCode, event);
+			return true;
 		default:
 			return super.onKeyDown(keyCode, event);
 		}
