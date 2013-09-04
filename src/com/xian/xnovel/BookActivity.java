@@ -95,7 +95,7 @@ public class BookActivity extends Activity {
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		wakeLock.release();
-		if (isSaveHistory) {
+		if (isSaveHistory&&position!=pagefactory.getCurPosition()) {
 			saveHistory();
 			isSaveHistory = false;
 		}
@@ -109,9 +109,6 @@ public class BookActivity extends Activity {
 		case VOLUME_UP_KEYCODE:
 			return true;
 		case VOLUME_DOWN_KEYCODE:
-			return true;
-		case BACK_KEYCODE:
-			BookActivity.this.finish();
 			return true;
 		default:
 			return super.onKeyUp(keyCode, event);
@@ -132,11 +129,11 @@ public class BookActivity extends Activity {
 			mPageView.invalidate();
 			return true;
 		case BACK_KEYCODE:
-			if (isSaveHistory) {
+			if (isSaveHistory&&position!=pagefactory.getCurPosition()) {
 				saveHistory();
 				isSaveHistory = false;
 			}
-			return true;
+			return super.onKeyDown(keyCode, event);
 		default:
 			return super.onKeyDown(keyCode, event);
 		}

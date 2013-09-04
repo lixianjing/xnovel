@@ -185,7 +185,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				MarkInfo tempInfo = historyInfos.get(arg2);
+				MarkInfo tempInfo = historyInfos.get(arg2-1);
 				statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(),
 						tempInfo.getContent(), tempInfo.getPosition());
 
