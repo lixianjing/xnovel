@@ -31,8 +31,8 @@ public class BookPageFactory {
 	private static final String TAG = "BookPageFactory";
 	private static final int ASC_NEWLINE = 0x0A;// new line
 
-	private final static int LOAD_MODE_SCROLL = 0;
-	private final static int LOAD_MODE_PAGE = 1;
+	private final static int LOAD_MODE_SCROLL = 0; // 滚动模式
+	private final static int LOAD_MODE_PAGE = 1;// 翻页模式
 	private int loadMode = LOAD_MODE_SCROLL;
 
 	private String mCharsetName = "UTF-8";
@@ -48,13 +48,14 @@ public class BookPageFactory {
 
 	private Vector<String> mContentVector = new Vector<String>();
 	private int lineCountPerPage; // 每页可以显示的行数
-	private int preLoadPage = 2; // 预加载页数
+	private int preLoadPage = 5; // 预加载页数
 	private int preLoadLineCount;
 	private int curContentHeight;// 当前加载内容的长度;
 	private int mVisibleHeight; // 绘制内容的高
 	private int mVisibleWidth; // 绘制内容的宽
 	private int curPosition;
 	private String curPercent;
+
 	// 布局设置
 	private int marginWidth = 20; // 左右与边缘的距离
 	private int marginHeight = 20; // 上下与边缘的距离
@@ -179,7 +180,7 @@ public class BookPageFactory {
 	 * @param nFromPos
 	 * @return
 	 */
-	protected byte[] readParagraphBack(int nFromPos) {
+	protected byte[] readParagraphPrevious(int nFromPos) {
 		int nEnd = nFromPos;
 		int i;
 		byte tempByte;
@@ -449,7 +450,7 @@ public class BookPageFactory {
 		String strParagraph = "";
 		while (lines.size() < lineCountPerPage && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
-			byte[] paraBuf = readParagraphBack(mBufBegin);
+			byte[] paraBuf = readParagraphPrevious(mBufBegin);
 			mBufBegin -= paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, mCharsetName);
@@ -654,7 +655,7 @@ public class BookPageFactory {
 		int loadCount = lineCountPerPage + 1; // 多加载一行
 		while (lines.size() < loadCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
-			byte[] paraBuf = readParagraphBack(mBufBegin);
+			byte[] paraBuf = readParagraphPrevious(mBufBegin);
 			mBufBegin -= paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, mCharsetName);
@@ -776,7 +777,7 @@ public class BookPageFactory {
 		loadCount = lines.size();
 		while (lines.size() < preLoadLineCount && mBufBegin > 0) {
 			Vector<String> paraLines = new Vector<String>();
-			byte[] paraBuf = readParagraphBack(mBufBegin);
+			byte[] paraBuf = readParagraphPrevious(mBufBegin);
 			mBufBegin -= paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, mCharsetName);
@@ -823,6 +824,65 @@ public class BookPageFactory {
 		for (String strLine : lines) {
 			LogUtils.log(TAG, "scrollLoadContentPrevious", strLine);
 		}
+		return lines;
+	}
+
+
+	private Vector<String> readContentNext(int readLineCount, int beginpos) {
+		String strParagraph = "";
+		Vector<String> lines = new Vector<String>();
+		while (lines.size() < readLineCount && beginpos>0&&beginpos<mBufLen) {
+			byte[] paraBuf = readParagraphForward(mBufEnd); // 读取一个段落
+			mBufLen += paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (strParagraph.length() == 0) {
+				lines.add(strParagraph);
+			}
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				lines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+				if (lines.size() >= readLineCount) {
+					break;
+				}
+			}
+		}
+		return lines;
+	}
+	
+	private Vector<String> readContentPrevious(int readLineCount, int beginpos) {
+		Vector<String> lines = new Vector<String>();
+		String strParagraph = "";
+		while (lines.size() < readLineCount && beginpos > 0) {
+			Vector<String> paraLines = new Vector<String>();
+			byte[] paraBuf = readParagraphPrevious(mBufBegin);
+			beginpos -= paraBuf.length;
+			try {
+				strParagraph = new String(paraBuf, mCharsetName);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			while (strParagraph.length() > 0) {
+				int nSize = mPaint.breakText(strParagraph, true, mVisibleWidth,
+						null);
+				paraLines.add(strParagraph.substring(0, nSize));
+				strParagraph = strParagraph.substring(nSize);
+			}
+			lines.addAll(0, paraLines);
+		}
+		while (lines.size() > readLineCount) {
+				lines.remove(0);
+		}
+
 		return lines;
 	}
 

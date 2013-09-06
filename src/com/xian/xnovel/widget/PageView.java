@@ -1,12 +1,14 @@
 package com.xian.xnovel.widget;
 
-import com.xian.xnovel.MainApplication;
+import com.xian.xnovel.R;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppSettings;
-import com.xian.xnovel.utils.LogUtils;
+import com.xian.xnovel.utils.Utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -18,6 +20,7 @@ public class PageView extends View {
 
 	public static final int MSG_AUTO_SCROLL = 101;
 	public static final int MSG_GESTURE_MOVE = 102;
+	public static final int MSG_SCREEN_CHANGE_ANIM = 103;
 
 	private static final int DIR_PRE_PAGE = 1;
 	private static final int DIR_NEXT_PAGE = 2;
@@ -42,6 +45,8 @@ public class PageView extends View {
 	private Handler mHandler;
 	private int mWidth, mHeight;
 
+	private Bitmap mBitmap = null;
+
 	public PageView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -60,6 +65,10 @@ public class PageView extends View {
 					invalidate();
 					break;
 
+				case MSG_SCREEN_CHANGE_ANIM:
+					invalidate();
+					break;
+
 				default:
 					break;
 				}
@@ -68,14 +77,18 @@ public class PageView extends View {
 		};
 	}
 
+	private boolean isAnim = false;
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
-		long begin = System.currentTimeMillis();
+
 		pagefactory.draw(canvas);
+		if (mBitmap != null && isAnim) {
+			Log.e("lmf", "onDraw>>>>bitmapScrollX>>>>>>>>>" + bitmapScrollX);
+			canvas.drawBitmap(mBitmap, bitmapScrollX, 0, null);
+		}
 		super.onDraw(canvas);
-		long end = System.currentTimeMillis();
-		// LogUtils.log("PageView", "onDraw", "TIME", end - begin);
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -187,12 +200,48 @@ public class PageView extends View {
 		}
 	}
 
+	private float bitmapScrollX;
+
+	private void doScreenChangeAnim(final int dur, final int width) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				bitmapScrollX = 0;
+				long begin = System.currentTimeMillis();
+				long cur = 0l;
+				isAnim = true;
+				while (isAnim) {
+					cur = System.currentTimeMillis();
+					long time = cur - begin;
+					bitmapScrollX = 0 - width / (float) dur * time;
+					mHandler.sendEmptyMessage(MSG_SCREEN_CHANGE_ANIM);
+					if (time > dur) {
+						break;
+					}
+				}
+
+				isAnim = false;
+			}
+		}).start();
+
+	}
+
 	private void updatePageInfo(int dir) {
 		switch (dir) {
 		case DIR_PRE_PAGE:
 			pagefactory.updatePageModePrePage();
 			break;
 		case DIR_NEXT_PAGE:
+			if (mBitmap != null) {
+				mBitmap.recycle();
+				mBitmap = null;
+			}
+			mBitmap = Utils.getViewBitmap(this);
+			if (mBitmap != null) {
+				doScreenChangeAnim(500, mBitmap.getWidth());
+			}
 			pagefactory.updatePageModeNextPage();
 			break;
 		default:
