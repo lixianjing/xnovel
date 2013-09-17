@@ -119,7 +119,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "onStart>>>>>>>>>>>>>");
 		super.onStart();
 	}
 
@@ -128,22 +127,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		long begin = System.currentTimeMillis();
 		historyLoadData();
-		Log.e("lmf", "onResume>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - begin));
 		super.onResume();
 	}
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "onDestroy>>>>>>>>>>>>>>");
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "onStop>>>>>>>>>>>>>>");
 		super.onStop();
 	}
 
@@ -197,7 +192,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				Log.e("lmf", "History>>>>>>>>>>onItemLongClick>>>>>>>");
 				return false;
 			}
 		});
@@ -307,7 +301,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "MainActivity>>>>>>onClick>>>>>>>" + v.getId());
 		switch (v.getId()) {
 		case R.id.tab_btn_category:
 			mPager.setCurrentItem(0);

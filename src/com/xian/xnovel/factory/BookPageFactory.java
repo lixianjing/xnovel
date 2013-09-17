@@ -13,9 +13,11 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.Vector;
 
+import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.MainApplication;
 import com.xian.xnovel.utils.LogUtils;
 import com.xian.xnovel.widget.DialogManager;
+import com.xian.xnovel.widget.PageView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -81,6 +83,10 @@ public class BookPageFactory {
 	private SimpleDateFormat timeFormatter;
 	private Date curDate;
 
+	
+	private BookActivity mBookActivity;
+	private PageView mPageView;
+	
 	private float scrollY = 0f;
 
 	private static BookPageFactory factory;
@@ -144,6 +150,7 @@ public class BookPageFactory {
 		}
 
 	}
+	
 
 	public void release() {
 		if (mFileBuf != null) {
@@ -154,8 +161,6 @@ public class BookPageFactory {
 	}
 
 	public void openbook(String filePath, String file, String title) {
-		Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>" + filePath + ":"
-				+ file + ":" + title);
 		initFileDate();
 		this.title = title;
 		try {
@@ -164,7 +169,6 @@ public class BookPageFactory {
 			mBufLen = (int) lLen;
 			mFileBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
-			Log.e("lmf", "BookPageFactory>>>>>openbook>>>>>>>" + lLen);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,6 +178,14 @@ public class BookPageFactory {
 		}
 	}
 
+	
+	public void setBookActivity(BookActivity book) {
+		mBookActivity = book;
+	}
+	public void setPageView(PageView view) {
+		mPageView = view;
+	}
+	
 	/**
 	 * 读取上一段
 	 * 
@@ -403,34 +415,26 @@ public class BookPageFactory {
 			loadMode = LOAD_MODE_SCROLL;
 			mContentVector = scrollInitLoadContent(mBufBegin);
 		} else {
-			LogUtils.log(TAG, "drawContent", "=============", mVisibleHeight,
-					curContentHeight, scrollY);
 			if (scrollY > 0) {
 
 				if (mBufBegin == 0) {
 					scrollY = 0;
-					LogUtils.log(TAG, "drawContent", "it is first page");
 					isFirstPage = true;
 					DialogManager.showToast(mContext, "已经是第一页了", 2);
 				} else {
 					isLastPage = false;
 					isFirstPage = false;
-					LogUtils.log("BookPageFactory", "drawContent", "previous",
-							"load");
 					mContentVector.clear();
 					mContentVector = scrollLoadContentPrevious();
 				}
 			} else if (scrollY + curContentHeight < mVisibleHeight) {
 
 				if (mBufEnd == mBufLen) {
-					LogUtils.log(TAG, "drawContent", "it is last page");
 					isLastPage = true;
 					DialogManager.showToast(mContext, "已经是最后一页了", 2);
 				} else {
 					isLastPage = false;
 					isFirstPage = false;
-					LogUtils.log("BookPageFactory", "drawContent", "next",
-							"load");
 					mContentVector.clear();
 					mContentVector = scrollLoadContentNext();
 
@@ -523,9 +527,6 @@ public class BookPageFactory {
 
 	public Vector<String> loadContentNext() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "loadContentNext");
-		LogUtils.log(TAG, "loadContentNext=========", mBufBegin, mBufEnd,
-				mBufLen);
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufBegin = mBufEnd;
@@ -579,13 +580,10 @@ public class BookPageFactory {
 		}
 		mContentVector.clear();
 		mContentVector = loadContentPrevious();
-		LogUtils.log(TAG, "updatePrePage", mBufBegin, mBufEnd);
 	}
 
 	private void updateNextPage() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "updateNextPage》》》》》》》》》");
-		LogUtils.log(TAG, "updateNextPage", mBufBegin, mBufEnd, mBufLen);
 		if (mBufEnd >= mBufLen) {
 			isLastPage = true;
 			DialogManager.showToast(mContext, "已经是最后一页了", 2);
@@ -601,7 +599,6 @@ public class BookPageFactory {
 
 	public Vector<String> scrollInitLoadContent(int begin) {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "scrollInitLoadContent", mBufBegin, mBufEnd);
 		scrollY = 0;
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
@@ -647,8 +644,6 @@ public class BookPageFactory {
 
 	public Vector<String> scrollLoadContentNext() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "========begin==========", "scrollLoadContentNext",
-				mBufBegin, mBufEnd);
 		Vector<String> lines = new Vector<String>();
 		String strParagraph = "";
 		mBufBegin = mBufEnd;
@@ -727,18 +722,11 @@ public class BookPageFactory {
 			}
 		}
 		curContentHeight = lines.size() * (spaceLineSize + contentFontSize);
-		LogUtils.log(TAG, "=========end=========", "scrollLoadContentNext",
-				mBufBegin, mBufEnd);
-		for (String strLine : lines) {
-			LogUtils.log(TAG, "scrollLoadContentNext", strLine);
-		}
 		return lines;
 	}
 
 	public Vector<String> scrollLoadContentPrevious() {
 		// TODO Auto-generated method stub
-		LogUtils.log(TAG, "===begin===", "scrollLoadContentPrevious",
-				mBufBegin, mBufEnd);
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		mBufEnd = mBufBegin;
@@ -819,11 +807,6 @@ public class BookPageFactory {
 
 		if (scrollY > 0)
 			scrollY = 0;
-		LogUtils.log(TAG, "===end===", "scrollLoadContentPrevious", mBufBegin,
-				mBufEnd, scrollY);
-		for (String strLine : lines) {
-			LogUtils.log(TAG, "scrollLoadContentPrevious", strLine);
-		}
 		return lines;
 	}
 
@@ -885,5 +868,25 @@ public class BookPageFactory {
 
 		return lines;
 	}
+	
 
+	public static final int DIR_PRE_PAGE = 0;
+	public static final int DIR_NEXT_PAGE = 1;
+	
+	public void updatePageInfo(int dir,boolean anim) {
+		
+		if(dir==DIR_PRE_PAGE){
+			if (mBookActivity.doBookTranslateAnim(0)) {
+				updatePageModePrePage();
+			}
+		}else{
+			if (mBookActivity.doBookTranslateAnim(1)) {
+				updatePageModeNextPage();
+			}
+		}
+		mPageView.postInvalidate();
+	}
+	
+	
+	
 }
