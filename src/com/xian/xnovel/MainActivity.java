@@ -13,6 +13,7 @@ import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
+import com.xian.xnovel.widget.MainViewGroup;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,7 +51,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private final int TABS_COUNT = 4;
 	private int currIndex = 0;
-	private ViewPager mPager;
+	private MainViewGroup viewGroup;
 	private List<View> viewsList;
 	private List<TextView> tabsList;
 	private Context mContext;
@@ -76,33 +77,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			moreCopyBtn;
 	private TextView moreVersionTv;
 
-	private Handler mHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-
-			switch (msg.what) {
-			case MSG_TYPE_MAIN_INIT:
-				break;
-			case MSG_TYPE_CATALOG:
-
-				break;
-			case MSG_TYPE_MARK:
-				break;
-			case MSG_TYPE_HISTORY:
-				break;
-			case MSG_TYPE_ABOUT:
-
-				break;
-
-			default:
-				break;
-			}
-
-		}
-
-	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -144,7 +118,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void initView() {
 
-		mPager = (ViewPager) findViewById(R.id.main_body_pager);
+		viewGroup = (MainViewGroup) findViewById(R.id.main_body);
 		InitViewPager();
 		initCatalogView();
 		initHistoryView();
@@ -231,7 +205,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			tabsList.get(i).setOnClickListener(this);
 		}
 
-		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
 		viewsList = new ArrayList<View>(TABS_COUNT);
 
 		viewsList.add(catalogView);
@@ -239,10 +212,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewsList.add(historyView);
 		viewsList.add(moreView);
 
-		mPager.setAdapter(new ViewPagerAdapter(viewsList));
-		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
-		mPager.setCurrentItem(0);
+		viewGroup.setCurrentScreen(0);
 		setCurrentPage(0);
 	}
 
@@ -303,16 +274,16 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.tab_btn_category:
-			mPager.setCurrentItem(0);
+			viewGroup.snapToScreen(0);
 			break;
 		case R.id.tab_btn_bookmark:
-			mPager.setCurrentItem(1);
+			viewGroup.snapToScreen(1);
 			break;
 		case R.id.tab_btn_history:
-			mPager.setCurrentItem(2);
+			viewGroup.snapToScreen(2);
 			break;
 		case R.id.tab_btn_more:
-			mPager.setCurrentItem(3);
+			viewGroup.snapToScreen(3);
 			break;
 		case R.id.more_btn_copy:
 			DialogManager

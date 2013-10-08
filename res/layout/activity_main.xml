@@ -42,16 +42,13 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/main_body_pager"
+    <com.xian.xnovel.widget.MainViewGroup
+        android:id="@+id/main_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/main_card_tab_view"
         android:layout_below="@id/main_title_view"
-        android:layout_gravity="center"
-        android:background="#000000"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation" />
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:id="@+id/main_card_tab_view"

@@ -17,6 +17,9 @@ public class MainViewGroup extends ViewGroup {
 
 	private static String TAG = "MainViewGroup";
 
+	private static final int INVALID_POINTER = -1;
+	private int mActivePointerId = INVALID_POINTER;
+
 	private Context mContext;
 	private int mWidth, mHeight;
 	private int curScreen = 0; // 当前屏
@@ -117,11 +120,10 @@ public class MainViewGroup extends ViewGroup {
 	public static int SNAP_VELOCITY = 600;
 	private int mTouchSlop = 0;
 	private float mLastionMotionX = 0;
-	private float mLastMotionY = 0;
 	// 处理触摸的速率
 	private VelocityTracker mVelocityTracker = null;
 
-	private LinearLayout oneLL, twoLL, threeLL;
+	private LinearLayout oneLL, twoLL, threeLL, fourLL;
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -141,11 +143,10 @@ public class MainViewGroup extends ViewGroup {
 			return true;
 		}
 
-		final float x = ev.getX();
-		final float y = ev.getY();
-
-		switch (action) {
+		switch (action & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_MOVE:
+			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+			final float x = ev.getX(pointerIndex);
 			Log.e(TAG, "onInterceptTouchEvent move");
 			final int xDiff = (int) Math.abs(mLastionMotionX - x);
 			// 超过了最小滑动距离
@@ -156,18 +157,21 @@ public class MainViewGroup extends ViewGroup {
 
 		case MotionEvent.ACTION_DOWN:
 			Log.e(TAG, "onInterceptTouchEvent down");
-			mLastionMotionX = x;
-			mLastMotionY = y;
+			mLastionMotionX = ev.getX();
+			mActivePointerId = ev.getPointerId(0);
 			Log.e(TAG, mScroller.isFinished() + "");
 			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
 					: TOUCH_STATE_SCROLLING;
 
 			break;
-
+		case MotionEvent.ACTION_POINTER_UP:
+			onSecondaryPointerUp(ev);
+			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
 			Log.e(TAG, "onInterceptTouchEvent up or cancel");
 			mTouchState = TOUCH_STATE_REST;
+			mActivePointerId = INVALID_POINTER;
 			break;
 		}
 		Log.e(TAG, mTouchState + "====" + TOUCH_STATE_REST);
@@ -176,26 +180,17 @@ public class MainViewGroup extends ViewGroup {
 
 	public boolean onTouchEvent(MotionEvent event) {
 
-		Log.i(TAG, "--- onTouchEvent--> ");
+		Log.i(TAG, "--- onTouchEvent--> "+event.getAction());
 
 		// TODO Auto-generated method stub
-		Log.e(TAG, "onTouchEvent start");
 		if (mVelocityTracker == null) {
-
 			Log.e(TAG, "onTouchEvent start-------** VelocityTracker.obtain");
-
 			mVelocityTracker = VelocityTracker.obtain();
 		}
-
 		mVelocityTracker.addMovement(event);
 
-		super.onTouchEvent(event);
 
-		// 手指位置地点
-		float x = event.getX();
-		float y = event.getY();
-
-		switch (event.getAction()) {
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
 			// 如果屏幕的动画还没结束，你就按下了，我们就结束该动画
 			if (mScroller != null) {
@@ -203,10 +198,14 @@ public class MainViewGroup extends ViewGroup {
 					mScroller.abortAnimation();
 				}
 			}
-
-			mLastionMotionX = x;
+			mActivePointerId = event.getPointerId(0);
+			mLastionMotionX = event.getX();
 			break;
 		case MotionEvent.ACTION_MOVE:
+			final int pointerIndex = event.findPointerIndex(mActivePointerId);
+			Log.e("lmf", "MainViewGroup>>>>>"+pointerIndex);
+			final float x = event.getX(pointerIndex);
+			
 			int detaX = (int) (mLastionMotionX - x);
 			scrollBy(detaX, 0);
 
@@ -245,16 +244,36 @@ public class MainViewGroup extends ViewGroup {
 				mVelocityTracker.recycle();
 				mVelocityTracker = null;
 			}
-
+			mActivePointerId = INVALID_POINTER;
 			mTouchState = TOUCH_STATE_REST;
 
 			break;
 		case MotionEvent.ACTION_CANCEL:
+			mActivePointerId = INVALID_POINTER;
 			mTouchState = TOUCH_STATE_REST;
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			onSecondaryPointerUp(event);
 			break;
 		}
 
 		return true;
+	}
+
+	private void onSecondaryPointerUp(MotionEvent ev) {
+		final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+		final int pointerId = ev.getPointerId(pointerIndex);
+		if (pointerId == mActivePointerId) {
+			// This was our active pointer going up. Choose a new
+			// active pointer and adjust accordingly.
+			// TODO: Make this decision more intelligent.
+			final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+			mLastionMotionX = ev.getX(newPointerIndex);
+			mActivePointerId = ev.getPointerId(newPointerIndex);
+			if (mVelocityTracker != null) {
+				mVelocityTracker.clear();
+			}
+		}
 	}
 
 	// //我们是缓慢移动的
@@ -278,17 +297,18 @@ public class MainViewGroup extends ViewGroup {
 		snapToScreen(destScreen);
 	}
 
-	private void snapToScreen(int whichScreen) {
+	public void snapToScreen(int whichScreen) {
 		// 简单的移到目标屏幕，可能是当前屏或者下一屏幕
 		// 直接跳转过去，不太友好
 		// scrollTo(mLastScreen * getWidth(), 0);
 		// 为了友好性，我们在增加一个动画效果
 		// 需要再次滑动的距离 屏或者下一屏幕的继续滑动距离
 
+		if (whichScreen > getChildCount() - 1)
+			whichScreen = getChildCount() - 1;
+		if (whichScreen < 0)
+			whichScreen = 0;
 		curScreen = whichScreen;
-
-		if (curScreen > getChildCount() - 1)
-			curScreen = getChildCount() - 1;
 
 		int dx = curScreen * getWidth() - getScrollX();
 
@@ -301,9 +321,26 @@ public class MainViewGroup extends ViewGroup {
 
 	}
 
+	public void setCurrentScreen(int currentScreen) {
+		if (!mScroller.isFinished()) {
+			mScroller.abortAnimation();
+		}
+
+		if (currentScreen > getChildCount() - 1)
+			currentScreen = getChildCount() - 1;
+		if (currentScreen < 0)
+			currentScreen = 0;
+		curScreen = currentScreen;
+
+		scrollTo((curScreen) * mWidth, 0);
+		invalidate();
+	}
+
 	private void init() {
 
 		mScroller = new Scroller(mContext);
+
+		this.setBackgroundColor(Color.GREEN);
 
 		// 初始化3个 LinearLayout控件
 		oneLL = new LinearLayout(mContext);
@@ -332,6 +369,10 @@ public class MainViewGroup extends ViewGroup {
 		threeLL = new LinearLayout(mContext);
 		threeLL.setBackgroundColor(Color.BLUE);
 		addView(threeLL);
+
+		fourLL = new LinearLayout(mContext);
+		fourLL.setBackgroundColor(Color.CYAN);
+		addView(fourLL);
 
 		// 初始化一个最小滑动距离
 		mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -362,6 +403,8 @@ public class MainViewGroup extends ViewGroup {
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub
+		Log.e("lmf", "MainViewGroup>>>>>>>onLayout>>>>>>>" + l + ":" + t + ":"
+				+ r + ":" + b);
 		Log.i(TAG, "--- start onLayout --");
 		int childCount = getChildCount();
 		int left = 0;
@@ -369,9 +412,8 @@ public class MainViewGroup extends ViewGroup {
 
 		for (int i = 0; i < childCount; i++) {
 			View child = getChildAt(i);
-			child.layout(left, t, left + mWidth, b);
-			left = left + getWidth(); // 校准每个子View的起始布局位置
-			// 三个子视图的在屏幕中的分布如下 [0 , 320] / [320,640] / [640,960]
+			child.layout(left, 0, left + mWidth, mHeight);
+			left = left + getWidth();
 		}
 	}
 
