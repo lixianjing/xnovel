@@ -23,6 +23,7 @@ public interface AppSettings {
 	public static final String Settings = "settings";
 	public static final String SETTINGS_VERSION = "version";
 
+	public static final int SCREEN_DEFAULT = 0;
 	public static final int SCREEN_MIN = 0;
 	public static final int SCREEN_MAX = 3;
 	public static final int SCREEN_COUNT = 4;

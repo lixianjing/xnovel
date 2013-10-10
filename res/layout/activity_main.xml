@@ -48,7 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/main_card_tab_view"
         android:layout_below="@id/main_title_view"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:background="@drawable/main_bkg" />
 
     <LinearLayout
         android:id="@+id/main_card_tab_view"

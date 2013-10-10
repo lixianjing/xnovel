@@ -49,10 +49,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static final int MSG_NO_DATA = 0;
 	public static final int MSG_HAVE_DATA = 1;
 
-	private final int TABS_COUNT = 4;
-	private int currIndex = 0;
 	private MainViewGroup viewGroup;
-	private List<View> viewsList;
 	private List<TextView> tabsList;
 	private Context mContext;
 	private AppDBControl dbControl;
@@ -77,7 +74,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			moreCopyBtn;
 	private TextView moreVersionTv;
 
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,7 +95,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		long begin = System.currentTimeMillis();
 		historyLoadData();
 		super.onResume();
 	}
@@ -119,6 +114,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void initView() {
 
 		viewGroup = (MainViewGroup) findViewById(R.id.main_body);
+		viewGroup.setMainActivity(this);
 		InitViewPager();
 		initCatalogView();
 		initHistoryView();
@@ -154,7 +150,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				MarkInfo tempInfo = historyInfos.get(arg2-1);
+				MarkInfo tempInfo = historyInfos.get(arg2 - 1);
 				statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(),
 						tempInfo.getContent(), tempInfo.getPosition());
 
@@ -195,48 +191,33 @@ public class MainActivity extends Activity implements OnClickListener {
 		historyView = inflater.inflate(R.layout.fragment_mark, null);
 		moreView = inflater.inflate(R.layout.fragment_more, null);
 
-		tabsList = new ArrayList<TextView>(TABS_COUNT);
+		tabsList = new ArrayList<TextView>(AppSettings.SCREEN_COUNT);
 		tabsList.add((TextView) findViewById(R.id.tab_btn_category));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_bookmark));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_history));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_more));
 
-		for (int i = 0; i < TABS_COUNT; i++) {
+		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
 			tabsList.get(i).setOnClickListener(this);
 		}
 
-		viewsList = new ArrayList<View>(TABS_COUNT);
-
-		viewsList.add(catalogView);
-		viewsList.add(markView);
-		viewsList.add(historyView);
-		viewsList.add(moreView);
-
+		viewGroup.addView(catalogView);
+		viewGroup.addView(markView);
+		viewGroup.addView(historyView);
+		viewGroup.addView(moreView);
 
 		viewGroup.setCurrentScreen(0);
-		setCurrentPage(0);
 	}
 
-	public class MyOnPageChangeListener implements OnPageChangeListener {
-
-		@Override
-		public void onPageSelected(int arg0) {
-			tabsList.get(currIndex).setSelected(false);
-			setCurrentPage(arg0);
+	public void updateCurrentTabs(int index) {
+		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
+			if (i == index) {
+				tabsList.get(i).setSelected(true);
+			} else {
+				tabsList.get(i).setSelected(false);
+			}
 		}
 
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-		}
-
-		@Override
-		public void onPageScrollStateChanged(int arg0) {
-		}
-	}
-
-	private void setCurrentPage(int index) {
-		tabsList.get(index).setSelected(true);
-		currIndex = index;
 	}
 
 	@Override
@@ -307,8 +288,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void catalogLoadData() {
+		Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>>>");
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
 			protected void onPreExecute() {
+				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPreExecute>>");
 				if (catalogInfos == null) {
 					catalogInfos = dbControl.queryCatalog(0, 10);
 				}
@@ -325,17 +308,18 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			protected void onPostExecute(java.util.List<CatalogInfo> result) {
+				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPostExecute>>"+result.size());
 				catalogInfos = result;
 				catalogAdapter.setDataList(catalogInfos);
 				catalogAdapter.notifyDataSetChanged();
-				// FragmentCatalog.this.getListView().postInvalidate();
+				catalogView.postInvalidate();
 			};
 
 		}.execute();
 
 	}
 
-	public void historyLoadData() {
+	private void historyLoadData() {
 		new AsyncTask<Void, Void, List<MarkInfo>>() {
 			protected void onPreExecute() {
 				if (historyInfos == null || historyInfos.size() == 0) {
@@ -390,5 +374,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		intent.putExtra(AppSettings.POSITION, pos);
 		this.startActivity(intent);
 	}
+
 
 }

@@ -1,5 +1,8 @@
 package com.xian.xnovel.widget;
 
+import com.xian.xnovel.MainActivity;
+import com.xian.xnovel.utils.AppSettings;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -12,17 +15,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
-//自定义ViewGroup ， 包含了三个LinearLayout控件，存放在不同的布局位置，通过scrollBy或者scrollTo方法切换
 public class MainViewGroup extends ViewGroup {
 
 	private static String TAG = "MainViewGroup";
 
+	// ///////////////////////////////////////////////////关于滚动部分的代码///////////////////////////////////////////////////////////////////////
 	private static final int INVALID_POINTER = -1;
 	private int mActivePointerId = INVALID_POINTER;
 
 	private Context mContext;
 	private int mWidth, mHeight;
-	private int curScreen = 0; // 当前屏
+	private int curScreen = AppSettings.SCREEN_DEFAULT; // 当前屏
 
 	private Scroller mScroller = null;
 
@@ -95,22 +98,14 @@ public class MainViewGroup extends ViewGroup {
 		// 如果返回true，表示动画还没有结束
 		// 因为前面startScroll，所以只有在startScroll完成时 才会为false
 		if (mScroller.computeScrollOffset()) {
-			Log.e(TAG, mScroller.getCurrX() + "======" + mScroller.getCurrY());
 			// 产生了动画效果 每次滚动一点
 			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-
-			Log.e(TAG, "### getleft is " + getLeft() + " ### getRight is "
-					+ getRight());
 
 			// 刷新View 否则效果可能有误差
 			postInvalidate();
 		} else
 			Log.i(TAG, "have done the scoller -----");
 	}
-
-	// ///以上可以演示Scroller类的使用
-	// // --------------------------------
-	// ///--------------------------------
 
 	private static final int TOUCH_STATE_REST = 0;
 	private static final int TOUCH_STATE_SCROLLING = 1;
@@ -123,8 +118,6 @@ public class MainViewGroup extends ViewGroup {
 	// 处理触摸的速率
 	private VelocityTracker mVelocityTracker = null;
 
-	private LinearLayout oneLL, twoLL, threeLL, fourLL;
-
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		return super.dispatchTouchEvent(ev);
@@ -134,7 +127,6 @@ public class MainViewGroup extends ViewGroup {
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		Log.e(TAG, "onInterceptTouchEvent-slop:" + mTouchSlop);
 
 		final int action = ev.getAction();
 		// 表示已经开始滑动了，不需要走该Action_MOVE方法了(第一次时可能调用)。
@@ -147,7 +139,6 @@ public class MainViewGroup extends ViewGroup {
 		case MotionEvent.ACTION_MOVE:
 			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 			final float x = ev.getX(pointerIndex);
-			Log.e(TAG, "onInterceptTouchEvent move");
 			final int xDiff = (int) Math.abs(mLastionMotionX - x);
 			// 超过了最小滑动距离
 			if (xDiff > mTouchSlop) {
@@ -174,13 +165,12 @@ public class MainViewGroup extends ViewGroup {
 			mActivePointerId = INVALID_POINTER;
 			break;
 		}
-		Log.e(TAG, mTouchState + "====" + TOUCH_STATE_REST);
 		return mTouchState != TOUCH_STATE_REST;
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
 
-		Log.i(TAG, "--- onTouchEvent--> "+event.getAction());
+		Log.i(TAG, "--- onTouchEvent--> " + event.getAction());
 
 		// TODO Auto-generated method stub
 		if (mVelocityTracker == null) {
@@ -188,7 +178,6 @@ public class MainViewGroup extends ViewGroup {
 			mVelocityTracker = VelocityTracker.obtain();
 		}
 		mVelocityTracker.addMovement(event);
-
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
@@ -203,9 +192,8 @@ public class MainViewGroup extends ViewGroup {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			final int pointerIndex = event.findPointerIndex(mActivePointerId);
-			Log.e("lmf", "MainViewGroup>>>>>"+pointerIndex);
 			final float x = event.getX(pointerIndex);
-			
+
 			int detaX = (int) (mLastionMotionX - x);
 			scrollBy(detaX, 0);
 
@@ -278,19 +266,13 @@ public class MainViewGroup extends ViewGroup {
 
 	// //我们是缓慢移动的
 	private void snapToDestination() {
-		// 当前的偏移位置
-		int scrollX = getScrollX();
-		int scrollY = getScrollY();
-
-		Log.e(TAG, "### onTouchEvent snapToDestination ### scrollX is "
-				+ scrollX);
 
 		// 判断是否超过下一屏的中间位置，如果达到就抵达下一屏，否则保持在原屏幕
 		// 直接使用这个公式判断是哪一个屏幕 前后或者自己
 		// 判断是否超过下一屏的中间位置，如果达到就抵达下一屏，否则保持在原屏幕
 		// 这样的一个简单公式意思是：假设当前滑屏偏移值即 scrollCurX 加上每个屏幕一半的宽度，除以每个屏幕的宽度就是
 		// 我们目标屏所在位置了。 假如每个屏幕宽度为320dip, 我们滑到了500dip处，很显然我们应该到达第二屏
-		int destScreen = (getScrollX() + getWidth() / 2) / getWidth();
+		int destScreen = (getScrollX() + getWidth() / 3 * 2) / getWidth();
 
 		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx destScreen " + destScreen);
 
@@ -304,18 +286,17 @@ public class MainViewGroup extends ViewGroup {
 		// 为了友好性，我们在增加一个动画效果
 		// 需要再次滑动的距离 屏或者下一屏幕的继续滑动距离
 
-		if (whichScreen > getChildCount() - 1)
-			whichScreen = getChildCount() - 1;
-		if (whichScreen < 0)
-			whichScreen = 0;
+		whichScreen = Math.max(AppSettings.SCREEN_MIN,
+				Math.min(whichScreen, getChildCount() - 1));
 		curScreen = whichScreen;
 
 		int dx = curScreen * getWidth() - getScrollX();
 
 		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx is " + dx);
 
-		mScroller.startScroll(getScrollX(), 0, dx, 0, Math.abs(dx) * 2);
+		mScroller.startScroll(getScrollX(), 0, dx, 0, Math.abs(dx));
 
+		mainActivity.updateCurrentTabs(curScreen);
 		// 此时需要手动刷新View 否则没效果
 		invalidate();
 
@@ -326,53 +307,21 @@ public class MainViewGroup extends ViewGroup {
 			mScroller.abortAnimation();
 		}
 
-		if (currentScreen > getChildCount() - 1)
-			currentScreen = getChildCount() - 1;
-		if (currentScreen < 0)
-			currentScreen = 0;
+
+		currentScreen = Math.max(AppSettings.SCREEN_MIN,
+				Math.min(currentScreen, getChildCount() - 1));
 		curScreen = currentScreen;
 
 		scrollTo((curScreen) * mWidth, 0);
+
+		mainActivity.updateCurrentTabs(curScreen);
+
 		invalidate();
 	}
 
 	private void init() {
 
 		mScroller = new Scroller(mContext);
-
-		this.setBackgroundColor(Color.GREEN);
-
-		// 初始化3个 LinearLayout控件
-		oneLL = new LinearLayout(mContext);
-		oneLL.setBackgroundColor(Color.RED);
-		addView(oneLL);
-
-		// ListView listView = new ListView(mContext);
-		// listView.setAdapter(new ArrayAdapter<String>(mContext,
-		// android.R.layout.simple_expandable_list_item_1,getData()));
-		// listView.setOnItemClickListener(new OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// // TODO Auto-generated method stub
-		// Log.e("lmf", "hello>>>>>>>>>>>>"+arg2);
-		// }
-		// });
-		// addView(listView);
-		//
-
-		twoLL = new LinearLayout(mContext);
-		twoLL.setBackgroundColor(Color.YELLOW);
-		addView(twoLL);
-
-		threeLL = new LinearLayout(mContext);
-		threeLL.setBackgroundColor(Color.BLUE);
-		addView(threeLL);
-
-		fourLL = new LinearLayout(mContext);
-		fourLL.setBackgroundColor(Color.CYAN);
-		addView(fourLL);
 
 		// 初始化一个最小滑动距离
 		mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -388,14 +337,13 @@ public class MainViewGroup extends ViewGroup {
 		mWidth = MeasureSpec.getSize(widthMeasureSpec);
 		mHeight = MeasureSpec.getSize(heightMeasureSpec);
 		Log.e("lmf", "onMeasure>>>>>>>>>>>>>" + mWidth + ":" + mHeight);
-		setMeasuredDimension(mWidth, mHeight);
 
-		int childCount = getChildCount();
-		Log.i(TAG, "--- onMeasure childCount is -->" + childCount);
-		for (int i = 0; i < childCount; i++) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+		for (int i = 0; i < getChildCount(); i++) {
 			View child = getChildAt(i);
 			// 设置每个子视图的大小 ， 即全屏
-			child.measure(mWidth, mHeight);
+			child.measure(widthMeasureSpec, heightMeasureSpec);
 		}
 	}
 
@@ -403,18 +351,20 @@ public class MainViewGroup extends ViewGroup {
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "MainViewGroup>>>>>>>onLayout>>>>>>>" + l + ":" + t + ":"
-				+ r + ":" + b);
-		Log.i(TAG, "--- start onLayout --");
-		int childCount = getChildCount();
-		int left = 0;
-		Log.i(TAG, "--- onLayout childCount is -->" + childCount);
 
-		for (int i = 0; i < childCount; i++) {
+		int left = 0;
+		for (int i = 0; i < getChildCount(); i++) {
 			View child = getChildAt(i);
 			child.layout(left, 0, left + mWidth, mHeight);
 			left = left + getWidth();
 		}
 	}
 
+	// ///////////////////////////////////////////////////关于實現方面的代码///////////////////////////////////////////////////////////////////////
+
+	private MainActivity mainActivity;
+
+	public void setMainActivity(MainActivity activity) {
+		mainActivity = activity;
+	}
 }
