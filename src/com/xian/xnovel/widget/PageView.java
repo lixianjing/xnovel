@@ -1,6 +1,5 @@
 package com.xian.xnovel.widget;
 
-import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.factory.BookPageFactory;
 
 import android.content.Context;
