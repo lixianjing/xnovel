@@ -14,18 +14,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-public class CatalogListAdapter extends BaseAdapter {
+public class CatalogListAdapter extends BaseAdapter implements SectionIndexer {
 
 	private LayoutInflater mInflater;
 	private List<CatalogInfo> dataList;
 	private Context mContext;
+	private Integer[] indexs;
 
 	public CatalogListAdapter(Context context, List<CatalogInfo> list) {
 		this.mInflater = LayoutInflater.from(context);
 		dataList = list;
 		mContext = context;
+		initTitleIndex();
+	}
+
+	private void initTitleIndex() {
+		if (dataList != null) {
+			indexs = new Integer[dataList.size()];
+
+			for(int i=0;i<indexs.length;i++)
+				indexs[i] = i+1;
+
+		}
 	}
 
 	@Override
@@ -63,7 +76,7 @@ public class CatalogListAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		CatalogInfo info = dataList.get(position);
-		
+
 		holder.title.setText(info.getTitle());
 		String[] strs = info.getContent().split(" ");
 		holder.content1.setText(strs[0]);
@@ -77,13 +90,28 @@ public class CatalogListAdapter extends BaseAdapter {
 		public TextView content2;
 	}
 
+	@Override
+	public int getPositionForSection(int section) {
+		return section;
+	}
+
+	@Override
+	public int getSectionForPosition(int position) {
+		return position;
+	}
+
+	@Override
+	public Object[] getSections() {
+		return indexs;
+	}
+
 	public List<CatalogInfo> getDataList() {
 		return dataList;
 	}
 
 	public void setDataList(List<CatalogInfo> dataList) {
 		this.dataList = dataList;
+		initTitleIndex();
 	}
 
-	
 }

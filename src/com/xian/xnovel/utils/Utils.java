@@ -10,9 +10,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
 
 import com.xian.xnovel.R;
 
@@ -22,7 +21,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.View;
 
 /**
  * @author limingfeng
@@ -103,7 +104,6 @@ public class Utils {
 
 	public static boolean copyFileFromAssets(Context context, String fileName,
 			String srcPath) {
-		Log.e("lmf","Utils copyFileFromAssets>>>>>>>>"+fileName+":"+srcPath);
 		try {
 
 			InputStream inStream = context.getAssets().open(srcPath);
@@ -237,4 +237,48 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Draw the view into a bitmap.
+	 */
+	public static Bitmap getViewBitmap(View v) {
+		Bitmap cacheBitmap = null;
+		Bitmap resultBitmap = null;
+		try {
+			v.clearFocus();
+			v.setPressed(false);
+
+			boolean willNotCache = v.willNotCacheDrawing();
+			v.setWillNotCacheDrawing(false);
+
+			// Reset the drawing cache background color to fully transparent
+			// for the duration of this operation
+			int color = v.getDrawingCacheBackgroundColor();
+			v.setDrawingCacheBackgroundColor(0);
+
+			if (color != 0) {
+				v.destroyDrawingCache();
+				v.invalidate();
+			}
+			v.buildDrawingCache();
+			cacheBitmap = v.getDrawingCache();
+			if (cacheBitmap == null) {
+				return null;
+			}
+			resultBitmap = Bitmap.createBitmap(cacheBitmap);
+			// Restore the view
+			v.destroyDrawingCache();
+			v.setWillNotCacheDrawing(willNotCache);
+			v.setDrawingCacheBackgroundColor(color);
+
+			return resultBitmap;
+		} catch (Exception e) {
+			 e.printStackTrace();
+			return null;
+		} finally {
+			if (cacheBitmap != null) {
+				cacheBitmap.recycle();
+				cacheBitmap = null;
+			}
+		}
+	}
 }

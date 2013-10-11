@@ -3,7 +3,7 @@
     android:id="@+id/list_item_top_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_item_selector" >
+    android:background="@drawable/list_item_mark_selector" >
 
     <ImageView
         android:id="@+id/list_cata_icon1"

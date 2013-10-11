@@ -8,12 +8,12 @@ import com.xian.xnovel.adapter.CatalogListAdapter;
 import com.xian.xnovel.adapter.MarkListAdapter;
 import com.xian.xnovel.adapter.ViewPagerAdapter;
 import com.xian.xnovel.db.AppDBControl;
-import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogManager;
+import com.xian.xnovel.widget.MainViewGroup;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,7 +35,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
@@ -50,15 +49,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	public static final int MSG_NO_DATA = 0;
 	public static final int MSG_HAVE_DATA = 1;
 
-	private final int TABS_COUNT = 4;
-	private int currIndex = 0;
-	private ViewPager mPager;
-	private List<View> viewsList;
+	private MainViewGroup viewGroup;
 	private List<TextView> tabsList;
 	private Context mContext;
 	private AppDBControl dbControl;
 	private View catalogView, markView, historyView, moreView;
-
 
 	// catalog
 	private CatalogListAdapter catalogAdapter;
@@ -79,34 +74,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			moreCopyBtn;
 	private TextView moreVersionTv;
 
-	private Handler mHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-
-			switch (msg.what) {
-			case MSG_TYPE_MAIN_INIT:
-				break;
-			case MSG_TYPE_CATALOG:
-
-				break;
-			case MSG_TYPE_MARK:
-				break;
-			case MSG_TYPE_HISTORY:
-				break;
-			case MSG_TYPE_ABOUT:
-
-				break;
-
-			default:
-				break;
-			}
-
-		}
-
-	};
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,40 +83,58 @@ public class MainActivity extends Activity implements OnClickListener {
 		mContext = this;
 		dbControl = AppDBControl.getInstance(mContext);
 		initView();
+		catalogLoadData();
 	}
 
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		historyLoadData();
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
 
 	private void initView() {
 
-		mPager = (ViewPager) findViewById(R.id.main_body_pager);
+		viewGroup = (MainViewGroup) findViewById(R.id.main_body);
+		viewGroup.setMainActivity(this);
 		InitViewPager();
 		initCatalogView();
 		initHistoryView();
 		initMoreView();
 	}
 
-	private void updateData() {
-		catalogLoadData();
-		historyLoadData();
-	}
-
 	private void initCatalogView() {
 		catalogLv = (ListView) catalogView.findViewById(R.id.catalog_lv);
+		catalogLv.addHeaderView(new View(this), null, false);
+		catalogLv.addFooterView(new View(this), null, false);
 		catalogLv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(mContext, BookActivity.class);
-
-				CatalogInfo tempInfo = catalogInfos.get(arg2);
-				intent.putExtra(AppSettings.ID, tempInfo.getId());
-				intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
-				intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
-				mContext.startActivity(intent);
-				Toast.makeText(mContext, "You have selected " + arg2,
-						Toast.LENGTH_SHORT).show();
+				// because it is need cal the header so arg2-1
+				CatalogInfo tempInfo = catalogInfos.get(arg2 - 1);
+				statrtBookActivity(tempInfo.getId(), tempInfo.getTitle(),
+						tempInfo.getContent(), 0);
 			}
 		});
 	}
@@ -157,21 +142,18 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void initHistoryView() {
 		historyTv = (TextView) historyView.findViewById(R.id.mark_tv);
 		historyLv = (ListView) historyView.findViewById(R.id.mark_lv);
+		historyLv.addHeaderView(new View(this), null, false);
+		historyLv.addFooterView(new View(this), null, false);
 		historyLv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(mContext, BookActivity.class);
-				MarkInfo tempInfo = historyInfos.get(arg2);
-				intent.putExtra(AppSettings.ID, tempInfo.getCid());
-				intent.putExtra(AppSettings.TITLE, tempInfo.getTitle());
-				intent.putExtra(AppSettings.CONTENT, tempInfo.getContent());
-				intent.putExtra(AppSettings.POSITION, tempInfo.getPosition());
-				mContext.startActivity(intent);
-				Toast.makeText(mContext, "You have selected " + arg2,
-						Toast.LENGTH_SHORT).show();
+				MarkInfo tempInfo = historyInfos.get(arg2 - 1);
+				statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(),
+						tempInfo.getContent(), tempInfo.getPosition());
+
 			}
 		});
 		historyLv.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -180,7 +162,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				Log.e("lmf", "History>>>>>>>>>>onItemLongClick>>>>>>>");
 				return false;
 			}
 		});
@@ -210,67 +191,33 @@ public class MainActivity extends Activity implements OnClickListener {
 		historyView = inflater.inflate(R.layout.fragment_mark, null);
 		moreView = inflater.inflate(R.layout.fragment_more, null);
 
-		tabsList = new ArrayList<TextView>(TABS_COUNT);
+		tabsList = new ArrayList<TextView>(AppSettings.SCREEN_COUNT);
 		tabsList.add((TextView) findViewById(R.id.tab_btn_category));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_bookmark));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_history));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_more));
 
-		for (int i = 0; i < TABS_COUNT; i++) {
+		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
 			tabsList.get(i).setOnClickListener(this);
 		}
 
-		mPager.setOffscreenPageLimit(2);// 预先加载几个fragment
-		viewsList = new ArrayList<View>(TABS_COUNT);
+		viewGroup.addView(catalogView);
+		viewGroup.addView(markView);
+		viewGroup.addView(historyView);
+		viewGroup.addView(moreView);
 
-		viewsList.add(catalogView);
-		viewsList.add(markView);
-		viewsList.add(historyView);
-		viewsList.add(moreView);
-
-		mPager.setAdapter(new ViewPagerAdapter(viewsList));
-		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
-
-		mPager.setCurrentItem(0);
-		setCurrentPage(0);
+		viewGroup.setCurrentScreen(0);
 	}
 
-	public class MyOnPageChangeListener implements OnPageChangeListener {
-
-		@Override
-		public void onPageSelected(int arg0) {
-			tabsList.get(currIndex).setSelected(false);
-			setCurrentPage(arg0);
+	public void updateCurrentTabs(int index) {
+		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
+			if (i == index) {
+				tabsList.get(i).setSelected(true);
+			} else {
+				tabsList.get(i).setSelected(false);
+			}
 		}
 
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-		}
-
-		@Override
-		public void onPageScrollStateChanged(int arg0) {
-		}
-	}
-
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		long begin = System.currentTimeMillis();
-		updateData();
-		Log.e("lmf", "onResume>>>>>>>>>>>>>>"
-				+ (System.currentTimeMillis() - begin));
-		super.onResume();
-	}
-
-	private void setCurrentPage(int index) {
-		tabsList.get(index).setSelected(true);
-		currIndex = index;
 	}
 
 	@Override
@@ -306,19 +253,18 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		Log.e("lmf", "MainActivity>>>>>>onClick>>>>>>>" + v.getId());
 		switch (v.getId()) {
 		case R.id.tab_btn_category:
-			mPager.setCurrentItem(0);
+			viewGroup.snapToScreen(0);
 			break;
 		case R.id.tab_btn_bookmark:
-			mPager.setCurrentItem(1);
+			viewGroup.snapToScreen(1);
 			break;
 		case R.id.tab_btn_history:
-			mPager.setCurrentItem(2);
+			viewGroup.snapToScreen(2);
 			break;
 		case R.id.tab_btn_more:
-			mPager.setCurrentItem(3);
+			viewGroup.snapToScreen(3);
 			break;
 		case R.id.more_btn_copy:
 			DialogManager
@@ -341,11 +287,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	}
 
-	
-
 	private void catalogLoadData() {
+		Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>>>");
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
 			protected void onPreExecute() {
+				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPreExecute>>");
 				if (catalogInfos == null) {
 					catalogInfos = dbControl.queryCatalog(0, 10);
 				}
@@ -362,17 +308,18 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			protected void onPostExecute(java.util.List<CatalogInfo> result) {
+				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPostExecute>>"+result.size());
 				catalogInfos = result;
 				catalogAdapter.setDataList(catalogInfos);
 				catalogAdapter.notifyDataSetChanged();
-				// FragmentCatalog.this.getListView().postInvalidate();
+				catalogView.postInvalidate();
 			};
 
 		}.execute();
 
 	}
 
-	public void historyLoadData() {
+	private void historyLoadData() {
 		new AsyncTask<Void, Void, List<MarkInfo>>() {
 			protected void onPreExecute() {
 				if (historyInfos == null || historyInfos.size() == 0) {
@@ -417,4 +364,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		}.execute();
 	}
+
+	private void statrtBookActivity(int id, String title, String content,
+			long pos) {
+		Intent intent = new Intent(mContext, BookActivity.class);
+		intent.putExtra(AppSettings.ID, id);
+		intent.putExtra(AppSettings.TITLE, title);
+		intent.putExtra(AppSettings.CONTENT, content);
+		intent.putExtra(AppSettings.POSITION, pos);
+		this.startActivity(intent);
+	}
+
+
 }
