@@ -1,5 +1,7 @@
 package com.xian.xnovel;
 
+import java.io.IOException;
+
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
@@ -12,6 +14,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -36,21 +40,18 @@ public class BookActivity extends Activity {
 	public final static int BACK_KEYCODE = 4;
 
 	private PageView mPageView;
-	private ImageView cacheIv;
 	private BookPageFactory pagefactory;
 	private Context mContext;
 	private String bookTitle, bookContent;
 	private int bookID;
-	private long position;
+	private int position;
 	private PowerManager powerManager = null;
 	private WakeLock wakeLock = null;
 	private boolean isSaveHistory = true;
+	private Bitmap mCurPageBitmap, mNextPageBitmap;
+	private Canvas mCurPageCanvas, mNextPageCanvas;
 
-	private TranslateAnimation animationLeft, animationRight;
-	private pageTranslateAnimListener animListener;
-	private Bitmap mTempBitmap;
 	private int mWidth, mHeight;
-	private boolean isTranslateAnimDoing=false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,6 @@ public class BookActivity extends Activity {
 
 		setContentView(R.layout.activity_book);
 		mPageView = (PageView) findViewById(R.id.book_pv);
-		cacheIv = (ImageView) findViewById(R.id.book_cache_iv);
 
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
@@ -71,10 +71,24 @@ public class BookActivity extends Activity {
 		getIntentData(getIntent());
 		if (bookID != 0) {
 			init();
-			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
-			pagefactory.setBeginPos((int) position);
+					AppSettings.BOOK_FILE_PREFIX + bookID);
+			if (position > 0) {
+				try {
+					pagefactory.prePage();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// setContentView(mPageWidget);
+				pagefactory.onDraw(mNextPageCanvas);
+				mPageView.setBitmaps(mNextPageBitmap, mNextPageBitmap);
+				mPageView.postInvalidate();
+			} else {
+				pagefactory.onDraw(mCurPageCanvas);
+				mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
+			}
+
 			mPageView.invalidate();
 
 		} else {
@@ -90,22 +104,18 @@ public class BookActivity extends Activity {
 
 		DisplayMetrics dm = new DisplayMetrics();
 		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-		pagefactory = BookPageFactory.getInstance(mContext);
+		
 		mWidth = dm.widthPixels;
 		mHeight = dm.heightPixels;
 
-		animListener = new pageTranslateAnimListener();
-		animationLeft = new TranslateAnimation(0, mWidth, 0, 0);
-		animationLeft.setDuration(400);
-		animationLeft.setAnimationListener(animListener);
-
-		animationRight = new TranslateAnimation(0, -mWidth, 0, 0);
-		animationRight.setDuration(400);
-		animationRight.setAnimationListener(animListener);
-
+		pagefactory = new BookPageFactory();
 		pagefactory.init(mWidth, mHeight);
-		pagefactory.setBookActivity(this);
-		pagefactory.setPageView(mPageView);
+		
+		mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+		mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+		
+		mCurPageCanvas = new Canvas(mCurPageBitmap);
+		mNextPageCanvas = new Canvas(mNextPageBitmap);
 
 	}
 
@@ -113,7 +123,7 @@ public class BookActivity extends Activity {
 		bookTitle = intent.getStringExtra(AppSettings.TITLE);
 		bookContent = intent.getStringExtra(AppSettings.CONTENT);
 		bookID = intent.getIntExtra(AppSettings.ID, 0);
-		position = intent.getLongExtra(AppSettings.POSITION, 0);
+		position = intent.getIntExtra(AppSettings.POSITION, 0);
 	}
 
 	@Override
@@ -159,10 +169,10 @@ public class BookActivity extends Activity {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
 		case VOLUME_UP_KEYCODE:
-			pagefactory.updatePageInfo(BookPageFactory.DIR_PRE_PAGE, true);
+			pagefactory.preLoadContent();
 			return true;
 		case VOLUME_DOWN_KEYCODE:
-			pagefactory.updatePageInfo(BookPageFactory.DIR_NEXT_PAGE, true);
+			pagefactory.nextLoadContent();
 			return true;
 		case BACK_KEYCODE:
 			if (isSaveHistory && position != pagefactory.getCurPosition()) {
@@ -188,13 +198,10 @@ public class BookActivity extends Activity {
 		bookTitle = savedInstanceState.getString(AppSettings.TITLE);
 		bookContent = savedInstanceState.getString(AppSettings.CONTENT);
 		bookID = savedInstanceState.getInt(AppSettings.ID, 0);
-		position = savedInstanceState.getLong(AppSettings.POSITION, 0);
+		position = savedInstanceState.getInt(AppSettings.POSITION, 0);
 		if (bookID != 0) {
-			mPageView = new PageView(this);
-			setContentView(mPageView);
-			mPageView.setBackgroundResource(R.drawable.theme_1);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID, bookContent);
+					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setBeginPos((int) position);
 			mPageView.invalidate();
 
@@ -213,67 +220,11 @@ public class BookActivity extends Activity {
 		outState.putString(AppSettings.TITLE, bookTitle);
 		outState.putString(AppSettings.CONTENT, bookContent);
 		outState.putInt(AppSettings.ID, bookID);
-		outState.putLong(AppSettings.POSITION, pagefactory.getCurPosition());
+		outState.putInt(AppSettings.POSITION, pagefactory.getCurPosition());
 
 		super.onSaveInstanceState(outState);
 	}
 
-	private class pageTranslateAnimListener implements AnimationListener {
 
-		@Override
-		public void onAnimationEnd(Animation animation) {
-			// TODO Auto-generated method stub
-			cacheIv.setVisibility(View.GONE);
-			cacheIv.clearAnimation();
-			isTranslateAnimDoing=false;
-			LogUtils.log("listener  end",System.currentTimeMillis());
-		}
-
-		@Override
-		public void onAnimationRepeat(Animation animation) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onAnimationStart(Animation animation) {
-			// TODO Auto-generated method stub
-			LogUtils.log("listener  start",System.currentTimeMillis());
-			isTranslateAnimDoing=true;
-		}
-
-	}
-
-	/**
-	 * 
-	 * @param direct
-	 *            0为 向左 其他值为向右
-	 * @return 是否进行动画成功 当以下情况时不应该进行动画 1.在第一页或者是最后一页时 2.在上一个动画还没有进行完成时
-	 */
-	public boolean doBookTranslateAnim(int direct) {
-		LogUtils.log("BookActivity","doBookTranslateAnim",direct);
-		if (isTranslateAnimDoing) {
-			return false;
-		}
-
-		if (mTempBitmap != null) {
-			mTempBitmap.recycle();
-			mTempBitmap = null;
-		}
-
-		mTempBitmap = Utils.getViewBitmap(mPageView);
-		if (mTempBitmap != null) {
-			cacheIv.setImageBitmap(mTempBitmap);
-			cacheIv.setVisibility(View.VISIBLE);
-			if (direct == 0) {
-				cacheIv.startAnimation(animationLeft);
-			} else {
-				cacheIv.startAnimation(animationRight);
-			}
-			return true;
-		}else{
-			return false;
-		}
-	}
 
 }

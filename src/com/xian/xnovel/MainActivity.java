@@ -366,7 +366,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void statrtBookActivity(int id, String title, String content,
-			long pos) {
+			int pos) {
 		Intent intent = new Intent(mContext, BookActivity.class);
 		intent.putExtra(AppSettings.ID, id);
 		intent.putExtra(AppSettings.TITLE, title);

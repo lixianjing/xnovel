@@ -9,7 +9,7 @@ public class MarkInfo {
 	private int cid;
 	private String title;
 	private String content;
-	private long position;
+	private int position;
 	private String percent;
 	private long date;
 	private int type;
@@ -19,7 +19,7 @@ public class MarkInfo {
 	}
 
 	public MarkInfo(int id, int cid, String title, String content,
-			long position, String percent, long date, int type) {
+			int position, String percent, long date, int type) {
 		super();
 		this.id = id;
 		this.cid = cid;
@@ -31,7 +31,7 @@ public class MarkInfo {
 		this.type = type;
 	}
 
-	public MarkInfo(int cid, String title, String content, long position,
+	public MarkInfo(int cid, String title, String content, int position,
 			String percent, long date, int type) {
 		super();
 		this.cid = cid;
@@ -83,11 +83,11 @@ public class MarkInfo {
 		this.content = content;
 	}
 
-	public long getPosition() {
+	public int getPosition() {
 		return position;
 	}
 
-	public void setPosition(long position) {
+	public void setPosition(int position) {
 		this.position = position;
 	}
 

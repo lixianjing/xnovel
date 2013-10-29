@@ -120,7 +120,7 @@ public class AppDBControl {
 									.getColumnIndex(BookCatalogColumns.TITLE)),
 							cursor.getString(cursor
 									.getColumnIndex(BookCatalogColumns.CONTENT)),
-							cursor.getLong(cursor
+							cursor.getInt(cursor
 									.getColumnIndex(BookMarkColumns.POSITION)),
 							cursor.getString(cursor
 									.getColumnIndex(BookMarkColumns.PERCENT)),
