@@ -62,7 +62,7 @@ public class BookActivity extends Activity {
 
 		setContentView(R.layout.activity_book);
 		mPageView = (PageView) findViewById(R.id.book_pv);
-
+		mPageView.setBookActivity(this);
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
@@ -104,16 +104,18 @@ public class BookActivity extends Activity {
 
 		DisplayMetrics dm = new DisplayMetrics();
 		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-		
+
 		mWidth = dm.widthPixels;
 		mHeight = dm.heightPixels;
 
 		pagefactory = new BookPageFactory();
 		pagefactory.init(mWidth, mHeight);
-		
-		mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-		mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-		
+
+		mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
+				Bitmap.Config.ARGB_8888);
+		mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
+				Bitmap.Config.ARGB_8888);
+
 		mCurPageCanvas = new Canvas(mCurPageBitmap);
 		mNextPageCanvas = new Canvas(mNextPageBitmap);
 
@@ -225,6 +227,32 @@ public class BookActivity extends Activity {
 		super.onSaveInstanceState(outState);
 	}
 
-
-
+	public boolean updatePage() {
+		pagefactory.onDraw(mCurPageCanvas);
+		if (mPageView.DragToRight()) {
+			try {
+				pagefactory.prePage();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			if (pagefactory.isFirstPage()) {
+				Toast.makeText(mContext, "已经是第一页", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			pagefactory.onDraw(mNextPageCanvas);
+		} else {
+			try {
+				pagefactory.nextPage();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			if (pagefactory.isLastPage()) {
+				Toast.makeText(mContext, "已经是最后一页", Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			pagefactory.onDraw(mNextPageCanvas);
+		}
+		mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
+		return true;
+	}
 }

@@ -1,7 +1,11 @@
 package com.xian.xnovel.widget;
 
+import com.xian.xnovel.BookActivity;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -12,6 +16,7 @@ import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
@@ -36,10 +41,42 @@ public class PageView extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
-		
-		
-		return super.onTouchEvent(event);
+		float x, y;
+		x = event.getX();
+		y = event.getY();
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			abortAnimation();
+			calcCornerXY(x, y);
+			mTouch.x = x;
+			mTouch.y = y;
+			return bookActivity.updatePage();
+
+		case MotionEvent.ACTION_MOVE:
+			mTouch.x = x;
+			mTouch.y = y;
+			this.postInvalidate();
+			break;
+
+		case MotionEvent.ACTION_UP:
+			if (canDragOver()) {
+				startAnimation(1200);
+			} else {
+				mTouch.x = mCornerX - 0.09f;
+				mTouch.y = mCornerY - 0.09f;
+			}
+			mCurPageBitmap=  mNextPageBitmap.copy(Config.ARGB_8888, false);
+			this.postInvalidate();
+			break;
+
+		default:
+			break;
+		}
+
+		return true;
 	}
+
+	private BookActivity bookActivity;
 
 	private static final String TAG = "hmg";
 	private int mWidth = 480;
@@ -321,11 +358,6 @@ public class PageView extends View {
 		mNextPageBitmap = bm2;
 	}
 
-	public void setScreen(int w, int h) {
-		mWidth = w;
-		mHeight = h;
-	}
-
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0xFFAAAAAA);
@@ -552,6 +584,7 @@ public class PageView extends View {
 	}
 
 	private void startAnimation(int delayMillis) {
+		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>"+delayMillis);
 		int dx, dy;
 		// dx 水平方向滑动的距离，负值会使滚动向左滚动
 		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
@@ -588,6 +621,10 @@ public class PageView extends View {
 		if (mCornerX > 0)
 			return false;
 		return true;
+	}
+
+	public void setBookActivity(BookActivity bookActivity) {
+		this.bookActivity = bookActivity;
 	}
 
 }

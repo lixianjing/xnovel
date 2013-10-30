@@ -25,20 +25,20 @@ public class BookPageFactory {
 
 	private File book_file = null;
 	private MappedByteBuffer m_mbBuf = null;
-	private int m_mbBufLen = 0;
-	private int m_mbBufBegin = 50; // 50
-	private int m_mbBufEnd = 0;
+	private int mBufferLen = 0;
+	private int mReadStart = 0;
+	private int mReadEnd = 0;
 	private String m_strCharsetName = "UTF-8";
 	private Bitmap m_book_bg = null;
 	private int mWidth;
 	private int mHeight;
 
-	private Vector<String> m_lines = new Vector<String>();
+	private Vector<String> mShowLine = new Vector<String>();
 
 	private int m_fontSize = 40;
 	private int r_fontSize = 30;
 	private int m_textColor = Color.BLACK;
-	private int m_backColor = 0xffff9e85; // 背景颜色
+	private int m_backColor = 0xFFEEEEEE; // 背景颜色
 	private int marginWidth = 15; // 左右与边缘的距离
 	private int marginHeight = 20; // 上下与边缘的距离
 	private int youmiHeight = 0;// 广告条的狂度
@@ -46,7 +46,7 @@ public class BookPageFactory {
 	private int mLineCount; // 每页可以显示的行数
 	private float mVisibleHeight; // 绘制内容的宽
 	private float mVisibleWidth; // 绘制内容的宽
-	private boolean m_isfirstPage, m_islastPage;
+	private boolean isFirstPage, isLastPage;
 	private int b_FontSize = 16;// 底部文字大小
 	private int e_fontSize = 5;
 	private int spaceSize = 20;// 行间距大小
@@ -73,13 +73,13 @@ public class BookPageFactory {
 		bPaint.setTextAlign(Align.LEFT);
 		bPaint.setTextSize(b_FontSize);
 		bPaint.setColor(m_textColor);
-		
+
 		// 行间距设置
 		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		spactPaint.setTextAlign(Align.LEFT);
 		spactPaint.setTextSize(spaceSize);
 		spactPaint.setColor(m_textColor);
-		
+
 		//
 		titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		titlePaint.setTextAlign(Align.LEFT);
@@ -99,11 +99,11 @@ public class BookPageFactory {
 	}
 
 	public void openbook(String path, String fileName) {
-		Log.e("lmf", "openbook>>>>>>>>>>"+path+":"+fileName);
+		Log.e("lmf", "openbook>>>>>>>>>>" + path + ":" + fileName);
 		try {
 			book_file = new File(path, fileName);
 			long lLen = book_file.length();
-			m_mbBufLen = (int) lLen;
+			mBufferLen = (int) lLen;
 			m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
 					FileChannel.MapMode.READ_ONLY, 0, lLen);
 		} catch (FileNotFoundException e) {
@@ -115,7 +115,7 @@ public class BookPageFactory {
 		}
 	}
 
-	protected byte[] readParagraphBack(int nFromPos) {
+	protected byte[] readContentBackward(int nFromPos) {
 		int nEnd = nFromPos;
 		int i;
 		byte b0, b1;
@@ -164,14 +164,14 @@ public class BookPageFactory {
 		return buf;
 	}
 
-	// 读取上一段落
-	protected byte[] readParagraphForward(int nFromPos) {
+	// 读取下一段落
+	protected byte[] readContentForward(int nFromPos) {
 		int nStart = nFromPos;
 		int i = nStart;
 		byte b0, b1;
 		// 根据编码格式判断换行
 		if (m_strCharsetName.equals("UTF-16LE")) {
-			while (i < m_mbBufLen - 1) {
+			while (i < mBufferLen - 1) {
 				b0 = m_mbBuf.get(i++);
 				b1 = m_mbBuf.get(i++);
 				if (b0 == 0x0a && b1 == 0x00) {
@@ -179,7 +179,7 @@ public class BookPageFactory {
 				}
 			}
 		} else if (m_strCharsetName.equals("UTF-16BE")) {
-			while (i < m_mbBufLen - 1) {
+			while (i < mBufferLen - 1) {
 				b0 = m_mbBuf.get(i++);
 				b1 = m_mbBuf.get(i++);
 				if (b0 == 0x00 && b1 == 0x0a) {
@@ -187,7 +187,7 @@ public class BookPageFactory {
 				}
 			}
 		} else {
-			while (i < m_mbBufLen) {
+			while (i < mBufferLen) {
 				b0 = m_mbBuf.get(i++);
 				if (b0 == 0x0a) {
 					break;
@@ -203,11 +203,12 @@ public class BookPageFactory {
 	}
 
 	protected Vector<String> pageDown() {
+		Log.e("lmf", "BookPageFactory>>>>>>>>>>>pageDown");
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
-		while (lines.size() < mLineCount && m_mbBufEnd < m_mbBufLen) {
-			byte[] paraBuf = readParagraphForward(m_mbBufEnd); // 读取一个段落
-			m_mbBufEnd += paraBuf.length;
+		while (lines.size() < mLineCount && mReadEnd < mBufferLen) {
+			byte[] paraBuf = readContentForward(mReadEnd); // 读取一个段落
+			mReadEnd += paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, m_strCharsetName);
 			} catch (UnsupportedEncodingException e) {
@@ -237,7 +238,7 @@ public class BookPageFactory {
 			}
 			if (strParagraph.length() != 0) {
 				try {
-					m_mbBufEnd -= (strParagraph + strReturn)
+					mReadEnd -= (strParagraph + strReturn)
 							.getBytes(m_strCharsetName).length;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
@@ -249,14 +250,15 @@ public class BookPageFactory {
 	}
 
 	protected void pageUp() {
-		if (m_mbBufBegin < 0)
-			m_mbBufBegin = 0;
+		Log.e("lmf", "BookPageFactory>>>>>>>>>>>pageUp");
+		if (mReadStart < 0)
+			mReadStart = 0;
 		Vector<String> lines = new Vector<String>();
 		String strParagraph = "";
-		while (lines.size() < mLineCount && m_mbBufBegin > 0) {
+		while (lines.size() < mLineCount && mReadStart > 0) {
 			Vector<String> paraLines = new Vector<String>();
-			byte[] paraBuf = readParagraphBack(m_mbBufBegin);
-			m_mbBufBegin -= paraBuf.length;
+			byte[] paraBuf = readContentBackward(mReadStart);
+			mReadStart -= paraBuf.length;
 			try {
 				strParagraph = new String(paraBuf, m_strCharsetName);
 			} catch (UnsupportedEncodingException e) {
@@ -279,62 +281,64 @@ public class BookPageFactory {
 		}
 		while (lines.size() > mLineCount) {
 			try {
-				m_mbBufBegin += lines.get(0).getBytes(m_strCharsetName).length;
+				mReadStart += lines.get(0).getBytes(m_strCharsetName).length;
 				lines.remove(0);
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		m_mbBufEnd = m_mbBufBegin;
+		mReadEnd = mReadStart;
 		return;
 	}
 
 	public void prePage() throws IOException {
-		if (m_mbBufBegin <= 0) {
-			m_mbBufBegin = 0;
-			m_isfirstPage = true;
-			return;
-		} else
-			m_isfirstPage = false;
-		m_lines.clear();
-		pageUp();
-		m_lines = pageDown();
+		if (mReadStart <= 0) {
+			mReadStart = 0;
+			isFirstPage = true;
+		} else {
+			isFirstPage = false;
+			mShowLine.clear();
+			pageUp();
+			mShowLine = pageDown();
+		}
 	}
 
 	public void nextPage() throws IOException {
-		if (m_mbBufEnd >= m_mbBufLen) {
-			m_islastPage = true;
-			return;
-		} else
-			m_islastPage = false;
-		m_lines.clear();
-		m_mbBufBegin = m_mbBufEnd;
-		m_lines = pageDown();
+		if (mReadEnd >= mBufferLen) {
+			isLastPage = true;
+		} else {
+			isLastPage = false;
+			mShowLine.clear();
+			mReadStart = mReadEnd;
+			mShowLine = pageDown();
+		}
 	}
 
 	public void onDraw(Canvas c) {
-		if (m_lines.size() == 0)
-			m_lines = pageDown();
-		if (m_lines.size() > 0) {
+		Log.e("lmf", "BookPageFactory>>>>>>ondraw>>>");
+		if (mShowLine.size() == 0)
+			mShowLine = pageDown();
+		if (mShowLine.size() > 0) {
 			if (m_book_bg == null)
 				c.drawColor(m_backColor);
 			else
 				c.drawBitmap(m_book_bg, 0, 0, null);
 			int y = marginHeight + youmiHeight;
 			int i = 0;
-			for (String strLine : m_lines) {
+			for (String strLine : mShowLine) {
+				Log.e("lmf", "BookPageFactory>>>>>>ondraw>>>"+strLine);
 				y += m_fontSize;
 				// mPaint.setTypeface(Typeface.DEFAULT_BOLD);
 				c.drawText(strLine, marginWidth, y, mPaint);
 				y += spaceSize;
-				if (i != m_lines.size() - 1) {
+				if (i != mShowLine.size() - 1) {
 					c.drawText("", marginWidth, y, spactPaint);
 				}
 				i++;
 			}
 		}
-		float fPercent = (float) (m_mbBufBegin * 1.0 / m_mbBufLen);
+		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
 		DecimalFormat df = new DecimalFormat("#0.0");
 		String strPercent = df.format(fPercent * 100) + "%";
 
@@ -368,33 +372,29 @@ public class BookPageFactory {
 			m_book_bg = BG;
 	}
 
-	public boolean isfirstPage() {
-		return m_isfirstPage;
+	public boolean isFirstPage() {
+		return isFirstPage;
 	}
 
-	public void setIslastPage(boolean islast) {
-		m_islastPage = islast;
-	}
-
-	public boolean islastPage() {
-		return m_islastPage;
+	public boolean isLastPage() {
+		return isLastPage;
 	}
 
 	public int getCurPostion() {
-		return m_mbBufEnd;
+		return mReadEnd;
 	}
 
 	public int getCurPostionBeg() {
-		return m_mbBufBegin;
+		return mReadStart;
 	}
 
 	public void setBeginPos(int pos) {
-		m_mbBufEnd = pos;
-		m_mbBufBegin = pos;
+		mReadEnd = pos;
+		mReadStart = pos;
 	}
 
 	public int getBufLen() {
-		return m_mbBufLen;
+		return mBufferLen;
 	}
 
 	public int getCurProgress() {
@@ -402,7 +402,7 @@ public class BookPageFactory {
 	}
 
 	public String getOneLine() {
-		return m_lines.toString().substring(0, 10);
+		return mShowLine.toString().substring(0, 10);
 	}
 
 	public void changBackGround(int color) {
@@ -420,21 +420,21 @@ public class BookPageFactory {
 		fileName = fileName.substring(0, fileName.indexOf("."));
 		this.fileName = fileName;
 	}
-	
-	
-	public int getCurPosition(){
+
+	public int getCurPosition() {
 		return 0;
 	}
-	public String getCurPercent(){
+
+	public String getCurPercent() {
 		return null;
 	}
-	
-	public void preLoadContent(){
-		
+
+	public void preLoadContent() {
+
 	}
-	
-	public void nextLoadContent(){
-		
+
+	public void nextLoadContent() {
+
 	}
-	
+
 }
