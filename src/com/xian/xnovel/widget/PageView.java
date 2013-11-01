@@ -1,6 +1,7 @@
 package com.xian.xnovel.widget;
 
 import com.xian.xnovel.BookActivity;
+import com.xian.xnovel.factory.BookPageFactory;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ public class PageView extends View {
 		float x, y;
 		x = event.getX();
 		y = event.getY();
+		Log.e("lmf", "PageView>>>>>onTouchEvent>>>>>>"+event.getAction()+":"+x+":"+y);
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			abortAnimation();
@@ -59,13 +61,13 @@ public class PageView extends View {
 			break;
 
 		case MotionEvent.ACTION_UP:
-			if (canDragOver()) {
+//			if (canDragOver()) {
 				startAnimation(1200);
-			} else {
-				mTouch.x = mCornerX - 0.09f;
-				mTouch.y = mCornerY - 0.09f;
-			}
-			mCurPageBitmap=  mNextPageBitmap.copy(Config.ARGB_8888, false);
+//			} else {
+//				mTouch.x = mCornerX - 0.09f;
+//				mTouch.y = mCornerY - 0.09f;
+//			}
+			mCurPageBitmap = mNextPageBitmap.copy(Config.ARGB_8888, false);
 			this.postInvalidate();
 			break;
 
@@ -77,6 +79,7 @@ public class PageView extends View {
 	}
 
 	private BookActivity bookActivity;
+	private BookPageFactory pagefactory;
 
 	private static final String TAG = "hmg";
 	private int mWidth = 480;
@@ -175,32 +178,6 @@ public class PageView extends View {
 			mIsRTandLB = false;
 	}
 
-	public boolean doTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			mTouch.x = event.getX();
-			mTouch.y = event.getY();
-			this.postInvalidate();
-		}
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			mTouch.x = event.getX();
-			mTouch.y = event.getY();
-			// calcCornerXY(mTouch.x, mTouch.y);
-			// this.postInvalidate();
-		}
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			if (canDragOver()) {
-				startAnimation(1200);
-			} else {
-				mTouch.x = mCornerX - 0.09f;
-				mTouch.y = mCornerY - 0.09f;
-			}
-
-			this.postInvalidate();
-		}
-		// return super.onTouchEvent(event);
-		return true;
-	}
 
 	/**
 	 * Author : hmg25 Version: 1.0 Description : 求解直线P1P2和直线P3P4的交点坐标
@@ -361,6 +338,21 @@ public class PageView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0xFFAAAAAA);
+
+		if (dragToRight()) {
+			if (pagefactory.isFirstPage()) {
+				Log.e("lmf", "onDraw>>>>>isFirstPage>>>>>>>");
+				canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
+				return;
+			}
+		} else {
+			if (pagefactory.isLastPage()) {
+				Log.e("lmf", "onDraw>>>>>isLastPage>>>>>>>");
+				canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
+				return;
+			}
+		}
+
 		calcPoints();
 		drawCurrentPageArea(canvas, mCurPageBitmap, mPath0);
 		drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
@@ -584,7 +576,7 @@ public class PageView extends View {
 	}
 
 	private void startAnimation(int delayMillis) {
-		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>"+delayMillis);
+		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>" + delayMillis);
 		int dx, dy;
 		// dx 水平方向滑动的距离，负值会使滚动向左滚动
 		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
@@ -609,6 +601,7 @@ public class PageView extends View {
 	}
 
 	public boolean canDragOver() {
+		Log.e("lmf","canDragOver>>>>mTouchToCornerDis>>>>>"+mTouchToCornerDis+";"+mWidth);
 		if (mTouchToCornerDis > mWidth / 10)
 			return true;
 		return false;
@@ -617,7 +610,7 @@ public class PageView extends View {
 	/**
 	 * Author : hmg25 Version: 1.0 Description : 是否从左边翻向右边
 	 */
-	public boolean DragToRight() {
+	public boolean dragToRight() {
 		if (mCornerX > 0)
 			return false;
 		return true;
@@ -625,6 +618,10 @@ public class PageView extends View {
 
 	public void setBookActivity(BookActivity bookActivity) {
 		this.bookActivity = bookActivity;
+	}
+
+	public void setPagefactory(BookPageFactory pagefactory) {
+		this.pagefactory = pagefactory;
 	}
 
 }

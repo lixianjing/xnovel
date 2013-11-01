@@ -71,6 +71,7 @@ public class BookActivity extends Activity {
 		getIntentData(getIntent());
 		if (bookID != 0) {
 			init();
+			mPageView.setPagefactory(pagefactory);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			if (position > 0) {
@@ -229,7 +230,7 @@ public class BookActivity extends Activity {
 
 	public boolean updatePage() {
 		pagefactory.onDraw(mCurPageCanvas);
-		if (mPageView.DragToRight()) {
+		if (mPageView.dragToRight()) {
 			try {
 				pagefactory.prePage();
 			} catch (IOException e1) {

@@ -316,7 +316,6 @@ public class BookPageFactory {
 	}
 
 	public void onDraw(Canvas c) {
-		Log.e("lmf", "BookPageFactory>>>>>>ondraw>>>");
 		if (mShowLine.size() == 0)
 			mShowLine = pageDown();
 		if (mShowLine.size() > 0) {
@@ -327,7 +326,6 @@ public class BookPageFactory {
 			int y = marginHeight + youmiHeight;
 			int i = 0;
 			for (String strLine : mShowLine) {
-				Log.e("lmf", "BookPageFactory>>>>>>ondraw>>>"+strLine);
 				y += m_fontSize;
 				// mPaint.setTypeface(Typeface.DEFAULT_BOLD);
 				c.drawText(strLine, marginWidth, y, mPaint);
