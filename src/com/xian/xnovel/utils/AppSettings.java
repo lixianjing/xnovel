@@ -1,5 +1,7 @@
 package com.xian.xnovel.utils;
 
+import android.util.Log;
+
 public interface AppSettings {
 
 	public static final String ID = "id";
@@ -22,6 +24,14 @@ public interface AppSettings {
 
 	public static final String Settings = "settings";
 	public static final String SETTINGS_VERSION = "version";
+	public static final String SETTINGS_DENSITY = "density";
+	public static final String SETTINGS_DPI = "densityDpi";
+	public static final String SETTINGS_WIDTH_FULL = "widthPixels";
+	public static final String SETTINGS_HEIGHT_FULL = "heightPixels";
+	public static final String SETTINGS_WIDTH_VIEW = "widthView";
+	public static final String SETTINGS_HEIGHT_VIEW = "heightView";
+	
+	
 
 	public static final int SCREEN_DEFAULT = 0;
 	public static final int SCREEN_MIN = 0;
