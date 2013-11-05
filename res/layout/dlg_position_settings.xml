@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/dlg_seek_bg"
+    android:minWidth="300dp"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/seek_dlg_head_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/dlg_seek_title"
+        android:gravity="center"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/seek_dlg_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="aaaa"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seek_dlg_body_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" >
+
+            <LinearLayout
+                android:id="@+id/seek_dlg_input_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/integer_value"
+                    android:layout_width="50.0dip"
+                    android:layout_height="wrap_content"
+                    android:digits="1234567890"
+                    android:inputType="phone"
+                    android:maxLength="2"
+                    android:singleLine="true"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/point"
+                    style="@style/Widget.TextView.AlertDialog.Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text=" . "
+                    android:textSize="20.0sp" />
+
+                <EditText
+                    android:id="@+id/decimal_value"
+                    android:layout_width="50.0dip"
+                    android:layout_height="wrap_content"
+                    android:digits="1234567890"
+                    android:inputType="phone"
+                    android:maxLength="2"
+                    android:singleLine="true"
+                    android:text="" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/percent"
+                style="@style/Widget.TextView.AlertDialog.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/seek_dlg_input_ll"
+                android:layout_toRightOf="@+id/seek_dlg_input_ll"
+                android:paddingLeft="3.0dip"
+                android:text=" % "
+                android:textSize="20.0sp" />
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            style="@style/Widget.SeekBar.Normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <Button
+            android:id="@+id/seek_dlg_left_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="@string/sys_confirm"
+            android:layout_weight="1"
+            android:background="@drawable/dlg_btn_selector" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/seek_dlg_right_btn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/sys_cancel"
+            android:background="@drawable/dlg_btn_selector" />
+    </LinearLayout>
+
+</LinearLayout>

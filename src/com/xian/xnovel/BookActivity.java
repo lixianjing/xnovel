@@ -6,8 +6,8 @@ import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
-import com.xian.xnovel.utils.LogUtils;
-import com.xian.xnovel.utils.Utils;
+import com.xian.xnovel.widget.MenuBtmLayout;
+import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
 import android.app.Activity;
@@ -18,7 +18,10 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
@@ -26,10 +29,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class BookActivity extends Activity {
@@ -38,6 +37,14 @@ public class BookActivity extends Activity {
 	public final static int SAVEMARK = 1;
 	public final static int TEXTSET = 2;
 
+	
+	public static final int REQUEST_CODE_PHOTO_PICKED_WITH_DATA = 1001;
+
+	public static final int MSG_MENU_SHOW = 2001;
+	public static final int MSG_MENU_HIDE_TRANSLATE = 2002;
+	public static final int MSG_MENU_HIDE_DISAPPEAR = 2003;
+	public static final int MSG_PICK_PICTURE = 2004;
+	
 	private SharedPreferences pref;
 
 	private PageView mPageView;
@@ -63,6 +70,9 @@ public class BookActivity extends Activity {
 
 		setContentView(R.layout.activity_book);
 		mPageView = (PageView) findViewById(R.id.book_pv);
+		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
+		menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
+		menuBtmLayout.setMainHandler(mHandler);
 		mPageView.setBookActivity(this);
 		mContext = this;
 		powerManager = (PowerManager) this
@@ -256,5 +266,113 @@ public class BookActivity extends Activity {
 		}
 		mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
 		return true;
+	}
+	private MenuBtmLayout menuBtmLayout;
+	private MenuTopLayout menuTopLayout;
+	private OnThemePictureChangedListener pictureChangedListener;
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			Log.e("lmf", "Handler>>>>>>>>" + msg.what);
+			switch (msg.what) {
+			case MSG_MENU_SHOW:
+				menuBtmLayout.showEx();
+				menuTopLayout.showEx();
+				menuTopLayout.requestFocus();
+				break;
+			case MSG_MENU_HIDE_TRANSLATE:
+				menuBtmLayout.hideEx(0);
+				menuTopLayout.hideEx(0);
+				break;
+			case MSG_MENU_HIDE_DISAPPEAR:
+				menuBtmLayout.hideEx(1);
+				menuTopLayout.hideEx(1);
+				break;
+			case MSG_PICK_PICTURE:
+				onPickFromGalleryChosen();
+				break;
+
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+
+	};
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		if (menuBtmLayout.getVisibility() == View.VISIBLE) {
+			mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+		} else {
+			super.onBackPressed();
+		}
+
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		switch (requestCode) {
+		case REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
+			// Ignore failed requests
+			if (resultCode != Activity.RESULT_OK)
+				return;
+			// As we are coming back to this view, the editor will be
+			// reloaded automatically,
+			// which will cause the photo that is set here to disappear. To
+			// prevent this,
+			// we remember to set a flag which is interpreted after loading.
+			// This photo is set here already to reduce flickering.
+			Log.e("lmf", "Test>>>>>>>>>>");
+			try {
+				Uri uri = data.getData();
+				if (uri != null) {
+					Bitmap bitmap = BitmapFactory
+							.decodeStream(getContentResolver().openInputStream(
+									uri));
+					if (bitmap != null) {
+						pictureChangedListener.pictureChanged(bitmap);
+					}
+					Log.e("lmf", "Test>>>>>>>>>222>>" + uri);
+				}
+			} catch (Exception e) {
+				Log.e("lmf", e.getMessage(), e);
+			}
+
+			break;
+		}
+
+		}
+	}
+
+	/**
+	 * Launches Gallery to pick a photo.
+	 */
+	public void onPickFromGalleryChosen() {
+		final Intent intent = getPhotoPickIntent();
+		startActivityForResult(intent,
+				REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
+	}
+
+	/**
+	 * Constructs an intent for picking a photo from Gallery, cropping it and
+	 * returning the bitmap.
+	 */
+	public Intent getPhotoPickIntent() {
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+		intent.setType("image/*");
+		return intent;
+	}
+
+	public void setOnThemePictureChangedListener(
+			OnThemePictureChangedListener pictureChangedListener) {
+		this.pictureChangedListener = pictureChangedListener;
+	}
+
+	public interface OnThemePictureChangedListener {
+		void pictureChanged(Bitmap bitmap);
 	}
 }

@@ -4,5 +4,8 @@
     <!-- The duration (in milliseconds) of a medium-length animation. -->
     <integer name="config_activity_animTime">400</integer>
     <integer name="config_menu_flipper_animTime">600</integer>
+        <!-- The duration (in milliseconds) of a medium-length animation. -->
+    <integer name="menu_flipper_anim_time">400</integer>
+    <integer name="menu_pop_anim_time">400</integer>
 
 </resources>

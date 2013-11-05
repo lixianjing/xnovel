@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/menu_pop_top_bg"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/menu_top_left_tv"
+        style="@style/Menu.pop.top.title2"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="43.2%" />
+
+    <TextView
+        android:id="@+id/menu_top_main_tv"
+        style="@style/Menu.pop.top.title1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+   		android:ellipsize="marquee"
+        android:focusable="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
+        android:text="我是title我是title我是title我是title我是title我是title我是title我是title" />
+
+    <TextView
+        android:id="@+id/menu_top_right_tv"
+        style="@style/Menu.pop.top.title2"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="11:20" />
+
+</LinearLayout>

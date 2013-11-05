@@ -1,6 +1,5 @@
 <resources>
 
-
     <drawable name="translucent_background">#00ffffff</drawable>
 
     <style name="mainTitle">
@@ -10,7 +9,6 @@
         <item name="android:gravity">center</item>
         <item name="android:scaleType">center</item>
     </style>
-    
 
     <style name="TabIcon">
         <item name="android:textSize">10.0sp</item>
@@ -29,23 +27,97 @@
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="IPhoneDialog" parent="@android:Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@drawable/translucent_background</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-        <style name="AppTheme" parent="android:Theme.Black">
+
+    <style name="AppTheme" parent="android:Theme.Black">
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="AnimationActivity"  parent="@android:style/Animation.Activity">
+    <style name="AnimationActivity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/activity_goto_enter</item>
         <item name="android:activityOpenExitAnimation">@anim/activity_goto_exit</item>
         <item name="android:activityCloseEnterAnimation">@anim/activity_back_enter</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_back_exit</item>
     </style>
+
+    <style name="Widget.TextView.Tab.Title" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">@drawable/tab_dlg_title_text_color</item>
+    </style>
+
+    <style name="Menu.pop.top.title1" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">17.0sp</item>
+        <item name="android:textColor">#ff3f484a</item>
+        <item name="android:background">@drawable/cap_title_selector</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="Menu.pop.top.title2" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">#ff3f484a</item>
+        <item name="android:background">@drawable/cap_title_selector</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="Widget.GridView.Toolbox" parent="@android:style/Widget.GridView">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/menu_pop_btm_bg</item>
+        <item name="android:paddingTop">5.0dip</item>
+        <item name="android:listSelector">@drawable/book_list_selector</item>
+        <item name="android:cacheColorHint">@null</item>
+        <item name="android:horizontalSpacing">5.0dip</item>
+        <item name="android:verticalSpacing">5.0dip</item>
+        <item name="android:stretchMode">columnWidth</item>
+        <item name="android:columnWidth">65.0dip</item>
+        <item name="android:numColumns">auto_fit</item>
+    </style>
+
+    <style name="Widget.TextView.Toolbox.Label" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textColor">#ff7f7d7e</item>
+    </style>
+
+    <style name="Widget.SeekBar.Normal" parent="@android:style/Widget.SeekBar">
+        <item name="android:maxHeight">8.0dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">@drawable/seekbar_horizontal</item>
+        <item name="android:minHeight">8.0dip</item>
+        <item name="android:thumb">@drawable/seek_thumb</item>
+        <item name="android:thumbOffset">8.0dip</item>
+    </style>
+
+    <style name="Widget.TextView.AlertDialog.Text" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textColor">#ff7f7f7f</item>
+        <item name="android:shadowColor">@*android:color/white</item>
+        <item name="android:shadowDx">1.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="Widget.TextView.AlertDialog.Msg" parent="@style/Widget.TextView.AlertDialog.Text">
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">#ff5d5d5d</item>
+    </style>
+
+    <style name="Theme.Dialog.Base" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Dialog.Default</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Animation.Dialog.Default" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_in_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_out_exit</item>
+    </style>
+
 </resources>

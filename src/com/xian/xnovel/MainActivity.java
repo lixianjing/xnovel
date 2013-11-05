@@ -12,7 +12,8 @@ import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
-import com.xian.xnovel.widget.DialogManager;
+import com.xian.xnovel.widget.DialogCommon;
+import com.xian.xnovel.widget.DialogPositionSettings;
 import com.xian.xnovel.widget.MainViewGroup;
 
 import android.app.Activity;
@@ -35,6 +36,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
@@ -73,6 +75,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button moreShareBtn, moreReviewBtn, moreSendMessageBtn,
 			moreCopyBtn;
 	private TextView moreVersionTv;
+	private DialogCommon commonDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -237,15 +240,22 @@ public class MainActivity extends Activity implements OnClickListener {
 	// 退出功能
 	private long exitTime;
 	private static final int EXIT_DURATION = 2;
+	private Toast toast;
 
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		if (System.currentTimeMillis() - exitTime < EXIT_DURATION * 1000) {
-			DialogManager.cancelToast();
+			if (toast != null) {
+				toast.cancel();
+			}
 			this.finish();
 		} else {
-			DialogManager.showToast(mContext, "在按一次退出应用", EXIT_DURATION);
+			if (toast != null) {
+				toast.cancel();
+			}
+			toast = Toast.makeText(mContext, "在按一次退出应用", EXIT_DURATION);
+			toast.show();
 			exitTime = System.currentTimeMillis();
 		}
 	}
@@ -267,10 +277,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			viewGroup.snapToScreen(3);
 			break;
 		case R.id.more_btn_copy:
-			DialogManager
-					.showConfirmDialog(mContext, R.string.more_copyright_btn,
-							R.string.more_copyright_message,
-							R.string.str_confirm, null);
+			if (commonDialog == null) {
+				commonDialog = new DialogCommon(mContext,
+						getString(R.string.more_copyright_btn),
+						getString(R.string.more_copyright_message));
+			}
+			commonDialog.show();
 			break;
 		case R.id.more_btn_review:
 
@@ -308,7 +320,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			protected void onPostExecute(java.util.List<CatalogInfo> result) {
-				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPostExecute>>"+result.size());
+				Log.e("lmf",
+						"MainAcrtivity>>>>catalogLoadData>>onPostExecute>>"
+								+ result.size());
 				catalogInfos = result;
 				catalogAdapter.setDataList(catalogInfos);
 				catalogAdapter.notifyDataSetChanged();
@@ -374,6 +388,5 @@ public class MainActivity extends Activity implements OnClickListener {
 		intent.putExtra(AppSettings.POSITION, pos);
 		this.startActivity(intent);
 	}
-
 
 }
