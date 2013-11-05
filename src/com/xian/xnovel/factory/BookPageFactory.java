@@ -36,7 +36,6 @@ public class BookPageFactory {
 	private Vector<String> mShowLine = new Vector<String>();
 
 	private int m_fontSize = 40;
-	private int r_fontSize = 30;
 	private int m_textColor = Color.BLACK;
 	private int m_backColor = 0xFFEEEEEE; // 背景颜色
 	private int marginWidth = 15; // 左右与边缘的距离
@@ -47,18 +46,13 @@ public class BookPageFactory {
 	private float mVisibleHeight; // 绘制内容的宽
 	private float mVisibleWidth; // 绘制内容的宽
 	private boolean isFirstPage, isLastPage;
-	private int b_FontSize = 16;// 底部文字大小
-	private int e_fontSize = 5;
+	private int btmFontSize = 16;// 底部文字大小
 	private int spaceSize = 20;// 行间距大小
-	private int curProgress = 0;// 当前的进度
 	private String titleName = "";
 
-	// private int m_nLineSpaceing = 5;
-
 	private Paint mPaint;
-	private Paint bPaint;// 底部文字绘制
+	private Paint btmPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
-	private Paint titlePaint;// 标题绘制
 
 	public BookPageFactory() {
 		// TODO Auto-generated constructor stub
@@ -69,22 +63,17 @@ public class BookPageFactory {
 		mPaint.setColor(m_textColor);
 
 		// 底部文字绘制
-		bPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		bPaint.setTextAlign(Align.LEFT);
-		bPaint.setTextSize(b_FontSize);
-		bPaint.setColor(m_textColor);
+		btmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		btmPaint.setTextAlign(Align.LEFT);
+		btmPaint.setTextSize(btmFontSize);
+		btmPaint.setColor(m_textColor);
+		percentWidth = (int) btmPaint.measureText("99.9%") + 1;
 
 		// 行间距设置
 		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		spactPaint.setTextAlign(Align.LEFT);
 		spactPaint.setTextSize(spaceSize);
 		spactPaint.setColor(m_textColor);
-
-		//
-		titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		titlePaint.setTextAlign(Align.LEFT);
-		titlePaint.setTextSize(30);
-		titlePaint.setColor(m_textColor);
 
 	}
 
@@ -336,31 +325,25 @@ public class BookPageFactory {
 				i++;
 			}
 		}
-		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
-		DecimalFormat df = new DecimalFormat("#0.0");
-		String strPercent = df.format(fPercent * 100) + "%";
-
-		curProgress = (int) round1(fPercent * 100, 0);
-		int nPercentWidth = (int) bPaint.measureText("99.9%") + 1;
-		c.drawText(strPercent, mWidth - nPercentWidth, mHeight - 5, bPaint);
-
-		SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
-		String str = formatter.format(curDate);
-		c.drawText(str, 5, mHeight - 5, bPaint);
-		int titleWidth = (int) bPaint.measureText("《" + titleName + "》") + 1;
-		c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2,
-				mHeight - 5, bPaint);
+		drawBtmInfo(c);
 	}
 
-	private static double round1(double v, int scale) {
-		if (scale < 0)
-			return v;
-		String temp = "#####0.";
-		for (int i = 0; i < scale; i++) {
-			temp += "0";
-		}
-		return Double.valueOf(new java.text.DecimalFormat(temp).format(v));
+	private int titleWidth;
+	private int percentWidth;
+	private SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+	private DecimalFormat percentFormatter = new DecimalFormat("#0.0");
+
+	private void drawBtmInfo(Canvas c) {
+
+		c.drawText(getCurPercent(), mWidth - percentWidth, mHeight - 5,
+				btmPaint);
+
+		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+		String str = dateFormatter.format(curDate);
+		c.drawText(str, 5, mHeight - 5, btmPaint);
+
+		c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2,
+				mHeight - 5, btmPaint);
 	}
 
 	public void setBgBitmap(Bitmap BG) {
@@ -378,25 +361,8 @@ public class BookPageFactory {
 		return isLastPage;
 	}
 
-	public int getCurPostion() {
-		return mReadEnd;
-	}
-
-	public int getCurPostionBeg() {
-		return mReadStart;
-	}
-
-	public void setBeginPos(int pos) {
-		mReadEnd = pos;
-		mReadStart = pos;
-	}
-
 	public int getBufLen() {
 		return mBufferLen;
-	}
-
-	public int getCurProgress() {
-		return curProgress;
 	}
 
 	public String getOneLine() {
@@ -415,16 +381,22 @@ public class BookPageFactory {
 	}
 
 	public void setTitleName(String name) {
+		titleWidth = (int) btmPaint.measureText("《" + name + "》") + 1;
 		this.titleName = name;
 	}
 
 	public int getCurPosition() {
-		return 0;
+		return mReadStart;
+	}
+
+	public void setCurPosition(int pos) {
+		mReadEnd = pos;
+		mReadStart = pos;
 	}
 
 	public String getCurPercent() {
-		return null;
+		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
+		return percentFormatter.format(fPercent * 100) + "%";
 	}
-
 
 }

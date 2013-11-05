@@ -106,16 +106,9 @@ public class BookActivity extends Activity {
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setTitleName(bookContent);
 			if (position > 0) {
-				try {
-					pagefactory.prePage();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				// setContentView(mPageWidget);
+				pagefactory.setCurPosition(position);
 				pagefactory.onDraw(mNextPageCanvas);
 				mPageView.setBitmaps(mNextPageBitmap, mNextPageBitmap);
-				mPageView.postInvalidate();
 			} else {
 				pagefactory.onDraw(mCurPageCanvas);
 				mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
@@ -213,7 +206,7 @@ public class BookActivity extends Activity {
 		if (bookID != 0) {
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
-			pagefactory.setBeginPos((int) position);
+			pagefactory.setCurPosition(position);
 			mPageView.invalidate();
 
 		} else {
