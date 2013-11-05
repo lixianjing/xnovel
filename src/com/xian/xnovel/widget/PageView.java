@@ -5,7 +5,6 @@ import com.xian.xnovel.factory.BookPageFactory;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -22,62 +21,13 @@ import android.view.View;
 import android.widget.Scroller;
 
 public class PageView extends View {
-	public PageView(Context context) {
-		this(context, null);
-		// TODO Auto-generated constructor stub
-	}
 
-	public PageView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-		// TODO Auto-generated constructor stub
-	}
+	private static final String TAG = "lmf";
+	private static final int ANIM_DURATION = 1000;
 
-	public PageView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
-		init(context);
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		float x, y;
-		x = event.getX();
-		y = event.getY();
-		Log.e("lmf", "PageView>>>>>onTouchEvent>>>>>>" + event.getAction()
-				+ ":" + x + ":" + y);
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			abortAnimation();
-			calcCornerXY(x, y);
-			mTouch.x = x;
-			mTouch.y = y;
-			return bookActivity.updatePage();
-
-		case MotionEvent.ACTION_MOVE:
-			mTouch.x = x;
-			mTouch.y = y;
-			this.postInvalidate();
-			break;
-
-		case MotionEvent.ACTION_UP:
-			startAnimation(1000);
-			this.postInvalidate();
-
-			break;
-
-		default:
-			break;
-		}
-
-		return true;
-	}
-
-	private int status = 0;
 	private BookActivity bookActivity;
 	private BookPageFactory pagefactory;
 
-	private static final String TAG = "hmg";
 	private int mWidth = 480;
 	private int mHeight = 800;
 	private int mCornerX = 0; // 拖拽点对应的页脚
@@ -124,7 +74,57 @@ public class PageView extends View {
 
 	Scroller mScroller;
 
-	public void init(Context context) {
+	public PageView(Context context) {
+		this(context, null);
+		// TODO Auto-generated constructor stub
+	}
+
+	public PageView(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+		// TODO Auto-generated constructor stub
+	}
+
+	public PageView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		// TODO Auto-generated constructor stub
+		init(context);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		float x, y;
+		x = event.getX();
+		y = event.getY();
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			abortAnimation();
+			calcCornerXY(x, y);
+			mTouch.x = x;
+			mTouch.y = y;
+			return bookActivity.updatePage();
+
+		case MotionEvent.ACTION_MOVE:
+			mTouch.x = x;
+			mTouch.y = y;
+			this.postInvalidate();
+			break;
+
+		case MotionEvent.ACTION_UP:
+			startAnimation(ANIM_DURATION);
+
+			this.postInvalidate();
+
+			break;
+
+		default:
+			break;
+		}
+
+		return true;
+	}
+
+	private void init(Context context) {
 		// TODO Auto-generated constructor stub
 
 		mPath0 = new Path();
@@ -566,12 +566,11 @@ public class PageView extends View {
 			mTouch.x = x;
 			mTouch.y = y;
 			postInvalidate();
-		} 
+		}
 	}
 
 	private void startAnimation(int delayMillis) {
 		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>" + delayMillis);
-		status = 1;
 		int dx, dy;
 		// dx 水平方向滑动的距离，负值会使滚动向左滚动
 		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
@@ -581,7 +580,7 @@ public class PageView extends View {
 			dx = (int) (mWidth - mTouch.x + mWidth);
 		}
 		if (mCornerY > 0) {
-			dy = (int) (mHeight - mTouch.y)-1;
+			dy = (int) (mHeight - mTouch.y) - 1;
 		} else {
 			dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
 		}
@@ -593,14 +592,6 @@ public class PageView extends View {
 		if (!mScroller.isFinished()) {
 			mScroller.abortAnimation();
 		}
-	}
-
-	public boolean canDragOver() {
-		Log.e("lmf", "canDragOver>>>>mTouchToCornerDis>>>>>"
-				+ mTouchToCornerDis + ";" + mWidth);
-		if (mTouchToCornerDis > mWidth / 10)
-			return true;
-		return false;
 	}
 
 	/**
@@ -618,6 +609,31 @@ public class PageView extends View {
 
 	public void setPagefactory(BookPageFactory pagefactory) {
 		this.pagefactory = pagefactory;
+	}
+
+	public void preLoadContent() {
+		int x = 5;
+		int y = mHeight - 5;
+		abortAnimation();
+		calcCornerXY(x, y);
+		mTouch.x = x;
+		mTouch.y = y;
+		bookActivity.updatePage();
+		startAnimation(ANIM_DURATION);
+		this.invalidate();
+	}
+
+	public void nextLoadContent() {
+		int x = mWidth - 5;
+		int y = mHeight - 5;
+		abortAnimation();
+		calcCornerXY(x, y);
+		mTouch.x = x;
+		mTouch.y = y;
+		bookActivity.updatePage();
+		startAnimation(ANIM_DURATION);
+		this.invalidate();
+
 	}
 
 }

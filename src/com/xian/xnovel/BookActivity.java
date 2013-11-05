@@ -13,6 +13,8 @@ import com.xian.xnovel.widget.PageView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,9 +38,7 @@ public class BookActivity extends Activity {
 	public final static int SAVEMARK = 1;
 	public final static int TEXTSET = 2;
 
-	public final static int VOLUME_UP_KEYCODE = 24;
-	public final static int VOLUME_DOWN_KEYCODE = 25;
-	public final static int BACK_KEYCODE = 4;
+	private SharedPreferences pref;
 
 	private PageView mPageView;
 	private BookPageFactory pagefactory;
@@ -63,17 +64,47 @@ public class BookActivity extends Activity {
 		setContentView(R.layout.activity_book);
 		mPageView = (PageView) findViewById(R.id.book_pv);
 		mPageView.setBookActivity(this);
+		mContext = this;
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
 				"My Lock");
+		pref = mContext.getSharedPreferences(AppSettings.Settings,
+				Context.MODE_PRIVATE);
+		mWidth = pref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 0);
+		mHeight = pref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 0);
+		if (mWidth == 0 || mHeight == 0) {
+			DisplayMetrics dm = new DisplayMetrics();
+			this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+			mWidth = dm.widthPixels;
+			mHeight = dm.heightPixels;
+			Editor editor = pref.edit();
+			editor.putInt(AppSettings.SETTINGS_WIDTH_FULL, dm.widthPixels);
+			editor.putInt(AppSettings.SETTINGS_HEIGHT_FULL, dm.heightPixels);
+			editor.commit();
+		}
+		loadBook();
+	}
 
+	private void loadBook() {
 		getIntentData(getIntent());
 		if (bookID != 0) {
-			init();
+
+			pagefactory = new BookPageFactory();
+			pagefactory.init(mWidth, mHeight);
+
+			mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
+					Bitmap.Config.ARGB_8888);
+			mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
+					Bitmap.Config.ARGB_8888);
+
+			mCurPageCanvas = new Canvas(mCurPageBitmap);
+			mNextPageCanvas = new Canvas(mNextPageBitmap);
+
 			mPageView.setPagefactory(pagefactory);
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
+			pagefactory.setTitleName(bookContent);
 			if (position > 0) {
 				try {
 					pagefactory.prePage();
@@ -97,29 +128,6 @@ public class BookActivity extends Activity {
 					.show();
 			BookActivity.this.finish();
 		}
-
-	}
-
-	private void init() {
-		mContext = this;
-
-		DisplayMetrics dm = new DisplayMetrics();
-		this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-		mWidth = dm.widthPixels;
-		mHeight = dm.heightPixels;
-
-		pagefactory = new BookPageFactory();
-		pagefactory.init(mWidth, mHeight);
-
-		mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
-				Bitmap.Config.ARGB_8888);
-		mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
-				Bitmap.Config.ARGB_8888);
-
-		mCurPageCanvas = new Canvas(mCurPageBitmap);
-		mNextPageCanvas = new Canvas(mNextPageBitmap);
-
 	}
 
 	private void getIntentData(Intent intent) {
@@ -157,10 +165,19 @@ public class BookActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
-		case VOLUME_UP_KEYCODE:
+
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			mPageView.preLoadContent();
 			return true;
-		case VOLUME_DOWN_KEYCODE:
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			mPageView.nextLoadContent();
 			return true;
+		case KeyEvent.KEYCODE_BACK:
+			if (isSaveHistory && position != pagefactory.getCurPosition()) {
+				saveHistory();
+				isSaveHistory = false;
+			}
+			return super.onKeyUp(keyCode, event);
 		default:
 			return super.onKeyUp(keyCode, event);
 		}
@@ -171,18 +188,9 @@ public class BookActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {
-		case VOLUME_UP_KEYCODE:
-			pagefactory.preLoadContent();
+		case KeyEvent.KEYCODE_VOLUME_UP:
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
 			return true;
-		case VOLUME_DOWN_KEYCODE:
-			pagefactory.nextLoadContent();
-			return true;
-		case BACK_KEYCODE:
-			if (isSaveHistory && position != pagefactory.getCurPosition()) {
-				saveHistory();
-				isSaveHistory = false;
-			}
-			return super.onKeyDown(keyCode, event);
 		default:
 			return super.onKeyDown(keyCode, event);
 		}
@@ -229,9 +237,7 @@ public class BookActivity extends Activity {
 	}
 
 	public boolean updatePage() {
-
 		pagefactory.onDraw(mCurPageCanvas);
-		
 		if (mPageView.dragToRight()) {
 			try {
 				pagefactory.prePage();

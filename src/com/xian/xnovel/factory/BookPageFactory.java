@@ -51,7 +51,7 @@ public class BookPageFactory {
 	private int e_fontSize = 5;
 	private int spaceSize = 20;// 行间距大小
 	private int curProgress = 0;// 当前的进度
-	private String fileName = "";
+	private String titleName = "";
 
 	// private int m_nLineSpaceing = 5;
 
@@ -348,8 +348,8 @@ public class BookPageFactory {
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		String str = formatter.format(curDate);
 		c.drawText(str, 5, mHeight - 5, bPaint);
-		int titleWidth = (int) bPaint.measureText("《" + fileName + "》") + 1;
-		c.drawText("《" + fileName + "》", (mWidth - titleWidth) / 2,
+		int titleWidth = (int) bPaint.measureText("《" + titleName + "》") + 1;
+		c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2,
 				mHeight - 5, bPaint);
 	}
 
@@ -414,9 +414,8 @@ public class BookPageFactory {
 		mLineCount = (int) (mVisibleHeight / totalSize); // 可显示的行数
 	}
 
-	public void setFileName(String fileName) {
-		fileName = fileName.substring(0, fileName.indexOf("."));
-		this.fileName = fileName;
+	public void setTitleName(String name) {
+		this.titleName = name;
 	}
 
 	public int getCurPosition() {
@@ -427,12 +426,5 @@ public class BookPageFactory {
 		return null;
 	}
 
-	public void preLoadContent() {
-
-	}
-
-	public void nextLoadContent() {
-
-	}
 
 }
