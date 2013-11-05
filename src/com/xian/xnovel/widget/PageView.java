@@ -6,7 +6,6 @@ import com.xian.xnovel.factory.BookPageFactory;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -45,7 +44,8 @@ public class PageView extends View {
 		float x, y;
 		x = event.getX();
 		y = event.getY();
-		Log.e("lmf", "PageView>>>>>onTouchEvent>>>>>>"+event.getAction()+":"+x+":"+y);
+		Log.e("lmf", "PageView>>>>>onTouchEvent>>>>>>" + event.getAction()
+				+ ":" + x + ":" + y);
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			abortAnimation();
@@ -61,14 +61,9 @@ public class PageView extends View {
 			break;
 
 		case MotionEvent.ACTION_UP:
-//			if (canDragOver()) {
-				startAnimation(1200);
-//			} else {
-//				mTouch.x = mCornerX - 0.09f;
-//				mTouch.y = mCornerY - 0.09f;
-//			}
-			mCurPageBitmap = mNextPageBitmap.copy(Config.ARGB_8888, false);
+			startAnimation(1000);
 			this.postInvalidate();
+
 			break;
 
 		default:
@@ -78,6 +73,7 @@ public class PageView extends View {
 		return true;
 	}
 
+	private int status = 0;
 	private BookActivity bookActivity;
 	private BookPageFactory pagefactory;
 
@@ -178,7 +174,6 @@ public class PageView extends View {
 			mIsRTandLB = false;
 	}
 
-
 	/**
 	 * Author : hmg25 Version: 1.0 Description : 求解直线P1P2和直线P3P4的交点坐标
 	 */
@@ -278,7 +273,7 @@ public class PageView extends View {
 		mBeziervertex2.y = (2 * mBezierControl2.y + mBezierStart2.y + mBezierEnd2.y) / 4;
 	}
 
-	private void drawCurrentPageArea(Canvas canvas, Bitmap bitmap, Path path) {
+	private void drawCurrentPageArea(Canvas canvas, Bitmap bitmap) {
 		mPath0.reset();
 		mPath0.moveTo(mBezierStart1.x, mBezierStart1.y);
 		mPath0.quadTo(mBezierControl1.x, mBezierControl1.y, mBezierEnd1.x,
@@ -291,7 +286,7 @@ public class PageView extends View {
 		mPath0.close();
 
 		canvas.save();
-		canvas.clipPath(path, Region.Op.XOR);
+		canvas.clipPath(mPath0, Region.Op.XOR);
 		canvas.drawBitmap(bitmap, 0, 0, null);
 		canvas.restore();
 	}
@@ -354,7 +349,7 @@ public class PageView extends View {
 		}
 
 		calcPoints();
-		drawCurrentPageArea(canvas, mCurPageBitmap, mPath0);
+		drawCurrentPageArea(canvas, mCurPageBitmap);
 		drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
 		drawCurrentPageShadow(canvas);
 		drawCurrentBackArea(canvas, mCurPageBitmap);
@@ -565,18 +560,18 @@ public class PageView extends View {
 	}
 
 	public void computeScroll() {
-		super.computeScroll();
 		if (mScroller.computeScrollOffset()) {
 			float x = mScroller.getCurrX();
 			float y = mScroller.getCurrY();
 			mTouch.x = x;
 			mTouch.y = y;
 			postInvalidate();
-		}
+		} 
 	}
 
 	private void startAnimation(int delayMillis) {
 		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>" + delayMillis);
+		status = 1;
 		int dx, dy;
 		// dx 水平方向滑动的距离，负值会使滚动向左滚动
 		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
@@ -586,7 +581,7 @@ public class PageView extends View {
 			dx = (int) (mWidth - mTouch.x + mWidth);
 		}
 		if (mCornerY > 0) {
-			dy = (int) (mHeight - mTouch.y);
+			dy = (int) (mHeight - mTouch.y)-1;
 		} else {
 			dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
 		}
@@ -601,7 +596,8 @@ public class PageView extends View {
 	}
 
 	public boolean canDragOver() {
-		Log.e("lmf","canDragOver>>>>mTouchToCornerDis>>>>>"+mTouchToCornerDis+";"+mWidth);
+		Log.e("lmf", "canDragOver>>>>mTouchToCornerDis>>>>>"
+				+ mTouchToCornerDis + ";" + mWidth);
 		if (mTouchToCornerDis > mWidth / 10)
 			return true;
 		return false;

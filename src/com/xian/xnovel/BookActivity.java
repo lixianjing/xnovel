@@ -229,7 +229,9 @@ public class BookActivity extends Activity {
 	}
 
 	public boolean updatePage() {
+
 		pagefactory.onDraw(mCurPageCanvas);
+		
 		if (mPageView.dragToRight()) {
 			try {
 				pagefactory.prePage();
