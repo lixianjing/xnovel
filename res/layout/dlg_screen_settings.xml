@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/dlg_seek_bg"
+    android:background="@drawable/dlg_bg"
     android:minWidth="300dp"
     android:orientation="vertical" >
-   <LinearLayout
+
+    <LinearLayout
         android:id="@+id/seek_dlg_head_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/dlg_seek_title"
+        android:background="@drawable/dlg_title"
         android:gravity="center"
         android:padding="5dp" >
 
@@ -21,6 +22,7 @@
             android:text="@string/settings_screen"
             android:textSize="18sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64.0dip"

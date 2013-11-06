@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/dlg_seek_bg"
+    android:background="@drawable/dlg_bg"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/dlg_seek_title"
+        android:background="@drawable/dlg_title"
         android:gravity="center"
         android:padding="5dp" >
 
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/settings_screen_orientation"
-            android:textColor="@android:color/background_dark"
+            android:textColor="#FF252525"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -38,8 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                 android:textColor="@android:color/background_dark"
-                android:textSize="17sp" />
+                android:textColor="#FF111111"
+                android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
 

@@ -398,5 +398,10 @@ public class BookPageFactory {
 		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
 		return percentFormatter.format(fPercent * 100) + "%";
 	}
+	
+	public String getCurTime() {
+		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+		return dateFormatter.format(curDate);
+	}
 
 }

@@ -18,7 +18,8 @@ import android.widget.Scroller;
 public class MainViewGroup extends ViewGroup {
 
 	private static String TAG = "MainViewGroup";
-
+	
+	private static final int SCROLL_TIME = 1000;
 	// ///////////////////////////////////////////////////关于滚动部分的代码///////////////////////////////////////////////////////////////////////
 	private static final int INVALID_POINTER = -1;
 	private int mActivePointerId = INVALID_POINTER;
@@ -294,7 +295,7 @@ public class MainViewGroup extends ViewGroup {
 
 		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx is " + dx);
 
-		mScroller.startScroll(getScrollX(), 0, dx, 0, Math.abs(dx));
+		mScroller.startScroll(getScrollX(), 0, dx, 0,SCROLL_TIME);
 
 		mainActivity.updateCurrentTabs(curScreen);
 		// 此时需要手动刷新View 否则没效果
@@ -336,7 +337,6 @@ public class MainViewGroup extends ViewGroup {
 		// 设置该ViewGroup的大小
 		mWidth = MeasureSpec.getSize(widthMeasureSpec);
 		mHeight = MeasureSpec.getSize(heightMeasureSpec);
-		Log.e("lmf", "onMeasure>>>>>>>>>>>>>" + mWidth + ":" + mHeight);
 
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 

@@ -35,7 +35,6 @@ public class MenuTopLayout extends LinearLayout implements View.OnClickListener 
 		// TODO Auto-generated constructor stub
 	}
 
-	private Handler mainHandler;
 	private Context mContext;
 	private LayoutInflater mInflater;
 
@@ -55,10 +54,6 @@ public class MenuTopLayout extends LinearLayout implements View.OnClickListener 
 		titleRightTv = (TextView) view.findViewById(R.id.menu_top_right_tv);
 		titleCenterTv = (TextView) view.findViewById(R.id.menu_top_main_tv);
 
-	}
-
-	public void setMainHandler(Handler mainHandler) {
-		this.mainHandler = mainHandler;
 	}
 
 	public void showEx() {
@@ -89,6 +84,18 @@ public class MenuTopLayout extends LinearLayout implements View.OnClickListener 
 
 	public boolean isVisiable() {
 		return getVisibility() == VISIBLE;
+	}
+
+	public void setLeftText(String str) {
+		titleLeftTv.setText(str);
+	}
+
+	public void setCenterText(String str) {
+		titleCenterTv.setText(str);
+	}
+
+	public void setRightText(String str) {
+		titleRightTv.setText(str);
 	}
 
 }

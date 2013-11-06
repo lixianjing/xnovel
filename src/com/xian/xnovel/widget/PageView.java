@@ -2,6 +2,7 @@ package com.xian.xnovel.widget;
 
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.factory.BookPageFactory;
+import com.xian.xnovel.utils.BookSettings;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,13 +15,14 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
-public class PageView extends View {
+public class PageView extends View implements BookSettings {
 
 	private static final String TAG = "lmf";
 	private static final int ANIM_DURATION = 1000;
@@ -90,6 +92,16 @@ public class PageView extends View {
 		init(context);
 	}
 
+	public static final int ONCLICK_NORMAL = 0;
+	public static final int ONCLICK_READY = 1;
+
+	private int clickStatus = ONCLICK_NORMAL;
+	private long clickTime = 0;
+	private float downX, downY;
+	private static final long CLICK_TIME = 500;
+	private static final int SNAP_SLOP = 20;
+	private Handler mainHandler;
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
@@ -98,22 +110,54 @@ public class PageView extends View {
 		y = event.getY();
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
+			clickStatus = ONCLICK_NORMAL;
 			abortAnimation();
-			calcCornerXY(x, y);
-			mTouch.x = x;
-			mTouch.y = y;
-			return bookActivity.updatePage();
+			Log.e("lmf", bookActivity.getStatus()+">>>>>>>>>>");
+			if ((bookActivity.getStatus() & STATUS_MENU_SHOW) == STATUS_MENU_SHOW) {
+				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+				return false;
+			}
+
+			if (x < mWidth - mWidth / 3 && x > mWidth / 3) {
+				clickTime = System.currentTimeMillis();
+				downX = x;
+				downY = y;
+				clickStatus = ONCLICK_READY;
+			} else {
+				calcCornerXY(x, y);
+				mTouch.x = x;
+				mTouch.y = y;
+				return bookActivity.updatePage();
+			}
 
 		case MotionEvent.ACTION_MOVE:
-			mTouch.x = x;
-			mTouch.y = y;
-			this.postInvalidate();
+			if (clickStatus == ONCLICK_READY) {
+				if (System.currentTimeMillis() - clickTime < CLICK_TIME) {
+					if (Math.abs(downX - x) < SNAP_SLOP
+							&& Math.abs(downY - y) < SNAP_SLOP) {
+						return true;
+					}
+				}
+				clickStatus = ONCLICK_NORMAL;
+				calcCornerXY(x, y);
+				mTouch.x = x;
+				mTouch.y = y;
+				return bookActivity.updatePage();
+			} else {
+				mTouch.x = x;
+				mTouch.y = y;
+				this.postInvalidate();
+			}
+
 			break;
 
 		case MotionEvent.ACTION_UP:
-			startAnimation(ANIM_DURATION);
-
-			this.postInvalidate();
+			if (clickStatus == ONCLICK_READY) {
+				mainHandler.sendEmptyMessage(MSG_MENU_SHOW);
+			} else {
+				startAnimation(ANIM_DURATION);
+				this.postInvalidate();
+			}
 
 			break;
 
@@ -636,4 +680,7 @@ public class PageView extends View {
 
 	}
 
+	public void setMainHandler(Handler mainHandler) {
+		this.mainHandler = mainHandler;
+	}
 }

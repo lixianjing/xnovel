@@ -6,6 +6,7 @@ import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.BookSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
@@ -31,25 +32,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class BookActivity extends Activity {
-	/** Called when the activity is first created. */
-	public final static int OPENMARK = 0;
-	public final static int SAVEMARK = 1;
-	public final static int TEXTSET = 2;
+public class BookActivity extends Activity implements BookSettings {
 
-	
-	public static final int REQUEST_CODE_PHOTO_PICKED_WITH_DATA = 1001;
-
-	public static final int MSG_MENU_SHOW = 2001;
-	public static final int MSG_MENU_HIDE_TRANSLATE = 2002;
-	public static final int MSG_MENU_HIDE_DISAPPEAR = 2003;
-	public static final int MSG_PICK_PICTURE = 2004;
-	
-	private SharedPreferences pref;
-
-	private PageView mPageView;
-	private BookPageFactory pagefactory;
 	private Context mContext;
+	private SharedPreferences pref;
+	private int mWidth, mHeight;
+
+
+	private BookPageFactory pagefactory;
 	private String bookTitle, bookContent;
 	private int bookID;
 	private int position;
@@ -59,8 +49,50 @@ public class BookActivity extends Activity {
 	private Bitmap mCurPageBitmap, mNextPageBitmap;
 	private Canvas mCurPageCanvas, mNextPageCanvas;
 
-	private int mWidth, mHeight;
+	private int status = STATUS_SCREEN_MODE_FLIPPER;
 
+	private PageView mPageView;
+	private MenuBtmLayout menuBtmLayout;
+	private MenuTopLayout menuTopLayout;
+	private OnThemePictureChangedListener pictureChangedListener;
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			Log.e("lmf", "Handler>>>>>>>>" + msg.what);
+			switch (msg.what) {
+			case MSG_MENU_SHOW:
+				
+				menuBtmLayout.showEx();
+				menuTopLayout.setLeftText(pagefactory.getCurPercent());
+				menuTopLayout.setRightText(pagefactory.getCurTime());
+				menuTopLayout.showEx();
+				menuTopLayout.requestFocus();
+				addStatus(STATUS_MENU_SHOW);
+				break;
+			case MSG_MENU_HIDE_TRANSLATE:
+				menuBtmLayout.hideEx(0);
+				menuTopLayout.hideEx(0);
+				delStatus(STATUS_MENU_SHOW);
+				break;
+			case MSG_MENU_HIDE_DISAPPEAR:
+				menuBtmLayout.hideEx(1);
+				menuTopLayout.hideEx(1);
+				delStatus(STATUS_MENU_SHOW);
+				break;
+			case MSG_PICK_PICTURE:
+				onPickFromGalleryChosen();
+				break;
+
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+
+	};
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,6 +105,7 @@ public class BookActivity extends Activity {
 		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
 		menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
 		menuBtmLayout.setMainHandler(mHandler);
+		mPageView.setMainHandler(mHandler);
 		mPageView.setBookActivity(this);
 		mContext = this;
 		powerManager = (PowerManager) this
@@ -115,6 +148,7 @@ public class BookActivity extends Activity {
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setTitleName(bookContent);
+			menuTopLayout.setCenterText(bookTitle+" "+bookContent);
 			if (position > 0) {
 				pagefactory.setCurPosition(position);
 				pagefactory.onDraw(mNextPageCanvas);
@@ -267,41 +301,9 @@ public class BookActivity extends Activity {
 		mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
 		return true;
 	}
-	private MenuBtmLayout menuBtmLayout;
-	private MenuTopLayout menuTopLayout;
-	private OnThemePictureChangedListener pictureChangedListener;
-	private Handler mHandler = new Handler() {
 
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			Log.e("lmf", "Handler>>>>>>>>" + msg.what);
-			switch (msg.what) {
-			case MSG_MENU_SHOW:
-				menuBtmLayout.showEx();
-				menuTopLayout.showEx();
-				menuTopLayout.requestFocus();
-				break;
-			case MSG_MENU_HIDE_TRANSLATE:
-				menuBtmLayout.hideEx(0);
-				menuTopLayout.hideEx(0);
-				break;
-			case MSG_MENU_HIDE_DISAPPEAR:
-				menuBtmLayout.hideEx(1);
-				menuTopLayout.hideEx(1);
-				break;
-			case MSG_PICK_PICTURE:
-				onPickFromGalleryChosen();
-				break;
-
-			default:
-				break;
-			}
-			super.handleMessage(msg);
-		}
-
-	};
 	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -353,8 +355,7 @@ public class BookActivity extends Activity {
 	 */
 	public void onPickFromGalleryChosen() {
 		final Intent intent = getPhotoPickIntent();
-		startActivityForResult(intent,
-				REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
+		startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
 	}
 
 	/**
@@ -375,4 +376,17 @@ public class BookActivity extends Activity {
 	public interface OnThemePictureChangedListener {
 		void pictureChanged(Bitmap bitmap);
 	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void addStatus(int st) {
+		this.status = status | st;
+	}
+
+	public void delStatus(int st) {
+		this.status = status & (~st);
+	}
+
 }
