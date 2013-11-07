@@ -30,6 +30,7 @@
         </activity>
         <activity
             android:name="com.xian.xnovel.BookActivity"
+            android:hardwareAccelerated="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
