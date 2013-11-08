@@ -1,6 +1,7 @@
 package com.xian.xnovel.widget;
 
 import com.xian.xnovel.R;
+import com.xian.xnovel.adapter.DialogScreenModeListAdapter;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -124,7 +124,7 @@ public class BookActivity extends Activity implements BookSettings {
 		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
 		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
 		menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
-		
+
 		menuIv.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -186,8 +186,8 @@ public class BookActivity extends Activity implements BookSettings {
 			mPageView.invalidate();
 
 		} else {
-			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mContext, R.string.settings_not_found_book,
+					Toast.LENGTH_SHORT).show();
 			BookActivity.this.finish();
 		}
 	}
@@ -219,6 +219,14 @@ public class BookActivity extends Activity implements BookSettings {
 		if (isSaveHistory && position != pagefactory.getCurPosition()) {
 			saveHistory();
 			isSaveHistory = false;
+		}
+		if ((status & STATUS_MENU_SHOW) == STATUS_MENU_SHOW) {
+			mPageView.setVisibility(View.VISIBLE);
+			menuRl.setVisibility(View.GONE);
+			menuIv.setVisibility(View.GONE);
+			menuBtmLayout.setVisibility(View.GONE);
+			menuTopLayout.setVisibility(View.GONE);
+			delStatus(STATUS_MENU_SHOW);
 		}
 		super.onStop();
 	}
@@ -279,8 +287,8 @@ public class BookActivity extends Activity implements BookSettings {
 			mPageView.invalidate();
 
 		} else {
-			Toast.makeText(mContext, "电子书不存在！可能已经删除", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(mContext, R.string.settings_not_found_book,
+					Toast.LENGTH_SHORT).show();
 			BookActivity.this.finish();
 		}
 		super.onRestoreInstanceState(savedInstanceState);
@@ -307,7 +315,8 @@ public class BookActivity extends Activity implements BookSettings {
 				e1.printStackTrace();
 			}
 			if (pagefactory.isFirstPage()) {
-				Toast.makeText(mContext, "已经是第一页", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, R.string.settings_first_page,
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 			pagefactory.onDraw(mNextPageCanvas);
@@ -318,7 +327,8 @@ public class BookActivity extends Activity implements BookSettings {
 				e1.printStackTrace();
 			}
 			if (pagefactory.isLastPage()) {
-				Toast.makeText(mContext, "已经是最后一页", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, R.string.settings_last_page,
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 			pagefactory.onDraw(mNextPageCanvas);

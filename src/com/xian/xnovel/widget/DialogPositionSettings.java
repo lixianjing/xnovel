@@ -17,7 +17,7 @@ public class DialogPositionSettings extends Dialog {
 	private Context mContext;
 
 	public DialogPositionSettings(Context context) {
-		super(context, R.style.Theme_Dialog_Base);
+		super(context, R.style.dialog_theme);
 		mContext = context;
 	}
 

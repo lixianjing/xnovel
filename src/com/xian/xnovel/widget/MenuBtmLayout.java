@@ -18,11 +18,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class MenuBtmLayout extends LinearLayout implements View.OnClickListener ,BookSettings{
-
-	
+public class MenuBtmLayout extends LinearLayout implements
+		View.OnClickListener, BookSettings {
 
 	private static final int INDEX_TOOLS_PAGE = 0;
 	private static final int INDEX_SETTINGS_PAGE = 1;
@@ -41,8 +41,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 	private DialogFontSettings fontDialog;
 	private DialogThemeSettings themeSettingsDialog;
 	private int curPage = INDEX_TOOLS_PAGE;
-	
-	
+
 	public MenuBtmLayout(Context context) {
 		this(context, null);
 		// TODO Auto-generated constructor stub
@@ -54,34 +53,31 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 		mInflater = LayoutInflater.from(mContext);
 		animIn = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_enter);
 		animOut = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_exit);
-		animOut.setAnimationListener(
-				new AnimationListener() {
+		animOut.setAnimationListener(new AnimationListener() {
 
-					@Override
-					public void onAnimationStart(Animation animation) {
-						// TODO Auto-generated method stub
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void onAnimationRepeat(Animation animation) {
-						// TODO Auto-generated method stub
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
 
-					}
+			}
 
-					@Override
-					public void onAnimationEnd(Animation animation) {
-						// TODO Auto-generated method stub
-						mainHandler
-						.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				mainHandler.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
 
-					}
-				});
+			}
+		});
 		animDisappear = AnimationUtils.loadAnimation(mContext,
 				R.anim.menu_disappear);
 		// TODO Auto-generated constructor stub
 	}
-
 
 	private int[] toolsImgRes = new int[] { R.drawable.icon_chapter,
 			R.drawable.icon_prev_chapter, R.drawable.icon_next_chapter,
@@ -120,14 +116,14 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 		btnTitleRight.setOnClickListener(this);
 		viewFlipper = (ViewFlipper) bottomView
 				.findViewById(R.id.menu_pop_viewFlipper);
-		// ��viewFlipper���View
 		toolsGv = (GridView) LayoutInflater.from(mContext).inflate(
 				R.layout.menu_btm_grid, null);
 		settingsGv = (GridView) LayoutInflater.from(mContext).inflate(
 				R.layout.menu_btm_grid, null);
 		viewFlipper.addView(toolsGv);
 		viewFlipper.addView(settingsGv);
-		toolsGv.setAdapter(new MenuBtmAdapter(mContext, toolsStrsRes, toolsImgRes));
+		toolsGv.setAdapter(new MenuBtmAdapter(mContext, toolsStrsRes,
+				toolsImgRes));
 		settingsGv.setAdapter(new MenuBtmAdapter(mContext, settingsStrsRes,
 				settingsImgRes));
 		toolsGv.setOnItemClickListener(new ToolsOnItemClickListener());
@@ -186,25 +182,32 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 			// TODO Auto-generated method stub
 			switch (arg2) {
 			case 0:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 1:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 2:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 3:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 4:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 5:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 6:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 7:
 				mainHandler
@@ -247,7 +250,8 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 				fontDialog.show();
 				break;
 			case 2:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 3:
 				mainHandler
@@ -260,12 +264,16 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 
 				break;
 			case 4:
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 5:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 6:
-
+				Toast.makeText(mContext, R.string.settings_nothing,
+						Toast.LENGTH_SHORT).show();
 				break;
 
 			default:

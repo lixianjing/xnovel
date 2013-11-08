@@ -239,7 +239,6 @@ public class BookPageFactory {
 	}
 
 	protected void pageUp() {
-		Log.e("lmf", "BookPageFactory>>>>>>>>>>>pageUp");
 		if (mReadStart < 0)
 			mReadStart = 0;
 		Vector<String> lines = new Vector<String>();

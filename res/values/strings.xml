@@ -26,13 +26,12 @@
     <string name="str_error">Error</string>
     <string name="str_confirm">Confirm</string>
     <string name="exit">退出</string>
-    
+    <!--  -->
     <string name="launcher_first_load">应用第一次启动\n需要较长时间等待\n请稍候&#8230;</string>
     <string name="launcher_load">正在努力的加载中\n请稍候&#8230;</string>
-    
-    
-    
-      <string name="menu_pop_auto_scroll">开始滚动</string>
+
+    <!--  -->
+    <string name="menu_pop_auto_scroll">开始滚动</string>
     <string name="menu_pop_catalog">章节书目</string>
     <string name="menu_pop_add_mark">添加书签</string>
     <string name="menu_pop_mark">书签管理</string>
@@ -56,15 +55,14 @@
     <string name="settings_screen_statusbar">显示系统状态栏</string>
     <string name="settings_screen_statusbar_desc">下次进入生效</string>
 
-
     <!--  -->
     <string name="settings_font">文字</string>
     <string name="settings_font_b">粗体</string>
     <string name="settings_font_b_desc">设置后小说文字为粗体</string>
     <string name="settings_font_t">斜体</string>
     <string name="settings_font_t_desc">设置后小说文字为斜体</string>
-        <!--  -->
-            <string name="settings_screen_orientation">屏幕方向</string>
+    <!--  -->
+    <string name="settings_screen_orientation">屏幕方向</string>
     <string name="settings_screen_orientation_horizontal">横屏</string>
     <string name="settings_screen_orientation_vertical">竖屏</string>
     <string name="settings_screen_orientation_auto">重力感应</string>
@@ -78,6 +76,12 @@
     <string name="settings_theme_background">背景</string>
     <string name="settings_theme_bg_color">颜色</string>
     <string name="settings_theme_bg_picture">图片</string>
+    
+        <!--  -->
+    <string name="settings_nothing">对不起，该功能还没有实现。:)</string>
+    <string name="settings_first_page">第一页</string>
+    <string name="settings_last_page">最后一页</string>
+       <string name="settings_not_found_book">找不到当前目录</string>
 
     <!--  -->
     <string name="sys_confirm">确定</string>

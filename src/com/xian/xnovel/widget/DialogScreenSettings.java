@@ -21,7 +21,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 	private DialogScreenList mDialogList;
 
 	public DialogScreenSettings(Context context) {
-		super(context, R.style.Theme_Dialog_Base);
+		super(context, R.style.dialog_theme);
 		mContext = context;
 	}
 

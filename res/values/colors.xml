@@ -23,5 +23,7 @@
     <color name="tab_text_normal_black">#ff545e63</color>
     <color name="tab_line_select_blue">#ff0098d2</color>
     <color name="tab_line_normal_black">#FFc0c0c0</color>
+    
+      <color name="transparent">#00000000</color>
 
 </resources>

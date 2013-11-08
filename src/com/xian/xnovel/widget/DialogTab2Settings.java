@@ -26,7 +26,7 @@ public class DialogTab2Settings extends Dialog {
 	private View leftV, rightV;
 
 	public DialogTab2Settings(Context context) {
-		super(context, R.style.Theme_Dialog_Base);
+		super(context, R.style.dialog_theme);
 		mContext = context;
 		mInflater = LayoutInflater.from(mContext);
 

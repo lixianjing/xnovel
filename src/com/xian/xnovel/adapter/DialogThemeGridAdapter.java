@@ -1,4 +1,4 @@
-package com.xian.xnovel.widget;
+package com.xian.xnovel.adapter;
 
 import com.xian.xnovel.R;
 

@@ -2,6 +2,7 @@ package com.xian.xnovel.widget;
 
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
+import com.xian.xnovel.adapter.DialogThemeGridAdapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
