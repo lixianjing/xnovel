@@ -29,7 +29,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class BookActivity extends Activity implements BookSettings {
@@ -37,7 +42,6 @@ public class BookActivity extends Activity implements BookSettings {
 	private Context mContext;
 	private SharedPreferences pref;
 	private int mWidth, mHeight;
-
 
 	private BookPageFactory pagefactory;
 	private String bookTitle, bookContent;
@@ -52,6 +56,8 @@ public class BookActivity extends Activity implements BookSettings {
 	private int status = STATUS_SCREEN_MODE_FLIPPER;
 
 	private PageView mPageView;
+	private RelativeLayout menuRl;
+	private ImageView menuIv;
 	private MenuBtmLayout menuBtmLayout;
 	private MenuTopLayout menuTopLayout;
 	private OnThemePictureChangedListener pictureChangedListener;
@@ -63,7 +69,11 @@ public class BookActivity extends Activity implements BookSettings {
 			Log.e("lmf", "Handler>>>>>>>>" + msg.what);
 			switch (msg.what) {
 			case MSG_MENU_SHOW:
-				
+				pagefactory.onDraw(mCurPageCanvas);
+				menuIv.setImageBitmap(mCurPageBitmap);
+				menuRl.setVisibility(View.VISIBLE);
+				menuIv.setVisibility(View.VISIBLE);
+				mPageView.setVisibility(View.GONE);
 				menuBtmLayout.showEx();
 				menuTopLayout.setLeftText(pagefactory.getCurPercent());
 				menuTopLayout.setRightText(pagefactory.getCurTime());
@@ -79,7 +89,13 @@ public class BookActivity extends Activity implements BookSettings {
 			case MSG_MENU_HIDE_DISAPPEAR:
 				menuBtmLayout.hideEx(1);
 				menuTopLayout.hideEx(1);
+				mHandler.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
 				delStatus(STATUS_MENU_SHOW);
+				break;
+			case MSG_MENU_SHOW_BOOK:
+				mPageView.setVisibility(View.VISIBLE);
+				menuRl.setVisibility(View.GONE);
+				menuIv.setVisibility(View.GONE);
 				break;
 			case MSG_PICK_PICTURE:
 				onPickFromGalleryChosen();
@@ -92,7 +108,7 @@ public class BookActivity extends Activity implements BookSettings {
 		}
 
 	};
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -101,13 +117,27 @@ public class BookActivity extends Activity implements BookSettings {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(R.layout.activity_book);
+		mContext = this;
 		mPageView = (PageView) findViewById(R.id.book_pv);
+		menuRl = (RelativeLayout) findViewById(R.id.book_menu);
+		menuIv = (ImageView) findViewById(R.id.book_menu_iv);
+		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
 		menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
 		menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
+		
+		menuIv.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+			}
+		});
+
 		menuBtmLayout.setMainHandler(mHandler);
 		mPageView.setMainHandler(mHandler);
 		mPageView.setBookActivity(this);
-		mContext = this;
+
 		powerManager = (PowerManager) this
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
@@ -148,15 +178,10 @@ public class BookActivity extends Activity implements BookSettings {
 			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setTitleName(bookContent);
-			menuTopLayout.setCenterText(bookTitle+" "+bookContent);
-			if (position > 0) {
-				pagefactory.setCurPosition(position);
-				pagefactory.onDraw(mNextPageCanvas);
-				mPageView.setBitmaps(mNextPageBitmap, mNextPageBitmap);
-			} else {
-				pagefactory.onDraw(mCurPageCanvas);
-				mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
-			}
+			menuTopLayout.setCenterText(bookTitle + " " + bookContent);
+			pagefactory.setCurPosition(position);
+			pagefactory.onDraw(mCurPageCanvas);
+			mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
 
 			mPageView.invalidate();
 
@@ -301,8 +326,6 @@ public class BookActivity extends Activity implements BookSettings {
 		mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
 		return true;
 	}
-
-	
 
 	@Override
 	public void onBackPressed() {

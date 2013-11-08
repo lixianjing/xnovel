@@ -3,6 +3,7 @@ package com.xian.xnovel.widget;
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
+import com.xian.xnovel.utils.BookSettings;
 
 import android.content.Context;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -18,23 +20,9 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ViewFlipper;
 
-public class MenuBtmLayout extends LinearLayout implements View.OnClickListener {
+public class MenuBtmLayout extends LinearLayout implements View.OnClickListener ,BookSettings{
 
-	public MenuBtmLayout(Context context) {
-		this(context, null);
-		// TODO Auto-generated constructor stub
-	}
-
-	public MenuBtmLayout(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		this.mContext = context;
-		mInflater = LayoutInflater.from(mContext);
-		animIn = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_enter);
-		animOut = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_exit);
-		animDisappear = AnimationUtils.loadAnimation(mContext,
-				R.anim.menu_disappear);
-		// TODO Auto-generated constructor stub
-	}
+	
 
 	private static final int INDEX_TOOLS_PAGE = 0;
 	private static final int INDEX_SETTINGS_PAGE = 1;
@@ -53,6 +41,47 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 	private DialogFontSettings fontDialog;
 	private DialogThemeSettings themeSettingsDialog;
 	private int curPage = INDEX_TOOLS_PAGE;
+	
+	
+	public MenuBtmLayout(Context context) {
+		this(context, null);
+		// TODO Auto-generated constructor stub
+	}
+
+	public MenuBtmLayout(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		this.mContext = context;
+		mInflater = LayoutInflater.from(mContext);
+		animIn = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_enter);
+		animOut = AnimationUtils.loadAnimation(mContext, R.anim.menu_btm_exit);
+		animOut.setAnimationListener(
+				new AnimationListener() {
+
+					@Override
+					public void onAnimationStart(Animation animation) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						// TODO Auto-generated method stub
+						mainHandler
+						.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
+
+					}
+				});
+		animDisappear = AnimationUtils.loadAnimation(mContext,
+				R.anim.menu_disappear);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	private int[] toolsImgRes = new int[] { R.drawable.icon_chapter,
 			R.drawable.icon_prev_chapter, R.drawable.icon_next_chapter,

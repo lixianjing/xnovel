@@ -5,15 +5,10 @@ import com.xian.xnovel.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class DialogCommon extends Dialog {
