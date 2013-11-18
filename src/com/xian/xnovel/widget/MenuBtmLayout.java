@@ -3,11 +3,13 @@ package com.xian.xnovel.widget;
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
+import com.xian.xnovel.adapter.MenuBtmAdapter.ViewHolder;
 import com.xian.xnovel.utils.BookSettings;
 
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -40,7 +42,10 @@ public class MenuBtmLayout extends LinearLayout implements
 	private DialogScreenSettings screenDialog;
 	private DialogFontSettings fontDialog;
 	private DialogThemeSettings themeSettingsDialog;
+	private MenuBtmAdapter toolsAdapter, settingsAdapter;
 	private int curPage = INDEX_TOOLS_PAGE;
+
+	private BookActivity mBookActivity;
 
 	public MenuBtmLayout(Context context) {
 		this(context, null);
@@ -97,7 +102,7 @@ public class MenuBtmLayout extends LinearLayout implements
 			R.drawable.icon_feedback, R.drawable.icon_help };
 
 	private int[] settingsStrsRes = new int[] { R.string.menu_pop_light,
-			R.string.menu_pop_font, R.string.menu_pop_scroll_mode,
+			R.string.menu_pop_font, R.string.menu_mode_drag,
 			R.string.menu_pop_background, R.string.menu_pop_default,
 			R.string.menu_pop_user, R.string.menu_pop_scroll };
 
@@ -105,7 +110,7 @@ public class MenuBtmLayout extends LinearLayout implements
 	protected void onFinishInflate() {
 		// TODO Auto-generated method stub
 		super.onFinishInflate();
-
+		Log.e("lmf", "onFinishInflate>>>>>>>>>>>>>>>");
 		View bottomView = mInflater.inflate(R.layout.menu_btm, null);
 		this.addView(bottomView);
 
@@ -122,10 +127,12 @@ public class MenuBtmLayout extends LinearLayout implements
 				R.layout.menu_btm_grid, null);
 		viewFlipper.addView(toolsGv);
 		viewFlipper.addView(settingsGv);
+
 		toolsGv.setAdapter(new MenuBtmAdapter(mContext, toolsStrsRes,
 				toolsImgRes));
-		settingsGv.setAdapter(new MenuBtmAdapter(mContext, settingsStrsRes,
-				settingsImgRes));
+		settingsAdapter = new MenuBtmAdapter(mContext, settingsStrsRes,
+				settingsImgRes);
+		settingsGv.setAdapter(settingsAdapter);
 		toolsGv.setOnItemClickListener(new ToolsOnItemClickListener());
 		settingsGv.setOnItemClickListener(new SettingsOnItemClickListener());
 		setCurrentPage(INDEX_TOOLS_PAGE);
@@ -229,10 +236,10 @@ public class MenuBtmLayout extends LinearLayout implements
 	private class SettingsOnItemClickListener implements OnItemClickListener {
 
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+		public void onItemClick(AdapterView<?> arg0, View view, int position,
 				long arg3) {
 			// TODO Auto-generated method stub
-			switch (arg2) {
+			switch (position) {
 			case 0:
 				mainHandler
 						.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
@@ -249,9 +256,29 @@ public class MenuBtmLayout extends LinearLayout implements
 				}
 				fontDialog.show();
 				break;
-			case 2:
+			case 2: {
 				Toast.makeText(mContext, R.string.settings_nothing,
 						Toast.LENGTH_SHORT).show();
+				// Object tag = view.getTag();
+				// if (tag instanceof MenuBtmAdapter.ViewHolder) {
+				// MenuBtmAdapter.ViewHolder holder = (ViewHolder) tag;
+				// if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+				// mBookActivity.setPageMode(PREF_PAGE_MODE_SCROLL);
+				// holder.iv
+				// .setBackgroundResource(R.drawable.icon_mode_pan);
+				// holder.tv.setText(R.string.menu_mode_scroll);
+				//
+				// } else {
+				// mBookActivity.setPageMode(PREF_PAGE_MODE_DRAG);
+				// holder.iv
+				// .setBackgroundResource(R.drawable.icon_mode_drag);
+				// holder.tv.setText(R.string.menu_mode_drag);
+				// }
+				//
+				// }
+				// mainHandler
+				// .sendEmptyMessage(BookActivity.MSG_MENU_HIDE_TRANSLATE);
+			}
 				break;
 			case 3:
 				mainHandler
@@ -266,6 +293,7 @@ public class MenuBtmLayout extends LinearLayout implements
 			case 4:
 				Toast.makeText(mContext, R.string.settings_nothing,
 						Toast.LENGTH_SHORT).show();
+
 				break;
 			case 5:
 				Toast.makeText(mContext, R.string.settings_nothing,
@@ -310,4 +338,25 @@ public class MenuBtmLayout extends LinearLayout implements
 	public boolean isVisiable() {
 		return getVisibility() == VISIBLE;
 	}
+
+	public BookActivity getBookActivity() {
+		return mBookActivity;
+	}
+
+	public void setBookActivity(BookActivity bookActivity) {
+
+		this.mBookActivity = bookActivity;
+		Log.e("lmf",
+				"setBookActivity>>>>>>>>>>>>>>>" + mBookActivity.getPageMode());
+		if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+			settingsImgRes[2] = R.drawable.icon_mode_drag;
+			settingsStrsRes[2] = R.string.menu_mode_drag;
+		} else {
+			settingsImgRes[2] = R.drawable.icon_mode_pan;
+			settingsStrsRes[2] = R.string.menu_mode_scroll;
+		}
+		settingsAdapter.notifyDataSetChanged();
+		settingsGv.invalidate();
+	}
+
 }

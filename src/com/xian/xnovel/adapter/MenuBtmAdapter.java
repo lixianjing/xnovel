@@ -60,9 +60,9 @@ public class MenuBtmAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	class ViewHolder {
-		TextView tv;
-		ImageView iv;
+	public class ViewHolder {
+		public TextView tv;
+		public ImageView iv;
 	}
 
 }

@@ -53,7 +53,8 @@ public class BookActivity extends Activity implements BookSettings {
 	private Bitmap mCurPageBitmap, mNextPageBitmap;
 	private Canvas mCurPageCanvas, mNextPageCanvas;
 
-	private int status = STATUS_SCREEN_MODE_FLIPPER;
+	private int menuStatus = STATUS_MENU_HIDE;
+	private int pageMode = PREF_PAGE_MODE_DRAG;
 
 	private PageView mPageView;
 	private RelativeLayout menuRl;
@@ -61,6 +62,8 @@ public class BookActivity extends Activity implements BookSettings {
 	private MenuBtmLayout menuBtmLayout;
 	private MenuTopLayout menuTopLayout;
 	private OnThemePictureChangedListener pictureChangedListener;
+
+
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -79,18 +82,18 @@ public class BookActivity extends Activity implements BookSettings {
 				menuTopLayout.setRightText(pagefactory.getCurTime());
 				menuTopLayout.showEx();
 				menuTopLayout.requestFocus();
-				addStatus(STATUS_MENU_SHOW);
+				menuStatus = STATUS_MENU_SHOW;
 				break;
 			case MSG_MENU_HIDE_TRANSLATE:
 				menuBtmLayout.hideEx(0);
 				menuTopLayout.hideEx(0);
-				delStatus(STATUS_MENU_SHOW);
+				menuStatus = STATUS_MENU_HIDE;
 				break;
 			case MSG_MENU_HIDE_DISAPPEAR:
 				menuBtmLayout.hideEx(1);
 				menuTopLayout.hideEx(1);
-				mHandler.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
-				delStatus(STATUS_MENU_SHOW);
+				sendEmptyMessage(MSG_MENU_SHOW_BOOK);
+				menuStatus = STATUS_MENU_HIDE;
 				break;
 			case MSG_MENU_SHOW_BOOK:
 				mPageView.setVisibility(View.VISIBLE);
@@ -101,6 +104,27 @@ public class BookActivity extends Activity implements BookSettings {
 				onPickFromGalleryChosen();
 				break;
 
+			case MSG_THEME_MODE:
+				switch (msg.arg1) {
+				case PREF_BG_MODE_THEME:
+					pagefactory.setBgBitmap(BitmapFactory.decodeResource(
+							getResources(), themeBgRes[msg.arg2]));
+					pagefactory.onDraw(mCurPageCanvas);
+					pagefactory.onDraw(mNextPageCanvas);
+					mPageView.postInvalidate();
+					break;
+				case PREF_BG_MODE_COLOR:
+
+					break;
+				case PREF_BG_MODE_PICTURE:
+
+					break;
+
+				default:
+					break;
+				}
+				break;
+
 			default:
 				break;
 			}
@@ -108,6 +132,13 @@ public class BookActivity extends Activity implements BookSettings {
 		}
 
 	};
+	
+	
+	private Integer[] themeBgRes = { R.drawable.theme_1,
+			R.drawable.theme_2, R.drawable.theme_3,
+			R.drawable.theme_4, R.drawable.theme_5,
+			R.drawable.theme_6, R.drawable.theme_7,
+			R.drawable.theme_8, R.drawable.theme_9 };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -133,8 +164,12 @@ public class BookActivity extends Activity implements BookSettings {
 				mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
 			}
 		});
-
+		pref = mContext.getSharedPreferences(AppSettings.Settings,
+				Context.MODE_PRIVATE);
+		pageMode = pref.getInt(AppSettings.SETTINGS_PAGE_MODE,
+				PREF_PAGE_MODE_DRAG);
 		menuBtmLayout.setMainHandler(mHandler);
+		menuBtmLayout.setBookActivity(this);
 		mPageView.setMainHandler(mHandler);
 		mPageView.setBookActivity(this);
 
@@ -142,10 +177,10 @@ public class BookActivity extends Activity implements BookSettings {
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
 				"My Lock");
-		pref = mContext.getSharedPreferences(AppSettings.Settings,
-				Context.MODE_PRIVATE);
+
 		mWidth = pref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 0);
 		mHeight = pref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 0);
+
 		if (mWidth == 0 || mHeight == 0) {
 			DisplayMetrics dm = new DisplayMetrics();
 			this.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -156,7 +191,9 @@ public class BookActivity extends Activity implements BookSettings {
 			editor.putInt(AppSettings.SETTINGS_HEIGHT_FULL, dm.heightPixels);
 			editor.commit();
 		}
+
 		loadBook();
+
 	}
 
 	private void loadBook() {
@@ -209,6 +246,7 @@ public class BookActivity extends Activity implements BookSettings {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		wakeLock.acquire();
+
 		super.onStart();
 	}
 
@@ -220,14 +258,15 @@ public class BookActivity extends Activity implements BookSettings {
 			saveHistory();
 			isSaveHistory = false;
 		}
-		if ((status & STATUS_MENU_SHOW) == STATUS_MENU_SHOW) {
+		if (menuStatus == STATUS_MENU_SHOW) {
 			mPageView.setVisibility(View.VISIBLE);
 			menuRl.setVisibility(View.GONE);
 			menuIv.setVisibility(View.GONE);
 			menuBtmLayout.setVisibility(View.GONE);
 			menuTopLayout.setVisibility(View.GONE);
-			delStatus(STATUS_MENU_SHOW);
+			menuStatus = STATUS_MENU_SHOW;
 		}
+
 		super.onStop();
 	}
 
@@ -361,7 +400,6 @@ public class BookActivity extends Activity implements BookSettings {
 			// prevent this,
 			// we remember to set a flag which is interpreted after loading.
 			// This photo is set here already to reduce flickering.
-			Log.e("lmf", "Test>>>>>>>>>>");
 			try {
 				Uri uri = data.getData();
 				if (uri != null) {
@@ -371,7 +409,6 @@ public class BookActivity extends Activity implements BookSettings {
 					if (bitmap != null) {
 						pictureChangedListener.pictureChanged(bitmap);
 					}
-					Log.e("lmf", "Test>>>>>>>>>222>>" + uri);
 				}
 			} catch (Exception e) {
 				Log.e("lmf", e.getMessage(), e);
@@ -410,16 +447,23 @@ public class BookActivity extends Activity implements BookSettings {
 		void pictureChanged(Bitmap bitmap);
 	}
 
-	public int getStatus() {
-		return status;
+	public int getMenuStatus() {
+		return menuStatus;
 	}
 
-	public void addStatus(int st) {
-		this.status = status | st;
+	public void setMenuStatus(int menuStatus) {
+		this.menuStatus = menuStatus;
 	}
 
-	public void delStatus(int st) {
-		this.status = status & (~st);
+	public int getPageMode() {
+		return pageMode;
+	}
+
+	public void setPageMode(int pageMode) {
+		this.pageMode = pageMode;
+		Editor editor = pref.edit();
+		editor.putInt(AppSettings.SETTINGS_PAGE_MODE, pageMode);
+		editor.commit();
 	}
 
 }

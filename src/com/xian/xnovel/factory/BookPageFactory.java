@@ -29,7 +29,7 @@ public class BookPageFactory {
 	private int mReadStart = 0;
 	private int mReadEnd = 0;
 	private String m_strCharsetName = "UTF-8";
-	private Bitmap m_book_bg = null;
+	private Bitmap bookBg = null;
 	private int mWidth;
 	private int mHeight;
 
@@ -307,10 +307,10 @@ public class BookPageFactory {
 		if (mShowLine.size() == 0)
 			mShowLine = pageDown();
 		if (mShowLine.size() > 0) {
-			if (m_book_bg == null)
+			if (bookBg == null)
 				c.drawColor(m_backColor);
 			else
-				c.drawBitmap(m_book_bg, 0, 0, null);
+				c.drawBitmap(bookBg, 0, 0, null);
 			int y = marginHeight + youmiHeight;
 			int i = 0;
 			for (String strLine : mShowLine) {
@@ -345,11 +345,11 @@ public class BookPageFactory {
 				mHeight - 5, btmPaint);
 	}
 
-	public void setBgBitmap(Bitmap BG) {
-		if (BG.getWidth() != mWidth || BG.getHeight() != mHeight)
-			m_book_bg = Bitmap.createScaledBitmap(BG, mWidth, mHeight, true);
+	public void setBgBitmap(Bitmap bg) {
+		if (bg.getWidth() != mWidth || bg.getHeight() != mHeight)
+			bookBg = Bitmap.createScaledBitmap(bg, mWidth, mHeight, true);
 		else
-			m_book_bg = BG;
+			bookBg = bg;
 	}
 
 	public boolean isFirstPage() {

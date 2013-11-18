@@ -41,8 +41,8 @@
     <string name="menu_pop_next">后一章节</string>
     <string name="menu_pop_light">亮度调节</string>
     <string name="menu_pop_font">字体设置</string>
-    <string name="menu_pop_scroll_mode">滑动模式</string>
-    <string name="menu_pop_page_mode">纸张模式</string>
+    <string name="menu_mode_scroll">滑动模式</string>
+    <string name="menu_mode_drag">翻页模式</string>
     <string name="menu_pop_background">主题风格</string>
     <string name="menu_pop_default">默认设置</string>
     <string name="menu_pop_user">用户反馈</string>

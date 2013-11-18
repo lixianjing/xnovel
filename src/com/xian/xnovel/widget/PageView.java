@@ -111,23 +111,30 @@ public class PageView extends View implements BookSettings {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			clickStatus = ONCLICK_NORMAL;
-			abortAnimation();
-			Log.e("lmf", bookActivity.getStatus()+">>>>>>>>>>");
-			if ((bookActivity.getStatus() & STATUS_MENU_SHOW) == STATUS_MENU_SHOW) {
+
+			if (bookActivity.getMenuStatus() == STATUS_MENU_SHOW) {
 				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
 				return false;
 			}
 
-			if (x < mWidth - mWidth / 3 && x > mWidth / 3) {
+			if (x < mWidth - mWidth / 3 && x > mWidth / 3
+					&& mScroller.isFinished()) {
 				clickTime = System.currentTimeMillis();
 				downX = x;
 				downY = y;
 				clickStatus = ONCLICK_READY;
 			} else {
-				calcCornerXY(x, y);
-				mTouch.x = x;
-				mTouch.y = y;
-				return bookActivity.updatePage();
+
+				if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+					abortAnimation();
+					calcCornerXY(x, y);
+					mTouch.x = x;
+					mTouch.y = y;
+					return bookActivity.updatePage();
+				} else {
+					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_DOWN>>>>>>");
+				}
+
 			}
 
 		case MotionEvent.ACTION_MOVE:
@@ -138,15 +145,25 @@ public class PageView extends View implements BookSettings {
 						return true;
 					}
 				}
-				clickStatus = ONCLICK_NORMAL;
-				calcCornerXY(x, y);
-				mTouch.x = x;
-				mTouch.y = y;
-				return bookActivity.updatePage();
+				if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+					clickStatus = ONCLICK_NORMAL;
+					calcCornerXY(x, y);
+					mTouch.x = x;
+					mTouch.y = y;
+					return bookActivity.updatePage();
+				} else {
+					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_MOVE>>>>1111>>");
+				}
+
 			} else {
-				mTouch.x = x;
-				mTouch.y = y;
-				this.postInvalidate();
+				if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+					mTouch.x = x;
+					mTouch.y = y;
+					this.postInvalidate();
+				} else {
+					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_MOVE>>>>2222>>");
+				}
+
 			}
 
 			break;
@@ -154,9 +171,18 @@ public class PageView extends View implements BookSettings {
 		case MotionEvent.ACTION_UP:
 			if (clickStatus == ONCLICK_READY) {
 				mainHandler.sendEmptyMessage(MSG_MENU_SHOW);
-			} else {
-				startAnimation(ANIM_DURATION);
 				this.postInvalidate();
+			} else {
+
+				if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+					startAnimation(ANIM_DURATION);
+					this.postInvalidate();
+				} else {
+					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_UP>>>>>>");
+					startAnimation(ANIM_DURATION);
+					this.postInvalidate();
+				}
+
 			}
 
 			break;
@@ -244,12 +270,6 @@ public class PageView extends View implements BookSettings {
 		mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
 				* (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
 
-		// Log.i("hmg", "mTouchX  " + mTouch.x + "  mTouchY  " + mTouch.y);
-		// Log.i("hmg", "mBezierControl1.x  " + mBezierControl1.x
-		// + "  mBezierControl1.y  " + mBezierControl1.y);
-		// Log.i("hmg", "mBezierControl2.x  " + mBezierControl2.x
-		// + "  mBezierControl2.y  " + mBezierControl2.y);
-
 		mBezierStart1.x = mBezierControl1.x - (mCornerX - mBezierControl1.x)
 				/ 2;
 		mBezierStart1.y = mCornerY;
@@ -279,12 +299,6 @@ public class PageView extends View implements BookSettings {
 				mBezierControl2.x = mCornerX;
 				mBezierControl2.y = mMiddleY - (mCornerX - mMiddleX)
 						* (mCornerX - mMiddleX) / (mCornerY - mMiddleY);
-				// Log.i("hmg", "mTouchX --> " + mTouch.x + "  mTouchY-->  "
-				// + mTouch.y);
-				// Log.i("hmg", "mBezierControl1.x--  " + mBezierControl1.x
-				// + "  mBezierControl1.y -- " + mBezierControl1.y);
-				// Log.i("hmg", "mBezierControl2.x -- " + mBezierControl2.x
-				// + "  mBezierControl2.y -- " + mBezierControl2.y);
 				mBezierStart1.x = mBezierControl1.x
 						- (mCornerX - mBezierControl1.x) / 2;
 			}
@@ -300,11 +314,6 @@ public class PageView extends View implements BookSettings {
 				mBezierStart2);
 		mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1,
 				mBezierStart2);
-
-		// Log.i("hmg", "mBezierEnd1.x  " + mBezierEnd1.x + "  mBezierEnd1.y  "
-		// + mBezierEnd1.y);
-		// Log.i("hmg", "mBezierEnd2.x  " + mBezierEnd2.x + "  mBezierEnd2.y  "
-		// + mBezierEnd2.y);
 
 		/*
 		 * mBeziervertex1.x 推导
@@ -376,27 +385,31 @@ public class PageView extends View implements BookSettings {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		canvas.drawColor(0xFFAAAAAA);
 
-		if (dragToRight()) {
-			if (pagefactory.isFirstPage()) {
-				Log.e("lmf", "onDraw>>>>>isFirstPage>>>>>>>");
-				canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
-				return;
+		if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+			canvas.drawColor(0xAAAAAAAA);
+
+			if (dragToRight()) {
+				if (pagefactory.isFirstPage()) {
+					canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
+					return;
+				}
+			} else {
+				if (pagefactory.isLastPage()) {
+					canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
+					return;
+				}
 			}
+
+			calcPoints();
+			drawCurrentPageArea(canvas, mCurPageBitmap);
+			drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
+			drawCurrentPageShadow(canvas);
+			drawCurrentBackArea(canvas, mCurPageBitmap);
 		} else {
-			if (pagefactory.isLastPage()) {
-				Log.e("lmf", "onDraw>>>>>isLastPage>>>>>>>");
-				canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
-				return;
-			}
+			canvas.drawBitmap(mNextPageBitmap, 0, 0, null);
 		}
 
-		calcPoints();
-		drawCurrentPageArea(canvas, mCurPageBitmap);
-		drawNextPageAreaAndShadow(canvas, mNextPageBitmap);
-		drawCurrentPageShadow(canvas);
-		drawCurrentBackArea(canvas, mCurPageBitmap);
 	}
 
 	/**
@@ -614,22 +627,28 @@ public class PageView extends View implements BookSettings {
 	}
 
 	private void startAnimation(int delayMillis) {
-		Log.e("lmf", "PageView>>>>>>startAnimation>>>>>>>" + delayMillis);
-		int dx, dy;
-		// dx 水平方向滑动的距离，负值会使滚动向左滚动
-		// dy 垂直方向滑动的距离，负值会使滚动向上滚动
-		if (mCornerX > 0) {
-			dx = -(int) (mWidth + mTouch.x);
+
+		if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+			int dx, dy;
+			// dx 水平方向滑动的距离，负值会使滚动向左滚动
+			// dy 垂直方向滑动的距离，负值会使滚动向上滚动
+			if (mCornerX > 0) {
+				dx = -(int) (mWidth + mTouch.x);
+			} else {
+				dx = (int) (mWidth - mTouch.x + mWidth);
+			}
+			if (mCornerY > 0) {
+				dy = (int) (mHeight - mTouch.y) - 1;
+			} else {
+				dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
+			}
+			mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy,
+					delayMillis);
+			Log.e("lmf", "startAnimation>>>>drag>>>>" + mTouch.x + ":"
+					+ mTouch.y + ":" + dx + ":" + dy);
 		} else {
-			dx = (int) (mWidth - mTouch.x + mWidth);
 		}
-		if (mCornerY > 0) {
-			dy = (int) (mHeight - mTouch.y) - 1;
-		} else {
-			dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
-		}
-		mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy,
-				delayMillis);
+
 	}
 
 	public void abortAnimation() {

@@ -75,7 +75,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 			R.drawable.icon_feedback, R.drawable.icon_help };
 
 	private int[] settingsStrsRes = new int[] { R.string.menu_pop_light,
-			R.string.menu_pop_font, R.string.menu_pop_scroll_mode,
+			R.string.menu_pop_font, R.string.menu_mode_scroll,
 			R.string.menu_pop_background, R.string.menu_pop_default,
 			R.string.menu_pop_user, R.string.menu_pop_scroll };
 
@@ -94,7 +94,6 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 		btnTitleRight.setOnClickListener(this);
 		viewFlipper = (ViewFlipper) bottomView
 				.findViewById(R.id.menu_pop_viewFlipper);
-		// ��viewFlipper���View
 		toolsGv = (GridView) LayoutInflater.from(mContext).inflate(
 				R.layout.menu_btm_grid, null);
 		settingsGv = (GridView) LayoutInflater.from(mContext).inflate(
@@ -118,7 +117,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 						R.anim.menu_flipper_right_in);
 				viewFlipper.setOutAnimation(mContext,
 						R.anim.menu_flipper_right_out);
-				viewFlipper.showPrevious();// ���󻬶�
+				viewFlipper.showPrevious();
 			}
 			btnTitleLeft.setSelected(true);
 			btnTitleRight.setSelected(false);
@@ -128,7 +127,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 						R.anim.menu_flipper_left_in);
 				viewFlipper.setOutAnimation(mContext,
 						R.anim.menu_flipper_left_out);
-				viewFlipper.showNext();// ���һ���
+				viewFlipper.showNext();
 			}
 			btnTitleLeft.setSelected(false);
 			btnTitleRight.setSelected(true);

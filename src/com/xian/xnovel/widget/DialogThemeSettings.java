@@ -3,11 +3,13 @@ package com.xian.xnovel.widget;
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.DialogThemeGridAdapter;
+import com.xian.xnovel.utils.BookSettings;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,17 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class DialogThemeSettings extends DialogTab2Settings implements View.OnClickListener {
-
-	private static final int MODE_THEME = 0;
-	private static final int MODE_PICTURE = 1;
-	private static final int MODE_COLOR = 2;
-
-	private int modePref = 0;
+public class DialogThemeSettings extends DialogTab2Settings implements
+		View.OnClickListener, BookSettings {
 
 	private Context mContext;
 	private Handler mainHandler;
-
 
 	private LayoutInflater mInflater;
 	private LinearLayout tabLeftLl, tabRightLl;
@@ -78,6 +74,11 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
 							adapter.notifyDataSetChanged();
 							themeGv.invalidate();
 						}
+						Message msg = Message.obtain();
+						msg.what = MSG_THEME_MODE;
+						msg.arg1 = PREF_BG_MODE_COLOR;
+						msg.arg2 = color;
+						mainHandler.sendMessage(msg);
 
 					}
 				});
@@ -96,6 +97,11 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
 								adapter.notifyDataSetChanged();
 								themeGv.invalidate();
 							}
+							Message msg = Message.obtain();
+							msg.what = MSG_THEME_MODE;
+							msg.arg1 = PREF_BG_MODE_PICTURE;
+							mainHandler.sendMessage(msg);
+
 						}
 					});
 		}
@@ -113,23 +119,26 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
 				adapter.setSelectIndex(arg2);
 				adapter.notifyDataSetChanged();
 				themeGv.invalidate();
+				Message msg = Message.obtain();
+				msg.what = MSG_THEME_MODE;
+				msg.arg1 = PREF_BG_MODE_THEME;
+				msg.arg2 = arg2;
+				mainHandler.sendMessage(msg);
 			}
 		});
 
-		setTabTitle(R.string.settings_theme,R.string.settings_theme_background);
+		setTabTitle(R.string.settings_theme, R.string.settings_theme_background);
 		addFlipperView(tabLeftLl);
 		addFlipperView(tabRightLl);
-		
-	}
 
+	}
 
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.theme_ll_picture:
-			mainHandler
-					.sendEmptyMessage(BookActivity.MSG_PICK_PICTURE);
+			mainHandler.sendEmptyMessage(BookActivity.MSG_PICK_PICTURE);
 			break;
 
 		default:

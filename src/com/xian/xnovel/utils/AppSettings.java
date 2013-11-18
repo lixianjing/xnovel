@@ -31,6 +31,8 @@ public interface AppSettings {
 	public static final String SETTINGS_WIDTH_VIEW = "widthView";
 	public static final String SETTINGS_HEIGHT_VIEW = "heightView";
 	
+	public static final String SETTINGS_PAGE_MODE = "page_mode";
+	
 	
 
 	public static final int SCREEN_DEFAULT = 0;
