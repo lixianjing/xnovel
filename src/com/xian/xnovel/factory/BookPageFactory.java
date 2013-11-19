@@ -29,15 +29,17 @@ public class BookPageFactory {
 	private int mReadStart = 0;
 	private int mReadEnd = 0;
 	private String m_strCharsetName = "UTF-8";
-	private Bitmap bookBg = null;
+
 	private int mWidth;
 	private int mHeight;
+
+	private int bgColor = 0xFFEEEEEE; // 背景颜色
+	private Bitmap bgBitmap = null; // 背景图片
+	private int textColor = 0xFF000000; // 文字颜色
 
 	private Vector<String> mShowLine = new Vector<String>();
 
 	private int m_fontSize = 40;
-	private int m_textColor = Color.BLACK;
-	private int m_backColor = 0xFFEEEEEE; // 背景颜色
 	private int marginWidth = 15; // 左右与边缘的距离
 	private int marginHeight = 20; // 上下与边缘的距离
 	private int youmiHeight = 0;// 广告条的狂度
@@ -60,20 +62,20 @@ public class BookPageFactory {
 		mPaint.setTextAlign(Align.LEFT);
 		// mPaint.setTextSize(30);
 		mPaint.setTextSize(m_fontSize);
-		mPaint.setColor(m_textColor);
+		mPaint.setColor(textColor);
 
 		// 底部文字绘制
 		btmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		btmPaint.setTextAlign(Align.LEFT);
 		btmPaint.setTextSize(btmFontSize);
-		btmPaint.setColor(m_textColor);
+		btmPaint.setColor(textColor);
 		percentWidth = (int) btmPaint.measureText("99.9%") + 1;
 
 		// 行间距设置
 		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		spactPaint.setTextAlign(Align.LEFT);
 		spactPaint.setTextSize(spaceSize);
-		spactPaint.setColor(m_textColor);
+		spactPaint.setColor(textColor);
 
 	}
 
@@ -307,10 +309,10 @@ public class BookPageFactory {
 		if (mShowLine.size() == 0)
 			mShowLine = pageDown();
 		if (mShowLine.size() > 0) {
-			if (bookBg == null)
-				c.drawColor(m_backColor);
+			if (bgBitmap == null)
+				c.drawColor(bgColor);
 			else
-				c.drawBitmap(bookBg, 0, 0, null);
+				c.drawBitmap(bgBitmap, 0, 0, null);
 			int y = marginHeight + youmiHeight;
 			int i = 0;
 			for (String strLine : mShowLine) {
@@ -347,9 +349,18 @@ public class BookPageFactory {
 
 	public void setBgBitmap(Bitmap bg) {
 		if (bg.getWidth() != mWidth || bg.getHeight() != mHeight)
-			bookBg = Bitmap.createScaledBitmap(bg, mWidth, mHeight, true);
+			bgBitmap = Bitmap.createScaledBitmap(bg, mWidth, mHeight, true);
 		else
-			bookBg = bg;
+			bgBitmap = bg;
+	}
+
+	public void setBgColor(int color) {
+		bgColor = color;
+		bgBitmap = null;
+	}
+
+	public void setTextColor(int color) {
+		textColor = color;
 	}
 
 	public boolean isFirstPage() {
@@ -397,7 +408,7 @@ public class BookPageFactory {
 		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
 		return percentFormatter.format(fPercent * 100) + "%";
 	}
-	
+
 	public String getCurTime() {
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		return dateFormatter.format(curDate);

@@ -76,7 +76,8 @@
     <string name="settings_theme_background">背景</string>
     <string name="settings_theme_bg_color">颜色</string>
     <string name="settings_theme_bg_picture">图片</string>
-    
+    <string name="settings_theme_bg_picture_error">对不起，设置壁纸失败。:(</string>
+     <string name="settings_theme_bg_picture_save_error">对不起，保存壁纸失败。:(</string>
         <!--  -->
     <string name="settings_nothing">对不起，该功能还没有实现。:)</string>
     <string name="settings_first_page">第一页</string>

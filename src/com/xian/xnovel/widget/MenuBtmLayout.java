@@ -3,8 +3,7 @@ package com.xian.xnovel.widget;
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
-import com.xian.xnovel.adapter.MenuBtmAdapter.ViewHolder;
-import com.xian.xnovel.utils.BookSettings;
+import com.xian.xnovel.utils.AppSettings;
 
 import android.content.Context;
 import android.os.Handler;
@@ -24,7 +23,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class MenuBtmLayout extends LinearLayout implements
-		View.OnClickListener, BookSettings {
+		View.OnClickListener ,AppSettings{
 
 	private static final int INDEX_TOOLS_PAGE = 0;
 	private static final int INDEX_SETTINGS_PAGE = 1;

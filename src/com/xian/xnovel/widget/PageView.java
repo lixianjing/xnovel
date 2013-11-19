@@ -2,7 +2,7 @@ package com.xian.xnovel.widget;
 
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.BookSettings;
+import com.xian.xnovel.utils.AppSettings;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 
-public class PageView extends View implements BookSettings {
+public class PageView extends View implements AppSettings {
 
 	private static final String TAG = "lmf";
 	private static final int ANIM_DURATION = 1000;
@@ -132,7 +132,6 @@ public class PageView extends View implements BookSettings {
 					mTouch.y = y;
 					return bookActivity.updatePage();
 				} else {
-					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_DOWN>>>>>>");
 				}
 
 			}
@@ -152,7 +151,6 @@ public class PageView extends View implements BookSettings {
 					mTouch.y = y;
 					return bookActivity.updatePage();
 				} else {
-					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_MOVE>>>>1111>>");
 				}
 
 			} else {
@@ -161,7 +159,6 @@ public class PageView extends View implements BookSettings {
 					mTouch.y = y;
 					this.postInvalidate();
 				} else {
-					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_MOVE>>>>2222>>");
 				}
 
 			}
@@ -178,7 +175,6 @@ public class PageView extends View implements BookSettings {
 					startAnimation(ANIM_DURATION);
 					this.postInvalidate();
 				} else {
-					Log.e("lmf", ">>>>>>>MotionEvent.ACTION_UP>>>>>>");
 					startAnimation(ANIM_DURATION);
 					this.postInvalidate();
 				}
@@ -387,7 +383,7 @@ public class PageView extends View implements BookSettings {
 	protected void onDraw(Canvas canvas) {
 
 		if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
-			canvas.drawColor(0xAAAAAAAA);
+			canvas.drawColor(0xAA111111);
 
 			if (dragToRight()) {
 				if (pagefactory.isFirstPage()) {

@@ -6,7 +6,6 @@ import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
-import com.xian.xnovel.utils.BookSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
@@ -19,6 +18,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,13 +31,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-public class BookActivity extends Activity implements BookSettings {
+public class BookActivity extends Activity implements AppSettings {
 
 	private Context mContext;
 	private SharedPreferences pref;
@@ -63,13 +61,11 @@ public class BookActivity extends Activity implements BookSettings {
 	private MenuTopLayout menuTopLayout;
 	private OnThemePictureChangedListener pictureChangedListener;
 
-
 	private Handler mHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			Log.e("lmf", "Handler>>>>>>>>" + msg.what);
 			switch (msg.what) {
 			case MSG_MENU_SHOW:
 				pagefactory.onDraw(mCurPageCanvas);
@@ -106,17 +102,31 @@ public class BookActivity extends Activity implements BookSettings {
 
 			case MSG_THEME_MODE:
 				switch (msg.arg1) {
-				case PREF_BG_MODE_THEME:
+				case PREF_THEME_MODE_BG:
 					pagefactory.setBgBitmap(BitmapFactory.decodeResource(
 							getResources(), themeBgRes[msg.arg2]));
 					pagefactory.onDraw(mCurPageCanvas);
 					pagefactory.onDraw(mNextPageCanvas);
 					mPageView.postInvalidate();
 					break;
-				case PREF_BG_MODE_COLOR:
-
+				case PREF_THEME_MODE_COLOR:
+					Log.e("lmf", "BookActivity>>>>>>>>PREF_BG_MODE_COLOR>>>>>>");
+					pagefactory.setBgColor(msg.arg2);
+					pagefactory.onDraw(mCurPageCanvas);
+					pagefactory.onDraw(mNextPageCanvas);
+					mPageView.postInvalidate();
 					break;
-				case PREF_BG_MODE_PICTURE:
+				case PREF_THEME_MODE_PICTURE:
+					if (pictureBitmap != null && !pictureBitmap.isRecycled()) {
+						pagefactory.setBgBitmap(pictureBitmap);
+						pagefactory.onDraw(mCurPageCanvas);
+						pagefactory.onDraw(mNextPageCanvas);
+						mPageView.postInvalidate();
+					} else {
+						Toast.makeText(mContext,
+								R.string.settings_theme_bg_picture_error,
+								Toast.LENGTH_SHORT).show();
+					}
 
 					break;
 
@@ -132,13 +142,11 @@ public class BookActivity extends Activity implements BookSettings {
 		}
 
 	};
-	
-	
-	private Integer[] themeBgRes = { R.drawable.theme_1,
-			R.drawable.theme_2, R.drawable.theme_3,
-			R.drawable.theme_4, R.drawable.theme_5,
-			R.drawable.theme_6, R.drawable.theme_7,
-			R.drawable.theme_8, R.drawable.theme_9 };
+
+	private Integer[] themeBgRes = { R.drawable.theme_1, R.drawable.theme_2,
+			R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5,
+			R.drawable.theme_6, R.drawable.theme_7, R.drawable.theme_8,
+			R.drawable.theme_9 };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -166,8 +174,7 @@ public class BookActivity extends Activity implements BookSettings {
 		});
 		pref = mContext.getSharedPreferences(AppSettings.Settings,
 				Context.MODE_PRIVATE);
-		pageMode = pref.getInt(AppSettings.SETTINGS_PAGE_MODE,
-				PREF_PAGE_MODE_DRAG);
+		pageMode = pref.getInt(AppSettings.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
 		menuBtmLayout.setMainHandler(mHandler);
 		menuBtmLayout.setBookActivity(this);
 		mPageView.setMainHandler(mHandler);
@@ -202,6 +209,36 @@ public class BookActivity extends Activity implements BookSettings {
 
 			pagefactory = new BookPageFactory();
 			pagefactory.init(mWidth, mHeight);
+
+			int mode = pref.getInt(PREF_THEME_MODE, PREF_THEME_MODE_BG);
+			switch (mode) {
+			case PREF_THEME_MODE_BG:
+				int index = pref.getInt(PREF_THEME_BG_INDEX,
+						PREF_THEME_BG_DEFAULT);
+				pagefactory.setBgBitmap(BitmapFactory.decodeResource(
+						getResources(), themeBgRes[index]));
+				break;
+			case PREF_THEME_MODE_COLOR:
+				int color = pref.getInt(PREF_THEME_COLOR_VALUE,
+						PREF_THEME_COLOR_DEFAULT);
+				pagefactory.setBgColor(color);
+				break;
+			case PREF_THEME_MODE_PICTURE:
+				try {
+					pagefactory.setBgBitmap(BitmapFactory.decodeStream(mContext
+							.openFileInput(PREF_THEME_PICTURE_NAME)));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(mContext,
+							R.string.settings_theme_bg_picture_error,
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
+
+			default:
+				break;
+			}
 
 			mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
 					Bitmap.Config.ARGB_8888);
@@ -387,6 +424,8 @@ public class BookActivity extends Activity implements BookSettings {
 
 	}
 
+	private Bitmap pictureBitmap;
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		switch (requestCode) {
@@ -403,15 +442,22 @@ public class BookActivity extends Activity implements BookSettings {
 			try {
 				Uri uri = data.getData();
 				if (uri != null) {
-					Bitmap bitmap = BitmapFactory
+
+					if (pictureBitmap != null) {
+						pictureBitmap.recycle();
+						pictureBitmap = null;
+					}
+							
+					Bitmap temp = BitmapFactory
 							.decodeStream(getContentResolver().openInputStream(
 									uri));
-					if (bitmap != null) {
-						pictureChangedListener.pictureChanged(bitmap);
+					pictureBitmap=Bitmap.createScaledBitmap(temp, mWidth, mHeight, false);
+					if (pictureBitmap != null) {
+						pictureChangedListener.pictureChanged(pictureBitmap);
 					}
 				}
 			} catch (Exception e) {
-				Log.e("lmf", e.getMessage(), e);
+				e.printStackTrace();
 			}
 
 			break;
@@ -462,7 +508,7 @@ public class BookActivity extends Activity implements BookSettings {
 	public void setPageMode(int pageMode) {
 		this.pageMode = pageMode;
 		Editor editor = pref.edit();
-		editor.putInt(AppSettings.SETTINGS_PAGE_MODE, pageMode);
+		editor.putInt(AppSettings.PREF_PAGE_MODE, pageMode);
 		editor.commit();
 	}
 
