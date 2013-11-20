@@ -251,6 +251,7 @@ public class MenuBtmLayout extends LinearLayout implements
 						.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
 				if (fontDialog == null) {
 					fontDialog = new DialogFontSettings(mContext);
+					fontDialog.setMainHandler(mainHandler);
 				}
 				fontDialog.show();
 				break;

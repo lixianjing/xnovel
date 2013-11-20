@@ -7,7 +7,7 @@
 
 
     <com.xian.xnovel.widget.ColorPickerView
-        android:id="@+id/theme_cpv_color"
+        android:id="@+id/font_cpv_color"
         android:layout_width="280dip"
         android:layout_height="280dip"
         android:layout_gravity="center" />

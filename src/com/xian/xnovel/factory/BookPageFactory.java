@@ -44,13 +44,15 @@ public class BookPageFactory implements AppSettings {
 	private int mWidth;
 	private int mHeight;
 
-	private int bgColor = 0xFFEEEEEE; // 背景颜色
+	private int bgColor = PREF_THEME_COLOR_DEFAULT; // 背景颜色
 	private Bitmap bgBitmap = null; // 背景图片
-	private int textColor = 0xFF000000; // 文字颜色
+
+	private int textColor = PREF_FONT_COLOR_DEFAULT; // 文字颜色
+	private int mFontSize = PREF_FONT_SIZE_DEFAULT;
+	private int spaceSize = PREF_LINE_SPACE_DEFAULT;// 行间距大小
 
 	private Vector<String> mShowLine = new Vector<String>();
 
-	private int m_fontSize = 40;
 	private int marginWidth = 15; // 左右与边缘的距离
 	private int marginHeight = 20; // 上下与边缘的距离
 	private int youmiHeight = 0;// 广告条的狂度
@@ -60,12 +62,15 @@ public class BookPageFactory implements AppSettings {
 	private float mVisibleWidth; // 绘制内容的宽
 	private boolean isFirstPage, isLastPage;
 	private int btmFontSize = 16;// 底部文字大小
-	private int spaceSize = 20;// 行间距大小
+
 	private String titleName = "";
 
 	private Paint mPaint;
 	private Paint btmPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
+
+	private boolean isBlod = false;
+	private boolean isItalic = false;
 
 	private Integer[] themeBgRes = { R.drawable.theme_1, R.drawable.theme_2,
 			R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5,
@@ -94,8 +99,19 @@ public class BookPageFactory implements AppSettings {
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPaint.setTextAlign(Align.LEFT);
 		// mPaint.setTextSize(30);
-		mPaint.setTextSize(m_fontSize);
+		mPaint.setTextSize(mFontSize);
 		mPaint.setColor(textColor);
+		if (isBlod) {
+			mPaint.setFakeBoldText(true); // true为粗体，false为非粗体
+		} else {
+			mPaint.setFakeBoldText(false); // true为粗体，false为非粗体
+		}
+
+		if (isItalic) {
+			mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
+		} else {
+			mPaint.setTextSkewX(-0.25f); // float类型参数，负数表示右斜，整数左斜
+		}
 
 		// 底部文字绘制
 		btmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -108,7 +124,6 @@ public class BookPageFactory implements AppSettings {
 		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		spactPaint.setTextAlign(Align.LEFT);
 		spactPaint.setTextSize(spaceSize);
-		spactPaint.setColor(textColor);
 
 	}
 
@@ -140,6 +155,11 @@ public class BookPageFactory implements AppSettings {
 			break;
 
 		}
+
+		textColor = pref.getInt(PREF_FONT_COLOR, PREF_FONT_COLOR_DEFAULT);
+		mFontSize = pref.getInt(PREF_FONT_SIZE, PREF_FONT_SIZE_DEFAULT);
+		spaceSize = pref.getInt(PREF_LINE_SPACE, PREF_LINE_SPACE_DEFAULT);
+
 	}
 
 	public void closeBook() {
@@ -162,7 +182,7 @@ public class BookPageFactory implements AppSettings {
 		// mPaint.setTextSkewX(0.1f);//设置斜体
 		mVisibleWidth = mWidth - marginWidth * 2;
 		mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
-		int totalSize = m_fontSize + spaceSize;
+		int totalSize = mFontSize + spaceSize;
 		mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
 
 	}
@@ -392,7 +412,7 @@ public class BookPageFactory implements AppSettings {
 			int y = marginHeight + youmiHeight;
 			int i = 0;
 			for (String strLine : mShowLine) {
-				y += m_fontSize;
+				y += mFontSize;
 				// mPaint.setTypeface(Typeface.DEFAULT_BOLD);
 				c.drawText(strLine, marginWidth, y, mPaint);
 				y += spaceSize;
@@ -445,10 +465,6 @@ public class BookPageFactory implements AppSettings {
 		}
 	}
 
-	public void setTextColor(int color) {
-		textColor = color;
-	}
-
 	public boolean isFirstPage() {
 		return isFirstPage;
 	}
@@ -465,15 +481,20 @@ public class BookPageFactory implements AppSettings {
 		return mShowLine.toString().substring(0, 10);
 	}
 
-	public void changBackGround(int color) {
-		mPaint.setColor(color);
+	public void setFontColor(int color) {
+		textColor = color;
+		mPaint.setColor(textColor);
+	}
+
+	public void setLineSpace(int size) {
+		spaceSize = size;
+		mLineCount = (int) (mVisibleHeight / (mFontSize + spaceSize)); // 可显示的行数
 	}
 
 	public void setFontSize(int size) {
-		m_fontSize = size;
+		mFontSize = size;
 		mPaint.setTextSize(size);
-		int totalSize = m_fontSize + spaceSize;
-		mLineCount = (int) (mVisibleHeight / totalSize); // 可显示的行数
+		mLineCount = (int) (mVisibleHeight / (mFontSize + spaceSize)); // 可显示的行数
 	}
 
 	public void setTitleName(String name) {

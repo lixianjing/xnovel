@@ -34,6 +34,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 
 	private Context mContext;
 	private Handler mainHandler;
+	private SharedPreferences pref;
 
 	private LayoutInflater mInflater;
 	private LinearLayout tabLeftLl, tabRightLl;
@@ -46,8 +47,6 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 	private ColorPickerView colorSelectCv;
 	private ImageView themeBgIv;
 	private TextView themeBgTv;
-
-	private SharedPreferences pref;
 
 	private int prefMode = PREF_THEME_MODE_DEFAULT;
 	private int prefResIndex = PREF_THEME_BG_DEFAULT;
@@ -84,8 +83,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 					public void colorChanged(int color) {
 						// TODO Auto-generated method stub
 						setColor(color);
-						sendMessage(MSG_THEME_MODE, PREF_THEME_MODE_COLOR,
-								color);
+						sendMessage(MSG_SETTINGS_THEME_COLOR, color);
 						prefMode = PREF_THEME_MODE_COLOR;
 						prefColor = color;
 					}
@@ -98,8 +96,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 						public void pictureChanged(Bitmap bitmap) {
 							// TODO Auto-generated method stub
 							setPicture(bitmap);
-							sendMessage(MSG_THEME_MODE,
-									PREF_THEME_MODE_PICTURE, 0);
+							sendMessage(MSG_SETTINGS_THEME_PICTURE, 0);
 							prefMode = PREF_THEME_MODE_PICTURE;
 							pictureBitmap = bitmap;
 						}
@@ -115,7 +112,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 					long arg3) {
 				// TODO Auto-generated method stub
 				setThemeSelected(index);
-				sendMessage(MSG_THEME_MODE, PREF_THEME_MODE_BG, index);
+				sendMessage(MSG_SETTINGS_THEME_BG,  index);
 				prefMode = PREF_THEME_MODE_BG;
 				prefResIndex = index;
 			}
@@ -138,6 +135,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 			prefColor = pref.getInt(PREF_THEME_COLOR_VALUE,
 					PREF_THEME_COLOR_DEFAULT);
 			setColor(prefColor);
+			colorSelectCv.setInitialColor(prefColor);
 			break;
 		case PREF_THEME_MODE_PICTURE:
 			try {
@@ -204,11 +202,10 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 		}
 	}
 
-	private void sendMessage(int what, int arg0, int arg1) {
+	private void sendMessage(int what, int arg0) {
 		Message msg = Message.obtain();
 		msg.what = what;
 		msg.arg1 = arg0;
-		msg.arg2 = arg1;
 		mainHandler.sendMessage(msg);
 	}
 

@@ -100,40 +100,39 @@ public class BookActivity extends Activity implements AppSettings {
 				onPickFromGalleryChosen();
 				break;
 
-			case MSG_THEME_MODE:
-				switch (msg.arg1) {
-				case PREF_THEME_MODE_BG:
-					pagefactory.setBgBitmap(msg.arg2);
-					pagefactory.onDraw(mCurPageCanvas);
-					pagefactory.onDraw(mNextPageCanvas);
-					mPageView.postInvalidate();
-					break;
-				case PREF_THEME_MODE_COLOR:
-					pagefactory.setBgColor(msg.arg2);
-					pagefactory.onDraw(mCurPageCanvas);
-					pagefactory.onDraw(mNextPageCanvas);
-					mPageView.postInvalidate();
-					break;
-				case PREF_THEME_MODE_PICTURE:
-					if (pictureBitmap != null && !pictureBitmap.isRecycled()) {
-						pagefactory.setBgBitmap(pictureBitmap);
-						pagefactory.onDraw(mCurPageCanvas);
-						pagefactory.onDraw(mNextPageCanvas);
-						mPageView.postInvalidate();
-					} else {
-						Toast.makeText(mContext,
-								R.string.settings_theme_bg_picture_error,
-								Toast.LENGTH_SHORT).show();
-					}
-					break;
+			case MSG_SETTINGS_THEME_BG:
+				pagefactory.setBgBitmap(msg.arg1);
+				updatePageFactory();
+				break;
+			case MSG_SETTINGS_THEME_COLOR:
+				pagefactory.setBgColor(msg.arg1);
+				updatePageFactory();
+				break;
+			case MSG_SETTINGS_THEME_PICTURE:
+				if (pictureBitmap != null && !pictureBitmap.isRecycled()) {
+					pagefactory.setBgBitmap(pictureBitmap);
+					updatePageFactory();
+				} else {
+					Toast.makeText(mContext,
+							R.string.settings_theme_bg_picture_error,
+							Toast.LENGTH_SHORT).show();
 				}
 				break;
-
+			case MSG_SETTINGS_FONT_COLOR:
+				pagefactory.setFontColor(msg.arg1);
+				updatePageFactory();
+				break;
 			}
 			super.handleMessage(msg);
 		}
 
 	};
+
+	private void updatePageFactory() {
+		pagefactory.onDraw(mCurPageCanvas);
+		pagefactory.onDraw(mNextPageCanvas);
+		mPageView.postInvalidate();
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

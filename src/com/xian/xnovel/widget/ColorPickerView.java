@@ -20,32 +20,32 @@ public class ColorPickerView extends View {
 	private float mCircleWidth = 50f;
 	private float offsetX = 50f;
 
-	private int mInitialColor = 0xFFFFFFFF;// ��ʼ��ɫ
+	private int mInitialColor = 0xFFFFFFFF;// 初始颜色
 
-	private Paint mPaint;// ����ɫ������
-	private Paint mCenterPaint;// �м�Բ����
-	private Paint mLinePaint;// �ָ��߻���
-	private Paint mRectPaint;// ���䷽�黭��
+	private Paint mPaint;// 渐变色环画笔
+	private Paint mCenterPaint;// 中间圆画笔
+	private Paint mLinePaint;// 分隔线画笔
+	private Paint mRectPaint;// 渐变方块画笔
 
-	private Shader rectShader;// ���䷽�齥��ͼ��
-	private float rectLeft;// ���䷽����x���
-	private float rectTop;// ���䷽����x���
-	private float rectRight;// ���䷽����y���
-	private float rectBottom;// ���䷽����y���
+	private Shader rectShader;// 渐变方块渐变图像
+	private float rectLeft;// 渐变方块左x坐标
+	private float rectTop;// 渐变方块右x坐标
+	private float rectRight;// 渐变方块上y坐标
+	private float rectBottom;// 渐变方块下y坐标
 
 	private final int[] mCircleColors = new int[] { 0xFFFF0000, 0xFFFF00FF,
-			0xFF0000FF, 0xFF00FFFF, 0xFF00FF00, 0xFFFFFF00, 0xFFFF0000 };;// ����ɫ����ɫ
-	private int[] mRectColors = null;// ���䷽����ɫ
+			0xFF0000FF, 0xFF00FFFF, 0xFF00FF00, 0xFFFFFF00, 0xFFFF0000 };;// 渐变色环颜色
+	private int[] mRectColors = null;// 渐变方块颜色
 
-	private int mHeight;// View��
-	private int mWidth;// View��
-	private float radius;// ɫ���뾶(paint�в�)
-	private float centerRadius;// ����Բ�뾶
+	private int mHeight;// View高
+	private int mWidth;// View宽
+	private float radius;// 色环半径(paint中部)
+	private float centerRadius;// 中心圆半径
 
-	private boolean downInCircle = true;// ���ڽ��价��
-	private boolean downInRect;// ���ڽ��䷽����
-	private boolean highlightCenter;// ����
-	private boolean highlightCenterLittle;// ΢��
+	private boolean downInCircle = true;// 按在渐变环上
+	private boolean downInRect;// 按在渐变方块上
+	private boolean highlightCenter;// 高亮
+	private boolean highlightCenterLittle;// 微亮
 
 	private OnColorChangedListener mListener;
 
@@ -67,24 +67,24 @@ public class ColorPickerView extends View {
 
 	private void init(Context context) {
 
-		// �ڰ׽������
+		// 黑白渐变参数
 		mRectColors = new int[] { 0xFFFFFFFF, mInitialColor, 0xFF000000 };
 
-		// ����ɫ������
+		// 渐变色环参数
 		Shader s = new SweepGradient(0, 0, mCircleColors, null);
 
-		// �⻷��ɫȦ
+		// 外环颜色圈
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPaint.setShader(s);
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setStrokeWidth(mCircleWidth);
 
-		// ����Բ
+		// 中心圆
 		mCenterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mCenterPaint.setColor(mInitialColor);
 		mCenterPaint.setStrokeWidth(lineWidth);
 
-		// ���α߿����
+		// 矩形边框参数
 		mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		// mLinePaint.setColor(Color.parseColor("#72A1D1"));
 		mLinePaint.setColor(Color.parseColor("#FFEEEEEE"));
@@ -97,11 +97,11 @@ public class ColorPickerView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		// �ƶ�����
+		// 移动中心
 		canvas.translate(mWidth / 2 - offsetX, mHeight / 2);
-		// ������Բ
+		// 画中心圆
 		canvas.drawCircle(0, 0, centerRadius, mCenterPaint);
-		// �Ƿ���ʾ����Բ���СԲ��
+		// 是否显示中心圆外的小圆环
 		if (highlightCenter || highlightCenterLittle) {
 			int c = mCenterPaint.getColor();
 			mCenterPaint.setStyle(Paint.Style.STROKE);
@@ -116,9 +116,9 @@ public class ColorPickerView extends View {
 			mCenterPaint.setStyle(Paint.Style.FILL);
 			mCenterPaint.setColor(c);
 		}
-		// ��ɫ��
+		// 画色环
 		canvas.drawOval(new RectF(-radius, -radius, radius, radius), mPaint);
-		// ���ڰ׽����
+		// 画黑白渐变块
 		if (downInCircle) {
 			mRectColors[1] = mCenterPaint.getColor();
 		}
@@ -126,17 +126,17 @@ public class ColorPickerView extends View {
 				null, Shader.TileMode.MIRROR);
 		mRectPaint.setShader(rectShader);
 
-		// ������
+		// 画矩形
 		canvas.drawRect(rectLeft, rectTop, rectRight, rectBottom, mRectPaint);
 		float offset = mLinePaint.getStrokeWidth() / 2;
 		canvas.drawLine(rectLeft - offset, rectTop - offset * 2, rectLeft
-				- offset, rectBottom + offset * 2, mLinePaint);// ��
+				- offset, rectBottom + offset * 2, mLinePaint);// 左
 		canvas.drawLine(rectLeft - offset * 2, rectTop - offset, rectRight
-				+ offset * 2, rectTop - offset, mLinePaint);// ��
+				+ offset * 2, rectTop - offset, mLinePaint);// 上
 		canvas.drawLine(rectRight + offset, rectTop - offset * 2, rectRight
-				+ offset, rectBottom + offset * 2, mLinePaint);// ��
+				+ offset, rectBottom + offset * 2, mLinePaint);// 右
 		canvas.drawLine(rectLeft - offset * 2, rectBottom + offset, rectRight
-				+ offset * 2, rectBottom + offset, mLinePaint);// ��
+				+ offset * 2, rectBottom + offset, mLinePaint);// 下
 
 		super.onDraw(canvas);
 	}
@@ -157,22 +157,22 @@ public class ColorPickerView extends View {
 			downInRect = inRect;
 			highlightCenter = inCenter;
 		case MotionEvent.ACTION_MOVE:
-			if (downInCircle && inCircle) {// down���ڽ���ɫ����, ��moveҲ�ڽ���ɫ����
+			if (downInCircle && inCircle) {// down按在渐变色环内, 且move也在渐变色环内
 				float angle = (float) Math.atan2(y, x);
 				float unit = (float) (angle / (2 * Math.PI));
 				if (unit < 0) {
 					unit += 1;
 				}
 				mCenterPaint.setColor(interpCircleColor(mCircleColors, unit));
-			} else if (downInRect && inRect) {// down�ڽ��䷽����, ��moveҲ�ڽ��䷽����
+			} else if (downInRect && inRect) {// down在渐变方块内, 且move也在渐变方块内
 				mCenterPaint.setColor(interpRectColor(mRectColors, y));
 			}
 			if ((highlightCenter && inCenter)
-					|| (highlightCenterLittle && inCenter)) {// �������Բ, ��ǰ�ƶ�������Բ
+					|| (highlightCenterLittle && inCenter)) {// 点击中心圆, 当前移动在中心圆
 				highlightCenter = true;
 				highlightCenterLittle = false;
-			} else if (highlightCenter || highlightCenterLittle) {// ���������Բ,
-																	// ��ǰ�Ƴ�����Բ
+			} else if (highlightCenter || highlightCenterLittle) {// 点击在中心圆,
+																	// 当前移出中心圆
 				highlightCenter = false;
 				highlightCenterLittle = true;
 			} else {
@@ -182,7 +182,7 @@ public class ColorPickerView extends View {
 			invalidate();
 			break;
 		case MotionEvent.ACTION_UP:
-			// ���������Բ, �ҵ�ǰ����������Բ
+			// 点击在中心圆, 且当前启动在中心圆
 			// if (highlightCenter && inCenter) {
 			// if (mListener != null) {
 			// mListener.colorChanged(mCenterPaint.getColor());
@@ -233,16 +233,16 @@ public class ColorPickerView extends View {
 	}
 
 	/**
-	 * ����Ƿ���ɫ����
+	 * 坐标是否在色环上
 	 * 
 	 * @param x
-	 *            ���
+	 *            坐标
 	 * @param y
-	 *            ���
+	 *            坐标
 	 * @param outRadius
-	 *            ɫ����뾶
+	 *            色环外半径
 	 * @param inRadius
-	 *            ɫ���ڰ뾶
+	 *            色环内半径
 	 * @return
 	 */
 	private boolean inColorCircle(float x, float y, float outRadius,
@@ -258,14 +258,14 @@ public class ColorPickerView extends View {
 	}
 
 	/**
-	 * ����Ƿ�������Բ��
+	 * 坐标是否在中心圆上
 	 * 
 	 * @param x
-	 *            ���
+	 *            坐标
 	 * @param y
-	 *            ���
+	 *            坐标
 	 * @param centerRadius
-	 *            Բ�뾶
+	 *            圆半径
 	 * @return
 	 */
 	private boolean inCenter(float x, float y, float centerRadius) {
@@ -279,7 +279,7 @@ public class ColorPickerView extends View {
 	}
 
 	/**
-	 * ����Ƿ��ڽ���ɫ��
+	 * 坐标是否在渐变色中
 	 * 
 	 * @param x
 	 * @param y
@@ -292,9 +292,9 @@ public class ColorPickerView extends View {
 			return false;
 		}
 	}
-
+	
 	/**
-	 * ��ȡԲ������ɫ
+	 * 获取圆环上颜色
 	 * 
 	 * @param colors
 	 * @param unit
@@ -324,7 +324,7 @@ public class ColorPickerView extends View {
 	}
 
 	/**
-	 * ��ȡ���������ɫ
+	 * 获取渐变块上颜色
 	 * 
 	 * @param colors
 	 * @param x
@@ -353,16 +353,25 @@ public class ColorPickerView extends View {
 		return s + Math.round(p * (d - s));
 	}
 
+	public void setInitialColor(int color){
+		mInitialColor=color;
+		// 黑白渐变参数
+		mRectColors = new int[] { 0xFFFFFFFF, mInitialColor, 0xFF000000 };
+		mCenterPaint.setColor(mInitialColor);
+		this.postInvalidate();
+	}
+	
+	
 	public void setOnColorChangeListener(OnColorChangedListener mListener) {
 		this.mListener = mListener;
 	}
 
 	public interface OnColorChangedListener {
 		/**
-		 * �ص�����
+		 * 回调函数
 		 * 
 		 * @param color
-		 *            ѡ�е���ɫ
+		 *            选中的颜色
 		 */
 		void colorChanged(int color);
 	}

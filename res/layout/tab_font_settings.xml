@@ -22,7 +22,7 @@
             android:src="@drawable/icon_adjust_font" />
 
         <SeekBar
-            android:id="@+id/brightness"
+            android:id="@+id/font_size_sb"
             style="@style/Widget.SeekBar.Normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,6 @@
         android:paddingRight="10.0dip" >
 
         <ImageView
-            android:id="@+id/adjust_brightness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/book_list_selector"
@@ -52,7 +51,7 @@
             android:src="@drawable/icon_line_spacing" />
 
         <SeekBar
-            android:id="@+id/brightness"
+            android:id="@+id/line_space_sb"
             style="@style/Widget.SeekBar.Normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +106,7 @@
         </LinearLayout>
 
         <ToggleButton
-            android:id="@+id/keep_screen_on"
+            android:id="@+id/font_bold_tb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -164,7 +163,7 @@
         </LinearLayout>
 
         <ToggleButton
-            android:id="@+id/show_sys_caption_bar"
+            android:id="@+id/font_italic_tb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
