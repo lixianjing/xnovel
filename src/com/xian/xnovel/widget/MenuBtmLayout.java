@@ -109,7 +109,6 @@ public class MenuBtmLayout extends LinearLayout implements
 	protected void onFinishInflate() {
 		// TODO Auto-generated method stub
 		super.onFinishInflate();
-		Log.e("lmf", "onFinishInflate>>>>>>>>>>>>>>>");
 		View bottomView = mInflater.inflate(R.layout.menu_btm, null);
 		this.addView(bottomView);
 
@@ -345,8 +344,6 @@ public class MenuBtmLayout extends LinearLayout implements
 	public void setBookActivity(BookActivity bookActivity) {
 
 		this.mBookActivity = bookActivity;
-		Log.e("lmf",
-				"setBookActivity>>>>>>>>>>>>>>>" + mBookActivity.getPageMode());
 		if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
 			settingsImgRes[2] = R.drawable.icon_mode_drag;
 			settingsStrsRes[2] = R.string.menu_mode_drag;

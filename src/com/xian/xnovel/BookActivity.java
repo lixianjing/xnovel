@@ -39,7 +39,7 @@ public class BookActivity extends Activity implements AppSettings {
 
 	private Context mContext;
 	private SharedPreferences pref;
-	private int mWidth, mHeight;
+	private int mWidth, mHeight, fullWidth, fullHeight;
 
 	private BookPageFactory pagefactory;
 	private String bookTitle, bookContent;
@@ -103,14 +103,12 @@ public class BookActivity extends Activity implements AppSettings {
 			case MSG_THEME_MODE:
 				switch (msg.arg1) {
 				case PREF_THEME_MODE_BG:
-					pagefactory.setBgBitmap(BitmapFactory.decodeResource(
-							getResources(), themeBgRes[msg.arg2]));
+					pagefactory.setBgBitmap(msg.arg2);
 					pagefactory.onDraw(mCurPageCanvas);
 					pagefactory.onDraw(mNextPageCanvas);
 					mPageView.postInvalidate();
 					break;
 				case PREF_THEME_MODE_COLOR:
-					Log.e("lmf", "BookActivity>>>>>>>>PREF_BG_MODE_COLOR>>>>>>");
 					pagefactory.setBgColor(msg.arg2);
 					pagefactory.onDraw(mCurPageCanvas);
 					pagefactory.onDraw(mNextPageCanvas);
@@ -127,26 +125,15 @@ public class BookActivity extends Activity implements AppSettings {
 								R.string.settings_theme_bg_picture_error,
 								Toast.LENGTH_SHORT).show();
 					}
-
-					break;
-
-				default:
 					break;
 				}
 				break;
 
-			default:
-				break;
 			}
 			super.handleMessage(msg);
 		}
 
 	};
-
-	private Integer[] themeBgRes = { R.drawable.theme_1, R.drawable.theme_2,
-			R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5,
-			R.drawable.theme_6, R.drawable.theme_7, R.drawable.theme_8,
-			R.drawable.theme_9 };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -184,20 +171,10 @@ public class BookActivity extends Activity implements AppSettings {
 				.getSystemService(Context.POWER_SERVICE);
 		wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK,
 				"My Lock");
-
-		mWidth = pref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 0);
-		mHeight = pref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 0);
-
-		if (mWidth == 0 || mHeight == 0) {
-			DisplayMetrics dm = new DisplayMetrics();
-			this.getWindowManager().getDefaultDisplay().getMetrics(dm);
-			mWidth = dm.widthPixels;
-			mHeight = dm.heightPixels;
-			Editor editor = pref.edit();
-			editor.putInt(AppSettings.SETTINGS_WIDTH_FULL, dm.widthPixels);
-			editor.putInt(AppSettings.SETTINGS_HEIGHT_FULL, dm.heightPixels);
-			editor.commit();
-		}
+		fullWidth = pref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 0);
+		fullHeight = pref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 0);
+		mWidth = fullWidth;
+		mHeight = fullHeight;
 
 		loadBook();
 
@@ -207,38 +184,8 @@ public class BookActivity extends Activity implements AppSettings {
 		getIntentData(getIntent());
 		if (bookID != 0) {
 
-			pagefactory = new BookPageFactory();
-			pagefactory.init(mWidth, mHeight);
-
-			int mode = pref.getInt(PREF_THEME_MODE, PREF_THEME_MODE_BG);
-			switch (mode) {
-			case PREF_THEME_MODE_BG:
-				int index = pref.getInt(PREF_THEME_BG_INDEX,
-						PREF_THEME_BG_DEFAULT);
-				pagefactory.setBgBitmap(BitmapFactory.decodeResource(
-						getResources(), themeBgRes[index]));
-				break;
-			case PREF_THEME_MODE_COLOR:
-				int color = pref.getInt(PREF_THEME_COLOR_VALUE,
-						PREF_THEME_COLOR_DEFAULT);
-				pagefactory.setBgColor(color);
-				break;
-			case PREF_THEME_MODE_PICTURE:
-				try {
-					pagefactory.setBgBitmap(BitmapFactory.decodeStream(mContext
-							.openFileInput(PREF_THEME_PICTURE_NAME)));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Toast.makeText(mContext,
-							R.string.settings_theme_bg_picture_error,
-							Toast.LENGTH_SHORT).show();
-				}
-				break;
-
-			default:
-				break;
-			}
+			pagefactory = BookPageFactory.getInstance(this);
+			pagefactory.setBookSize(mWidth, mHeight);
 
 			mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight,
 					Bitmap.Config.ARGB_8888);
@@ -249,7 +196,7 @@ public class BookActivity extends Activity implements AppSettings {
 			mNextPageCanvas = new Canvas(mNextPageBitmap);
 
 			mPageView.setPagefactory(pagefactory);
-			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+			pagefactory.openBook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setTitleName(bookContent);
 			menuTopLayout.setCenterText(bookTitle + " " + bookContent);
@@ -276,6 +223,7 @@ public class BookActivity extends Activity implements AppSettings {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		pagefactory.closeBook();
 		super.onDestroy();
 	}
 
@@ -357,7 +305,7 @@ public class BookActivity extends Activity implements AppSettings {
 		bookID = savedInstanceState.getInt(AppSettings.ID, 0);
 		position = savedInstanceState.getInt(AppSettings.POSITION, 0);
 		if (bookID != 0) {
-			pagefactory.openbook(AppSettings.BOOK_FILE_PATH,
+			pagefactory.openBook(AppSettings.BOOK_FILE_PATH,
 					AppSettings.BOOK_FILE_PREFIX + bookID);
 			pagefactory.setCurPosition(position);
 			mPageView.invalidate();
@@ -447,11 +395,12 @@ public class BookActivity extends Activity implements AppSettings {
 						pictureBitmap.recycle();
 						pictureBitmap = null;
 					}
-							
+
 					Bitmap temp = BitmapFactory
 							.decodeStream(getContentResolver().openInputStream(
 									uri));
-					pictureBitmap=Bitmap.createScaledBitmap(temp, mWidth, mHeight, false);
+					pictureBitmap = Bitmap.createScaledBitmap(temp, fullWidth,
+							fullHeight, false);
 					if (pictureBitmap != null) {
 						pictureChangedListener.pictureChanged(pictureBitmap);
 					}

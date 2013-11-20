@@ -66,11 +66,6 @@ public class LauncherActivity extends Activity {
 						mainRl.getMeasuredHeight());
 				editor.commit();
 
-				Log.e("lmf",
-						density + ":" + densityDPI + ":" + dm.widthPixels + ":"
-								+ dm.heightPixels + ":"
-								+ mainRl.getMeasuredWidth() + ":"
-								+ mainRl.getMeasuredHeight() + ":");
 				break;
 
 			default:

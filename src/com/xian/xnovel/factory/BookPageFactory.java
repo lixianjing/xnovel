@@ -12,23 +12,34 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
+import android.preference.Preference;
 import android.util.Log;
 import android.widget.Toast;
 
-public class BookPageFactory {
+public class BookPageFactory implements AppSettings {
 
-	private File book_file = null;
-	private MappedByteBuffer m_mbBuf = null;
+	private String m_strCharsetName = "UTF-8";
+
+	private Context mContext;
+	private SharedPreferences pref;
+
+	private File bookFile = null;
+	private MappedByteBuffer mapFileBuffer = null;
 	private int mBufferLen = 0;
 	private int mReadStart = 0;
 	private int mReadEnd = 0;
-	private String m_strCharsetName = "UTF-8";
 
 	private int mWidth;
 	private int mHeight;
@@ -56,8 +67,30 @@ public class BookPageFactory {
 	private Paint btmPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
 
-	public BookPageFactory() {
+	private Integer[] themeBgRes = { R.drawable.theme_1, R.drawable.theme_2,
+			R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5,
+			R.drawable.theme_6, R.drawable.theme_7, R.drawable.theme_8,
+			R.drawable.theme_9 };
+
+	private static BookPageFactory mInstance = null;
+
+	public static BookPageFactory getInstance(Context context) {
+		if (mInstance != null) {
+			return mInstance;
+		} else {
+			mInstance = new BookPageFactory(context);
+			return mInstance;
+		}
+	}
+
+	private BookPageFactory(Context context) {
 		// TODO Auto-generated constructor stub
+		mContext = context;
+		pref = mContext.getSharedPreferences(AppSettings.Settings,
+				Context.MODE_PRIVATE);
+
+		initPref();
+
 		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		mPaint.setTextAlign(Align.LEFT);
 		// mPaint.setTextSize(30);
@@ -79,24 +112,68 @@ public class BookPageFactory {
 
 	}
 
-	public void init(int width, int height) {
-		mWidth = width;
-		mHeight = height;
+	private void initPref() {
+		int mode = pref.getInt(PREF_THEME_MODE, PREF_THEME_MODE_BG);
+		switch (mode) {
+		case PREF_THEME_MODE_BG:
+			int index = pref.getInt(PREF_THEME_BG_INDEX, PREF_THEME_BG_DEFAULT);
+			setBgBitmap(BitmapFactory.decodeResource(mContext.getResources(),
+					themeBgRes[index]));
+			break;
+		case PREF_THEME_MODE_COLOR:
+			int color = pref.getInt(PREF_THEME_COLOR_VALUE,
+					PREF_THEME_COLOR_DEFAULT);
+			bgColor = color;
+			setBgColor(color);
+			break;
+		case PREF_THEME_MODE_PICTURE:
+			try {
+				setBgBitmap(BitmapFactory.decodeStream(mContext
+						.openFileInput(PREF_THEME_PICTURE_NAME)));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Toast.makeText(mContext,
+						R.string.settings_theme_bg_picture_error,
+						Toast.LENGTH_SHORT).show();
+			}
+			break;
+
+		}
+	}
+
+	public void closeBook() {
+		bookFile = null;
+		mapFileBuffer = null;
+		mBufferLen = 0;
+		mReadStart = 0;
+		mReadEnd = 0;
+		mShowLine.clear();
+	}
+
+	public void setBookSize(int width, int height) {
+
+		if (mWidth != width || mHeight != height) {
+			mWidth = width;
+			mHeight = height;
+			initPref();
+		}
+
 		// mPaint.setTextSkewX(0.1f);//设置斜体
 		mVisibleWidth = mWidth - marginWidth * 2;
 		mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
 		int totalSize = m_fontSize + spaceSize;
 		mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
+
 	}
 
-	public void openbook(String path, String fileName) {
-		Log.e("lmf", "openbook>>>>>>>>>>" + path + ":" + fileName);
+	public void openBook(String path, String fileName) {
 		try {
-			book_file = new File(path, fileName);
-			long lLen = book_file.length();
+			bookFile = new File(path, fileName);
+			long lLen = bookFile.length();
 			mBufferLen = (int) lLen;
-			m_mbBuf = new RandomAccessFile(book_file, "r").getChannel().map(
-					FileChannel.MapMode.READ_ONLY, 0, lLen);
+			mapFileBuffer = new RandomAccessFile(bookFile, "r").getChannel()
+					.map(FileChannel.MapMode.READ_ONLY, 0, lLen);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,8 +190,8 @@ public class BookPageFactory {
 		if (m_strCharsetName.equals("UTF-16LE")) {
 			i = nEnd - 2;
 			while (i > 0) {
-				b0 = m_mbBuf.get(i);
-				b1 = m_mbBuf.get(i + 1);
+				b0 = mapFileBuffer.get(i);
+				b1 = mapFileBuffer.get(i + 1);
 				if (b0 == 0x0a && b1 == 0x00 && i != nEnd - 2) {
 					i += 2;
 					break;
@@ -125,8 +202,8 @@ public class BookPageFactory {
 		} else if (m_strCharsetName.equals("UTF-16BE")) {
 			i = nEnd - 2;
 			while (i > 0) {
-				b0 = m_mbBuf.get(i);
-				b1 = m_mbBuf.get(i + 1);
+				b0 = mapFileBuffer.get(i);
+				b1 = mapFileBuffer.get(i + 1);
 				if (b0 == 0x00 && b1 == 0x0a && i != nEnd - 2) {
 					i += 2;
 					break;
@@ -136,7 +213,7 @@ public class BookPageFactory {
 		} else {
 			i = nEnd - 1;
 			while (i > 0) {
-				b0 = m_mbBuf.get(i);
+				b0 = mapFileBuffer.get(i);
 				if (b0 == 0x0a && i != nEnd - 1) {
 					i++;
 					break;
@@ -150,7 +227,7 @@ public class BookPageFactory {
 		int j;
 		byte[] buf = new byte[nParaSize];
 		for (j = 0; j < nParaSize; j++) {
-			buf[j] = m_mbBuf.get(i + j);
+			buf[j] = mapFileBuffer.get(i + j);
 		}
 		return buf;
 	}
@@ -163,23 +240,23 @@ public class BookPageFactory {
 		// 根据编码格式判断换行
 		if (m_strCharsetName.equals("UTF-16LE")) {
 			while (i < mBufferLen - 1) {
-				b0 = m_mbBuf.get(i++);
-				b1 = m_mbBuf.get(i++);
+				b0 = mapFileBuffer.get(i++);
+				b1 = mapFileBuffer.get(i++);
 				if (b0 == 0x0a && b1 == 0x00) {
 					break;
 				}
 			}
 		} else if (m_strCharsetName.equals("UTF-16BE")) {
 			while (i < mBufferLen - 1) {
-				b0 = m_mbBuf.get(i++);
-				b1 = m_mbBuf.get(i++);
+				b0 = mapFileBuffer.get(i++);
+				b1 = mapFileBuffer.get(i++);
 				if (b0 == 0x00 && b1 == 0x0a) {
 					break;
 				}
 			}
 		} else {
 			while (i < mBufferLen) {
-				b0 = m_mbBuf.get(i++);
+				b0 = mapFileBuffer.get(i++);
 				if (b0 == 0x0a) {
 					break;
 				}
@@ -188,13 +265,12 @@ public class BookPageFactory {
 		int nParaSize = i - nStart;
 		byte[] buf = new byte[nParaSize];
 		for (i = 0; i < nParaSize; i++) {
-			buf[i] = m_mbBuf.get(nFromPos + i);
+			buf[i] = mapFileBuffer.get(nFromPos + i);
 		}
 		return buf;
 	}
 
 	protected Vector<String> pageDown() {
-		Log.e("lmf", "BookPageFactory>>>>>>>>>>>pageDown");
 		String strParagraph = "";
 		Vector<String> lines = new Vector<String>();
 		while (lines.size() < mLineCount && mReadEnd < mBufferLen) {
@@ -348,15 +424,25 @@ public class BookPageFactory {
 	}
 
 	public void setBgBitmap(Bitmap bg) {
-		if (bg.getWidth() != mWidth || bg.getHeight() != mHeight)
+		if (mWidth != 0
+				&& (bg.getWidth() != mWidth || bg.getHeight() != mHeight)) {
 			bgBitmap = Bitmap.createScaledBitmap(bg, mWidth, mHeight, true);
-		else
+		} else {
 			bgBitmap = bg;
+		}
+	}
+
+	public void setBgBitmap(int index) {
+		setBgBitmap(BitmapFactory.decodeResource(mContext.getResources(),
+				themeBgRes[index]));
 	}
 
 	public void setBgColor(int color) {
 		bgColor = color;
-		bgBitmap = null;
+		if (bgBitmap != null) {
+			bgBitmap.recycle();
+			bgBitmap = null;
+		}
 	}
 
 	public void setTextColor(int color) {

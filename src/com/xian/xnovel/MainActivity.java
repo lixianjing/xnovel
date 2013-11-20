@@ -303,10 +303,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private void catalogLoadData() {
-		Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>>>");
 		new AsyncTask<Void, Void, List<CatalogInfo>>() {
 			protected void onPreExecute() {
-				Log.e("lmf", "MainAcrtivity>>>>catalogLoadData>>onPreExecute>>");
 				if (catalogInfos == null) {
 					catalogInfos = dbControl.queryCatalog(0, 10);
 				}
@@ -323,9 +321,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			protected void onPostExecute(java.util.List<CatalogInfo> result) {
-				Log.e("lmf",
-						"MainAcrtivity>>>>catalogLoadData>>onPostExecute>>"
-								+ result.size());
 				catalogInfos = result;
 				catalogAdapter.setDataList(catalogInfos);
 				catalogAdapter.notifyDataSetChanged();

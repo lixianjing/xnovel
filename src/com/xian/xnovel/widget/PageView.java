@@ -640,8 +640,6 @@ public class PageView extends View implements AppSettings {
 			}
 			mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy,
 					delayMillis);
-			Log.e("lmf", "startAnimation>>>>drag>>>>" + mTouch.x + ":"
-					+ mTouch.y + ":" + dx + ":" + dy);
 		} else {
 		}
 
