@@ -1,8 +1,5 @@
 package com.xian.xnovel.widget;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
@@ -10,8 +7,6 @@ import com.xian.xnovel.utils.AppSettings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +15,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarChangeListener,

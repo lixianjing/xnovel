@@ -172,4 +172,33 @@ public class AppDBControl {
 				new String[] { id.toString() });
 	}
 
+	public CatalogInfo getCatalog(int bookId) {
+		CatalogInfo tempCatalog = null;
+		Cursor cursor = null;
+		try {
+			cursor = mDB.query(Tables.BOOKCATALOG, null, BookCatalogColumns._ID + " = ? ", new String[]{String.valueOf(bookId)}, null,
+					null, null, null);
+
+			if (cursor != null) {
+				if (cursor.moveToNext()) {
+					tempCatalog = new CatalogInfo(
+							cursor.getInt(cursor
+									.getColumnIndex(BookCatalogColumns.ID)),
+							cursor.getInt(cursor
+									.getColumnIndex(BookCatalogColumns.PID)),
+							cursor.getString(cursor
+									.getColumnIndex(BookCatalogColumns.TITLE)),
+							cursor.getString(cursor
+									.getColumnIndex(BookCatalogColumns.CONTENT)));
+				}
+			}
+
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return tempCatalog;
+	}
+
 }

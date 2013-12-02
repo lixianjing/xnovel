@@ -42,7 +42,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 public class MainActivity extends Activity implements OnClickListener {
 	
-	
 
 
 	public static final int MSG_TYPE_MAIN_INIT = 0;

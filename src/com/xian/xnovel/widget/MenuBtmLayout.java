@@ -1,11 +1,13 @@
 package com.xian.xnovel.widget;
 
 import com.xian.xnovel.BookActivity;
+import com.xian.xnovel.MainActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
 import com.xian.xnovel.utils.AppSettings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,7 +25,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class MenuBtmLayout extends LinearLayout implements
-		View.OnClickListener ,AppSettings{
+		View.OnClickListener, AppSettings {
 
 	private static final int INDEX_TOOLS_PAGE = 0;
 	private static final int INDEX_SETTINGS_PAGE = 1;
@@ -185,17 +187,35 @@ public class MenuBtmLayout extends LinearLayout implements
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			// TODO Auto-generated method stub
+			Intent intent = null;
 			switch (arg2) {
 			case 0:
-				Toast.makeText(mContext, R.string.settings_nothing,
-						Toast.LENGTH_SHORT).show();
+				intent = new Intent(mContext, MainActivity.class);
+				mContext.startActivity(intent);
+				mBookActivity.finish();
 				break;
 			case 1:
-				Toast.makeText(mContext, R.string.settings_nothing,
+				if (mBookActivity.getBookId() == BOOK_FILE_BEGIN) {
+					mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+					Toast.makeText(mContext, R.string.settings_first_chapter,
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+				mBookActivity.preChapter();
+				Toast.makeText(mContext, R.string.settings_londing,
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2:
-				Toast.makeText(mContext, R.string.settings_nothing,
+				if (mBookActivity.getBookId() == BOOK_FILE_END) {
+					mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+					Toast.makeText(mContext, R.string.settings_last_chapter,
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+				mBookActivity.preChapter();
+				Toast.makeText(mContext, R.string.settings_londing,
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 3:
@@ -203,8 +223,15 @@ public class MenuBtmLayout extends LinearLayout implements
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 4:
-				Toast.makeText(mContext, R.string.settings_nothing,
-						Toast.LENGTH_SHORT).show();
+				boolean bool = mBookActivity.addBookMark();
+				if (bool) {
+					Toast.makeText(mContext, R.string.menu_addmark_sucess,
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(mContext, R.string.menu_addmark_fail,
+							Toast.LENGTH_SHORT).show();
+				}
+				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
 				break;
 			case 5:
 				Toast.makeText(mContext, R.string.settings_nothing,

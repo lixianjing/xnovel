@@ -3,6 +3,7 @@ package com.xian.xnovel;
 import java.io.IOException;
 
 import com.xian.xnovel.db.AppDBControl;
+import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
@@ -43,7 +44,7 @@ public class BookActivity extends Activity implements AppSettings {
 
 	private BookPageFactory pagefactory;
 	private String bookTitle, bookContent;
-	private int bookID;
+	private int bookId;
 	private int position;
 	private PowerManager powerManager = null;
 	private WakeLock wakeLock = null;
@@ -60,6 +61,8 @@ public class BookActivity extends Activity implements AppSettings {
 	private MenuBtmLayout menuBtmLayout;
 	private MenuTopLayout menuTopLayout;
 	private OnThemePictureChangedListener pictureChangedListener;
+
+	private AppDBControl dbControl;
 
 	private Handler mHandler = new Handler() {
 
@@ -143,6 +146,8 @@ public class BookActivity extends Activity implements AppSettings {
 
 		setContentView(R.layout.activity_book);
 		mContext = this;
+		dbControl = AppDBControl.getInstance(mContext);
+
 		mPageView = (PageView) findViewById(R.id.book_pv);
 		menuRl = (RelativeLayout) findViewById(R.id.book_menu);
 		menuIv = (ImageView) findViewById(R.id.book_menu_iv);
@@ -181,8 +186,7 @@ public class BookActivity extends Activity implements AppSettings {
 
 	private void loadBook() {
 		getIntentData(getIntent());
-		if (bookID != 0) {
-
+		if (bookId != BOOK_FILE_NULL) {
 			pagefactory = BookPageFactory.getInstance(this);
 			pagefactory.setBookSize(mWidth, mHeight);
 
@@ -196,7 +200,7 @@ public class BookActivity extends Activity implements AppSettings {
 
 			mPageView.setPagefactory(pagefactory);
 			pagefactory.openBook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID);
+					AppSettings.BOOK_FILE_PREFIX + bookId);
 			pagefactory.setTitleName(bookContent);
 			menuTopLayout.setCenterText(bookTitle + " " + bookContent);
 			pagefactory.setCurPosition(position);
@@ -212,10 +216,69 @@ public class BookActivity extends Activity implements AppSettings {
 		}
 	}
 
+	public void preChapter() {
+		if (bookId == BOOK_FILE_BEGIN) {
+			return;
+		}
+		CatalogInfo catalog = dbControl.getCatalog(bookId - 1);
+		if (catalog != null) {
+			bookId = catalog.getId();
+			bookTitle = catalog.getTitle();
+			bookContent = catalog.getContent();
+			position = 0;
+			Log.e("lmf", "preChapter>>>>>>>bookId>>>>>>" + bookId + ":"
+					+ bookTitle + ":" + bookContent + ":");
+			reLoadBook();
+		}
+
+	}
+
+	public void nextChapter() {
+		if (bookId == BOOK_FILE_END) {
+			return;
+		}
+		CatalogInfo catalog = dbControl.getCatalog(bookId + 1);
+		if (catalog != null) {
+			bookId = catalog.getId();
+			bookTitle = catalog.getTitle();
+			bookContent = catalog.getContent();
+			position = 0;
+			Log.e("lmf", "preChapter>>>>>>>bookId>>>>>>" + bookId + ":"
+					+ bookTitle + ":" + bookContent + ":");
+			reLoadBook();
+		}
+
+	}
+
+	public boolean addBookMark() {
+		try {
+			MarkInfo info = new MarkInfo(bookId, bookTitle, bookContent,
+					pagefactory.getCurPosition(), pagefactory.getCurPercent(),
+					System.currentTimeMillis(), MarkInfo.TYPE_MARK);
+			dbControl.insertMark(info);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	private void reLoadBook() {
+		pagefactory.closeBook();
+		pagefactory.openBook(AppSettings.BOOK_FILE_PATH,
+				AppSettings.BOOK_FILE_PREFIX + bookId);
+		pagefactory.setTitleName(bookContent);
+		menuTopLayout.setCenterText(bookTitle + " " + bookContent);
+		pagefactory.setCurPosition(position);
+		pagefactory.onDraw(mCurPageCanvas);
+		mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
+		mPageView.invalidate();
+	}
+
 	private void getIntentData(Intent intent) {
 		bookTitle = intent.getStringExtra(AppSettings.TITLE);
 		bookContent = intent.getStringExtra(AppSettings.CONTENT);
-		bookID = intent.getIntExtra(AppSettings.ID, 0);
+		bookId = intent.getIntExtra(AppSettings.ID, BOOK_FILE_NULL);
 		position = intent.getIntExtra(AppSettings.POSITION, 0);
 	}
 
@@ -290,7 +353,7 @@ public class BookActivity extends Activity implements AppSettings {
 	}
 
 	private void saveHistory() {
-		MarkInfo info = new MarkInfo(bookID, bookTitle, bookContent,
+		MarkInfo info = new MarkInfo(bookId, bookTitle, bookContent,
 				pagefactory.getCurPosition(), pagefactory.getCurPercent(),
 				System.currentTimeMillis(), MarkInfo.TYPE_HISTORY);
 		AppDBControl.getInstance(mContext).insertMark(info);
@@ -301,11 +364,11 @@ public class BookActivity extends Activity implements AppSettings {
 		// TODO Auto-generated method stub
 		bookTitle = savedInstanceState.getString(AppSettings.TITLE);
 		bookContent = savedInstanceState.getString(AppSettings.CONTENT);
-		bookID = savedInstanceState.getInt(AppSettings.ID, 0);
+		bookId = savedInstanceState.getInt(AppSettings.ID, BOOK_FILE_NULL);
 		position = savedInstanceState.getInt(AppSettings.POSITION, 0);
-		if (bookID != 0) {
+		if (bookId != BOOK_FILE_NULL) {
 			pagefactory.openBook(AppSettings.BOOK_FILE_PATH,
-					AppSettings.BOOK_FILE_PREFIX + bookID);
+					AppSettings.BOOK_FILE_PREFIX + bookId);
 			pagefactory.setCurPosition(position);
 			mPageView.invalidate();
 
@@ -323,7 +386,7 @@ public class BookActivity extends Activity implements AppSettings {
 
 		outState.putString(AppSettings.TITLE, bookTitle);
 		outState.putString(AppSettings.CONTENT, bookContent);
-		outState.putInt(AppSettings.ID, bookID);
+		outState.putInt(AppSettings.ID, bookId);
 		outState.putInt(AppSettings.POSITION, pagefactory.getCurPosition());
 
 		super.onSaveInstanceState(outState);
@@ -458,6 +521,14 @@ public class BookActivity extends Activity implements AppSettings {
 		Editor editor = pref.edit();
 		editor.putInt(AppSettings.PREF_PAGE_MODE, pageMode);
 		editor.commit();
+	}
+
+	public int getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
 	}
 
 }

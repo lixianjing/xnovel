@@ -48,6 +48,9 @@
     <string name="menu_pop_user">用户反馈</string>
     <string name="menu_pop_scroll">更新说明</string>
     <!--  -->
+    <string name="menu_addmark_sucess">添加书签成功</string>
+    <string name="menu_addmark_fail">添加书签失败</string>
+    <!--  -->
     <string name="settings_position">当前阅读位置</string>
     <string name="settings_screen">屏幕</string>
     <string name="settings_screen_light">允许屏幕关闭</string>
@@ -77,12 +80,15 @@
     <string name="settings_theme_bg_color">颜色</string>
     <string name="settings_theme_bg_picture">图片</string>
     <string name="settings_theme_bg_picture_error">对不起，设置壁纸失败。:(</string>
-     <string name="settings_theme_bg_picture_save_error">对不起，保存壁纸失败。:(</string>
-        <!--  -->
+    <string name="settings_theme_bg_picture_save_error">对不起，保存壁纸失败。:(</string>
+    <!--  -->
     <string name="settings_nothing">对不起，该功能还没有实现。:)</string>
     <string name="settings_first_page">第一页</string>
     <string name="settings_last_page">最后一页</string>
-       <string name="settings_not_found_book">找不到当前目录</string>
+    <string name="settings_first_chapter">第一章</string>
+    <string name="settings_last_chapter">最后一章</string>
+    <string name="settings_not_found_book">找不到当前目录</string>
+    <string name="settings_londing">正在加载中</string>
 
     <!--  -->
     <string name="sys_confirm">确定</string>

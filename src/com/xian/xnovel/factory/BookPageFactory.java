@@ -20,12 +20,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.graphics.Typeface;
-import android.preference.Preference;
-import android.util.Log;
 import android.widget.Toast;
 
 public class BookPageFactory implements AppSettings {
@@ -66,7 +62,7 @@ public class BookPageFactory implements AppSettings {
 	private String titleName = "";
 
 	private Paint mPaint;
-	private Paint btmPaint;// 底部文字绘制
+	private Paint mBtmPaint;// 底部文字绘制
 	private Paint spactPaint;// 行间距绘制
 
 	private boolean isBlod = false;
@@ -114,11 +110,11 @@ public class BookPageFactory implements AppSettings {
 		}
 
 		// 底部文字绘制
-		btmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		btmPaint.setTextAlign(Align.LEFT);
-		btmPaint.setTextSize(btmFontSize);
-		btmPaint.setColor(textColor);
-		percentWidth = (int) btmPaint.measureText("99.9%") + 1;
+		mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mBtmPaint.setTextAlign(Align.LEFT);
+		mBtmPaint.setTextSize(btmFontSize);
+		mBtmPaint.setColor(textColor);
+		percentWidth = (int) mBtmPaint.measureText("99.9%") + 1;
 
 		// 行间距设置
 		spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -433,14 +429,14 @@ public class BookPageFactory implements AppSettings {
 	private void drawBtmInfo(Canvas c) {
 
 		c.drawText(getCurPercent(), mWidth - percentWidth, mHeight - 5,
-				btmPaint);
+				mBtmPaint);
 
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
 		String str = dateFormatter.format(curDate);
-		c.drawText(str, 5, mHeight - 5, btmPaint);
+		c.drawText(str, 5, mHeight - 5, mBtmPaint);
 
 		c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2,
-				mHeight - 5, btmPaint);
+				mHeight - 5, mBtmPaint);
 	}
 
 	public void setBgBitmap(Bitmap bg) {
@@ -484,6 +480,7 @@ public class BookPageFactory implements AppSettings {
 	public void setFontColor(int color) {
 		textColor = color;
 		mPaint.setColor(textColor);
+		mBtmPaint.setColor(textColor);
 	}
 
 	public void setLineSpace(int size) {
@@ -498,7 +495,7 @@ public class BookPageFactory implements AppSettings {
 	}
 
 	public void setTitleName(String name) {
-		titleWidth = (int) btmPaint.measureText("《" + name + "》") + 1;
+		titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
 		this.titleName = name;
 	}
 
