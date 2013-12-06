@@ -6,7 +6,6 @@ import java.util.List;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.CatalogListAdapter;
 import com.xian.xnovel.adapter.MarkListAdapter;
-import com.xian.xnovel.adapter.ViewPagerAdapter;
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
@@ -37,10 +36,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener,AppSettings {
 	
 
 
@@ -65,7 +62,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ListView catalogLv;
 
 	// mark
-
+	private MarkListAdapter markAdapter;
+	private List<MarkInfo> markInfos;
+	private TextView markTv;
+	private ListView markLv;
+	private int markDataSize;
 	// history
 	private MarkListAdapter historyAdapter;
 	private List<MarkInfo> historyInfos;
@@ -82,6 +83,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.e("lmf","onCreate>>>>>>>>>.");
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
@@ -100,7 +102,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+		markLoadData();
 		historyLoadData();
+		int index=getIntent().getIntExtra(DATA_TAB_INDEX, TAB_CATALOG);
+		Log.e("lmf", ">>>>>>>>>>>>>>>>"+index);
 		super.onResume();
 	}
 
@@ -122,6 +127,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewGroup.setMainActivity(this);
 		InitViewPager();
 		initCatalogView();
+		initMarkView();
 		initHistoryView();
 		initMoreView();
 	}
@@ -140,6 +146,35 @@ public class MainActivity extends Activity implements OnClickListener {
 				CatalogInfo tempInfo = catalogInfos.get(arg2 - 1);
 				statrtBookActivity(tempInfo.getId(), tempInfo.getTitle(),
 						tempInfo.getContent(), 0);
+			}
+		});
+	}
+	
+
+	private void initMarkView() {
+		markTv = (TextView) markView.findViewById(R.id.mark_tv);
+		markLv = (ListView) markView.findViewById(R.id.mark_lv);
+		markLv.addHeaderView(new View(this), null, false);
+		markLv.addFooterView(new View(this), null, false);
+		markLv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				MarkInfo tempInfo = markInfos.get(arg2 - 1);
+				statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(),
+						tempInfo.getContent(), tempInfo.getPosition());
+
+			}
+		});
+		markLv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				return false;
 			}
 		});
 	}
@@ -171,6 +206,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		});
 	}
+	
+	
 
 	private void initMoreView() {
 
@@ -193,7 +230,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		LayoutInflater inflater = getLayoutInflater();
 		catalogView = inflater.inflate(R.layout.fragment_catalog, null);
 		markView = inflater.inflate(R.layout.fragment_mark, null);
-		historyView = inflater.inflate(R.layout.fragment_mark, null);
+		historyView = inflater.inflate(R.layout.fragment_histery, null);
 		moreView = inflater.inflate(R.layout.fragment_more, null);
 
 		tabsList = new ArrayList<TextView>(AppSettings.SCREEN_COUNT);
@@ -211,7 +248,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		viewGroup.addView(historyView);
 		viewGroup.addView(moreView);
 
-		viewGroup.setCurrentScreen(0);
+		viewGroup.setCurrentScreen(	0	);
 	}
 
 	public void updateCurrentTabs(int index) {
@@ -369,6 +406,53 @@ public class MainActivity extends Activity implements OnClickListener {
 					historyInfos = result;
 					historyAdapter.setDataList(historyInfos);
 					historyAdapter.notifyDataSetChanged();
+				}
+
+			};
+
+		}.execute();
+	}
+	
+	
+	private void markLoadData() {
+		new AsyncTask<Void, Void, List<MarkInfo>>() {
+			protected void onPreExecute() {
+				if (markInfos == null || markInfos.size() == 0) {
+					markInfos = dbControl.queryMark(MarkInfo.TYPE_MARK,
+							0, 10);
+					markDataSize = markInfos.size();
+					if (markDataSize != 0) {
+						if (markAdapter == null) {
+							markAdapter = new MarkListAdapter(mContext,
+									markInfos);
+						}
+						markLv.setAdapter(markAdapter);
+						markTv.setVisibility(View.GONE);
+						markLv.setVisibility(View.VISIBLE);
+					} else {
+						markTv.setVisibility(View.VISIBLE);
+						markLv.setVisibility(View.GONE);
+
+					}
+				}
+
+			};
+
+			@Override
+			protected List<MarkInfo> doInBackground(Void... params) {
+				if (markDataSize != 0) {
+					return dbControl.queryMark(MarkInfo.TYPE_MARK);
+				} else {
+					return null;
+				}
+
+			}
+
+			protected void onPostExecute(java.util.List<MarkInfo> result) {
+				if (markDataSize != 0) {
+					markInfos = result;
+					markAdapter.setDataList(markInfos);
+					markAdapter.notifyDataSetChanged();
 				}
 
 			};

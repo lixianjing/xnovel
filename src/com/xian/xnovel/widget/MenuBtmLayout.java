@@ -214,7 +214,7 @@ public class MenuBtmLayout extends LinearLayout implements
 					return;
 				}
 				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
-				mBookActivity.preChapter();
+				mBookActivity.nextChapter();
 				Toast.makeText(mContext, R.string.settings_londing,
 						Toast.LENGTH_SHORT).show();
 				break;
@@ -223,6 +223,13 @@ public class MenuBtmLayout extends LinearLayout implements
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 4:
+				Log.e("lmf",">>>>>>>>>>>>>>>>>>>>>");
+				intent = new Intent(mContext, MainActivity.class);
+				intent.putExtra(DATA_TAB_INDEX, TAB_MARK);
+				mContext.startActivity(intent);
+				mBookActivity.finish();
+				break;
+			case 5:
 				boolean bool = mBookActivity.addBookMark();
 				if (bool) {
 					Toast.makeText(mContext, R.string.menu_addmark_sucess,
@@ -232,10 +239,6 @@ public class MenuBtmLayout extends LinearLayout implements
 							Toast.LENGTH_SHORT).show();
 				}
 				mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
-				break;
-			case 5:
-				Toast.makeText(mContext, R.string.settings_nothing,
-						Toast.LENGTH_SHORT).show();
 				break;
 			case 6:
 				Toast.makeText(mContext, R.string.settings_nothing,

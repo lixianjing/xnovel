@@ -1,7 +1,5 @@
 package com.xian.xnovel.utils;
 
-import android.util.Log;
-
 public interface AppSettings {
 
 	public static final String ID = "id";
@@ -17,16 +15,23 @@ public interface AppSettings {
 	public static final String BOOK_FILE_PATH = "/data/data/com.xian.xnovel/files/";
 	public static final String BOOK_FILE_PREFIX = ".";
 
-	public static final int BOOK_FILE_COUNT = 120;
-	
-	public static final int BOOK_FILE_BEGIN = 1;
-	public static final int BOOK_FILE_END = 120;
-	public static final int BOOK_FILE_NULL = 0;
-	
-
 	public static final String VERSION = "1.1.1";
 	public static final String PACKAGE_NAME = "com.xian.xnovel";
 
+	// book info
+	public static final int BOOK_FILE_COUNT = 120;
+	public static final int BOOK_FILE_BEGIN = 1;
+	public static final int BOOK_FILE_END = 120;
+	public static final int BOOK_FILE_NULL = 0;
+
+	public static final int TAB_CATALOG = 0;
+	public static final int TAB_MARK = 1;
+	public static final int TAB_HISTERY = 2;
+	public static final int TAB_MORE = 3;
+
+	// data
+	public static final String DATA_TAB_INDEX = "tab_index";
+	// settings
 	public static final String Settings = "settings";
 	public static final String SETTINGS_VERSION = "version";
 	public static final String SETTINGS_DENSITY = "density";

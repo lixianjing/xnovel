@@ -19,7 +19,7 @@ public class MainViewGroup extends ViewGroup {
 
 	private static String TAG = "MainViewGroup";
 	
-	private static final int SCROLL_TIME = 1000;
+	private static final int SCROLL_TIME = 600;
 	// ///////////////////////////////////////////////////关于滚动部分的代码///////////////////////////////////////////////////////////////////////
 	private static final int INVALID_POINTER = -1;
 	private int mActivePointerId = INVALID_POINTER;
@@ -286,7 +286,6 @@ public class MainViewGroup extends ViewGroup {
 		// scrollTo(mLastScreen * getWidth(), 0);
 		// 为了友好性，我们在增加一个动画效果
 		// 需要再次滑动的距离 屏或者下一屏幕的继续滑动距离
-
 		whichScreen = Math.max(AppSettings.SCREEN_MIN,
 				Math.min(whichScreen, getChildCount() - 1));
 		curScreen = whichScreen;
@@ -294,7 +293,6 @@ public class MainViewGroup extends ViewGroup {
 		int dx = curScreen * getWidth() - getScrollX();
 
 		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx is " + dx);
-
 		mScroller.startScroll(getScrollX(), 0, dx, 0,SCROLL_TIME);
 
 		mainActivity.updateCurrentTabs(curScreen);
