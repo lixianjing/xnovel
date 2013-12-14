@@ -37,9 +37,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener,AppSettings {
-	
-
+public class MainActivity extends Activity implements OnClickListener,
+		AppSettings {
 
 	public static final int MSG_TYPE_MAIN_INIT = 0;
 	public static final int MSG_TYPE_CATALOG = 101;
@@ -83,7 +82,7 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.e("lmf","onCreate>>>>>>>>>.");
+		Log.e("lmf", "onCreate>>>>>>>>>.");
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
@@ -102,10 +101,9 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
+		Log.e("lmf", "onResume");
 		markLoadData();
 		historyLoadData();
-		int index=getIntent().getIntExtra(DATA_TAB_INDEX, TAB_CATALOG);
-		Log.e("lmf", ">>>>>>>>>>>>>>>>"+index);
 		super.onResume();
 	}
 
@@ -149,7 +147,6 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 			}
 		});
 	}
-	
 
 	private void initMarkView() {
 		markTv = (TextView) markView.findViewById(R.id.mark_tv);
@@ -206,8 +203,6 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 			}
 		});
 	}
-	
-	
 
 	private void initMoreView() {
 
@@ -248,7 +243,7 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 		viewGroup.addView(historyView);
 		viewGroup.addView(moreView);
 
-		viewGroup.setCurrentScreen(	0	);
+		viewGroup.setCurrentScreen(TAB_CATALOG);
 	}
 
 	public void updateCurrentTabs(int index) {
@@ -412,14 +407,12 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 
 		}.execute();
 	}
-	
-	
+
 	private void markLoadData() {
 		new AsyncTask<Void, Void, List<MarkInfo>>() {
 			protected void onPreExecute() {
 				if (markInfos == null || markInfos.size() == 0) {
-					markInfos = dbControl.queryMark(MarkInfo.TYPE_MARK,
-							0, 10);
+					markInfos = dbControl.queryMark(MarkInfo.TYPE_MARK, 0, 10);
 					markDataSize = markInfos.size();
 					if (markDataSize != 0) {
 						if (markAdapter == null) {
@@ -460,14 +453,27 @@ public class MainActivity extends Activity implements OnClickListener,AppSetting
 		}.execute();
 	}
 
+	private static final int REQUEST_CODE = 1001;
+
 	private void statrtBookActivity(int id, String title, String content,
 			int pos) {
+		Log.e("lmf", "MainActivity>>>statrtBookActivity>");
 		Intent intent = new Intent(mContext, BookActivity.class);
 		intent.putExtra(AppSettings.ID, id);
 		intent.putExtra(AppSettings.TITLE, title);
 		intent.putExtra(AppSettings.CONTENT, content);
 		intent.putExtra(AppSettings.POSITION, pos);
-		this.startActivity(intent);
+		this.startActivityForResult(intent, REQUEST_CODE);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		Log.e("lmf", "onActivityResult>>>>>>" + requestCode + ":" + resultCode);
+		if (RESULT_OK == resultCode) {
+			int tabType = data.getIntExtra(DATA_TAB_INDEX, TAB_CATALOG);
+			viewGroup.setCurrentScreen(tabType);
+		}
 	}
 
 }

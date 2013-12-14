@@ -6,6 +6,7 @@ import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
 import com.xian.xnovel.utils.AppSettings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -187,11 +188,13 @@ public class MenuBtmLayout extends LinearLayout implements
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			// TODO Auto-generated method stub
-			Intent intent = null;
+			Log.e("lmf",">>>>onItemClick>>>>>>>>>>>>>>>>>"+arg2);
+			Intent intent=null;
 			switch (arg2) {
 			case 0:
-				intent = new Intent(mContext, MainActivity.class);
-				mContext.startActivity(intent);
+				intent = new Intent();
+				intent.putExtra(DATA_TAB_INDEX, TAB_CATALOG);
+				mBookActivity.setResult(Activity.RESULT_OK, intent);
 				mBookActivity.finish();
 				break;
 			case 1:
@@ -223,10 +226,10 @@ public class MenuBtmLayout extends LinearLayout implements
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 4:
-				Log.e("lmf",">>>>>>>>>>>>>>>>>>>>>");
-				intent = new Intent(mContext, MainActivity.class);
+				
+				intent = new Intent();
 				intent.putExtra(DATA_TAB_INDEX, TAB_MARK);
-				mContext.startActivity(intent);
+				mBookActivity.setResult(Activity.RESULT_OK, intent);
 				mBookActivity.finish();
 				break;
 			case 5:
