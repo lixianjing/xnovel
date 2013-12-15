@@ -469,9 +469,7 @@ public class BookPageFactory implements AppSettings {
 		return isLastPage;
 	}
 
-	public int getBufLen() {
-		return mBufferLen;
-	}
+
 
 	public String getOneLine() {
 		return mShowLine.toString().substring(0, 10);
@@ -502,6 +500,9 @@ public class BookPageFactory implements AppSettings {
 	public int getCurPosition() {
 		return mReadStart;
 	}
+	public int getBufferLen(){
+		return mBufferLen;
+	}
 
 	public void setCurPosition(int pos) {
 		mReadEnd = pos;
@@ -512,6 +513,7 @@ public class BookPageFactory implements AppSettings {
 		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
 		return percentFormatter.format(fPercent * 100) + "%";
 	}
+	
 
 	public String getCurTime() {
 		Date curDate = new Date(System.currentTimeMillis());// 获取当前时间

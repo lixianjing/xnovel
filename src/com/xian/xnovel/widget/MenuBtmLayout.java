@@ -4,6 +4,7 @@ import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.MainActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
+import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppSettings;
 
 import android.app.Activity;
@@ -253,6 +254,9 @@ public class MenuBtmLayout extends LinearLayout implements
 				if (seekDialog == null) {
 					seekDialog = new DialogPositionSettings(mContext);
 				}
+				BookPageFactory pagefactory = BookPageFactory.getInstance(mContext);
+				seekDialog.setBufferLen(pagefactory.getBufferLen());
+				seekDialog.setCurBuffer(pagefactory.getCurPosition());
 				seekDialog.show();
 
 				break;

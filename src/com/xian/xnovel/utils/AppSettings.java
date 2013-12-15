@@ -69,7 +69,7 @@ public interface AppSettings {
 
 	public static final int PREF_LINE_SPACE_DEFAULT = 20;
 	public static final int PREF_FONT_SIZE_DEFAULT = 40;
-	public static final int PREF_FONT_COLOR_DEFAULT = 0xFFEEEEEE;
+	public static final int PREF_FONT_COLOR_DEFAULT = 0xFF000000;
 	// font settings end
 
 	public static final int SCREEN_DEFAULT = 0;
