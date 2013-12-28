@@ -53,10 +53,12 @@
                     android:layout_height="wrap_content"
                     android:digits="1234567890"
                     android:focusable="false"
+                    android:gravity="center"
                     android:inputType="phone"
                     android:maxLength="2"
                     android:singleLine="true"
-                    android:text="" />
+                    android:text=""
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/point"
@@ -73,10 +75,12 @@
                     android:layout_height="wrap_content"
                     android:digits="1234567890"
                     android:focusable="false"
+                    android:gravity="center"
                     android:inputType="phone"
                     android:maxLength="2"
                     android:singleLine="true"
-                    android:text="" />
+                    android:text=""
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <TextView
@@ -95,7 +99,8 @@
             android:id="@+id/seekbar"
             style="@style/Widget.SeekBar.Normal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:max="9999" />
     </LinearLayout>
 
     <LinearLayout

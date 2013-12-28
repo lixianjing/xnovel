@@ -71,7 +71,7 @@ public class BookActivity extends Activity implements AppSettings {
 			// TODO Auto-generated method stub
 			switch (msg.what) {
 			case MSG_MENU_SHOW:
-				pagefactory.onDraw(mCurPageCanvas);
+				pagefactory.draw(mCurPageCanvas);
 				menuIv.setImageBitmap(mCurPageBitmap);
 				menuRl.setVisibility(View.VISIBLE);
 				menuIv.setVisibility(View.VISIBLE);
@@ -125,6 +125,10 @@ public class BookActivity extends Activity implements AppSettings {
 				pagefactory.setFontColor(msg.arg1);
 				updatePageFactory();
 				break;
+			case MSG_SETTINGS_POSITION:
+				pagefactory.setCurPosition(msg.arg1);
+				updatePageFactory();
+				break;
 			}
 			super.handleMessage(msg);
 		}
@@ -132,8 +136,8 @@ public class BookActivity extends Activity implements AppSettings {
 	};
 
 	private void updatePageFactory() {
-		pagefactory.onDraw(mCurPageCanvas);
-		pagefactory.onDraw(mNextPageCanvas);
+		pagefactory.draw(mCurPageCanvas);
+		pagefactory.draw(mNextPageCanvas);
 		mPageView.postInvalidate();
 	}
 
@@ -204,7 +208,7 @@ public class BookActivity extends Activity implements AppSettings {
 			pagefactory.setTitleName(bookContent);
 			menuTopLayout.setCenterText(bookTitle + " " + bookContent);
 			pagefactory.setCurPosition(position);
-			pagefactory.onDraw(mCurPageCanvas);
+			pagefactory.draw(mCurPageCanvas);
 			mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
 
 			mPageView.invalidate();
@@ -270,7 +274,7 @@ public class BookActivity extends Activity implements AppSettings {
 		pagefactory.setTitleName(bookContent);
 		menuTopLayout.setCenterText(bookTitle + " " + bookContent);
 		pagefactory.setCurPosition(position);
-		pagefactory.onDraw(mCurPageCanvas);
+		pagefactory.draw(mCurPageCanvas);
 		mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
 		mPageView.invalidate();
 	}
@@ -393,7 +397,7 @@ public class BookActivity extends Activity implements AppSettings {
 	}
 
 	public boolean updatePage() {
-		pagefactory.onDraw(mCurPageCanvas);
+		pagefactory.draw(mCurPageCanvas);
 		if (mPageView.dragToRight()) {
 			try {
 				pagefactory.prePage();
@@ -405,7 +409,7 @@ public class BookActivity extends Activity implements AppSettings {
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			pagefactory.onDraw(mNextPageCanvas);
+			pagefactory.draw(mNextPageCanvas);
 		} else {
 			try {
 				pagefactory.nextPage();
@@ -417,7 +421,7 @@ public class BookActivity extends Activity implements AppSettings {
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			pagefactory.onDraw(mNextPageCanvas);
+			pagefactory.draw(mNextPageCanvas);
 		}
 		mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
 		return true;

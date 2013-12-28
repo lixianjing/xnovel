@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 import android.widget.Toast;
 
 public class BookPageFactory implements AppSettings {
@@ -396,8 +397,7 @@ public class BookPageFactory implements AppSettings {
 			mShowLine = pageDown();
 		}
 	}
-
-	public void onDraw(Canvas c) {
+	public void draw(Canvas c) {
 		if (mShowLine.size() == 0)
 			mShowLine = pageDown();
 		if (mShowLine.size() > 0) {
@@ -507,10 +507,12 @@ public class BookPageFactory implements AppSettings {
 	public void setCurPosition(int pos) {
 		mReadEnd = pos;
 		mReadStart = pos;
+		mShowLine.clear();
 	}
 
 	public String getCurPercent() {
 		float fPercent = (float) (mReadStart * 1.0 / mBufferLen);
+		Log.e("lmf", "lmf>>>>>>>fPercent>>>>>>"+fPercent);
 		return percentFormatter.format(fPercent * 100) + "%";
 	}
 	

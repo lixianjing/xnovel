@@ -98,6 +98,8 @@ public interface AppSettings {
 	public static final int MSG_SETTINGS_LINE_SPACE = 2043;
 	public static final int MSG_SETTINGS_FONT_BOLD = 2044;
 	public static final int MSG_SETTINGS_FONT_ITALIC = 2045;
+	
+	public static final int MSG_SETTINGS_POSITION = 2051;
 
 	public static final int STATUS_MENU_HIDE = 0;
 	public static final int STATUS_MENU_SHOW = 1;

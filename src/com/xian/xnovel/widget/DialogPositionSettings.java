@@ -1,10 +1,15 @@
 package com.xian.xnovel.widget;
 
+import java.text.DecimalFormat;
+
 import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +21,17 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class DialogPositionSettings extends Dialog {
+public class DialogPositionSettings extends Dialog implements
+		android.view.View.OnClickListener {
 
 	private Context mContext;
+	private Handler mainHandler;
 	private int curBuffer;
 	private int bufferLen;
 	private EditText integerEt, decimaEt;
+	private Button btnOk, btnCancel;
 	private SeekBar seekBar;
+	private DecimalFormat percentFormatter = new DecimalFormat("#00.00");
 
 	public DialogPositionSettings(Context context) {
 		super(context, R.style.dialog_theme);
@@ -38,6 +47,10 @@ public class DialogPositionSettings extends Dialog {
 				LayoutParams.WRAP_CONTENT));
 		integerEt = (EditText) view.findViewById(R.id.integer_value);
 		decimaEt = (EditText) view.findViewById(R.id.decimal_value);
+		btnOk = (Button) view.findViewById(R.id.seek_dlg_left_btn);
+		btnCancel = (Button) view.findViewById(R.id.seek_dlg_right_btn);
+		btnOk.setOnClickListener(this);
+		btnCancel.setOnClickListener(this);
 		seekBar = (SeekBar) view.findViewById(R.id.seekbar);
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -60,6 +73,18 @@ public class DialogPositionSettings extends Dialog {
 				Log.e("lmf",
 						"onProgressChanged>>>>>>>>" + arg1 + ":"
 								+ arg0.getProgress());
+
+				float rate = arg1 / 100.0f;
+				String[] format = percentFormatter.format(rate).split("\\.");
+				integerEt.setText(format[0]);
+				decimaEt.setText(format[1]);
+				rate = rate / 100.0f * bufferLen;
+				if (rate - (int) (rate) == 0) {
+					sendMessage((int) (rate));
+				} else {
+					sendMessage((int) (rate + 1));
+				}
+
 			}
 		});
 		this.setCanceledOnTouchOutside(true);
@@ -69,14 +94,17 @@ public class DialogPositionSettings extends Dialog {
 	public void show() {
 		// TODO Auto-generated method stub
 		super.show();
-		Log.e("lmf", "DialogPositionSettings>>>onCreate>>>" + curBuffer + ":"
-				+ bufferLen);
-		float rate = (float) curBuffer / (float) bufferLen;
-		int integerNum = (int) (rate * 100);
-		int decimaNum = (int) (rate * 10000) % 100;
-		integerEt.setText(String.valueOf(integerNum));
-		decimaEt.setText(String.valueOf(decimaNum));
-		seekBar.setProgress(integerNum);
+
+		float rate = ((float) curBuffer / (float) bufferLen);
+		seekBar.setProgress((int) (rate * 9999));
+		rate = rate * 100;
+		String[] format = percentFormatter.format(rate).split("\\.");
+		integerEt.setText(format[0]);
+		decimaEt.setText(format[1]);
+
+		Log.e("lmf", "DialogPositionSettings>>>onCreate>>>" + rate + ":"
+				+ curBuffer + ":" + bufferLen + ":");
+
 	}
 
 	public int getCurBuffer() {
@@ -95,4 +123,25 @@ public class DialogPositionSettings extends Dialog {
 		this.bufferLen = bufferLen;
 	}
 
+	public void setMainHandler(Handler mainHandler) {
+		// TODO Auto-generated method stub
+		this.mainHandler = mainHandler;
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if (v.getId() == R.id.seek_dlg_left_btn) {
+			this.dismiss();
+		} else if (v.getId() == R.id.seek_dlg_right_btn) {
+			sendMessage(curBuffer);
+		}
+	}
+
+	private void sendMessage(int cur) {
+		Message msg = mainHandler.obtainMessage();
+		msg.what = AppSettings.MSG_SETTINGS_POSITION;
+		msg.arg1 = cur;
+		mainHandler.sendMessage(msg);
+	}
 }

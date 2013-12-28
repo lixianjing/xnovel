@@ -253,6 +253,7 @@ public class MenuBtmLayout extends LinearLayout implements
 						.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
 				if (seekDialog == null) {
 					seekDialog = new DialogPositionSettings(mContext);
+					seekDialog.setMainHandler(mainHandler);
 				}
 				BookPageFactory pagefactory = BookPageFactory.getInstance(mContext);
 				seekDialog.setBufferLen(pagefactory.getBufferLen());
