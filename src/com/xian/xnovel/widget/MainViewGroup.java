@@ -1,7 +1,7 @@
 package com.xian.xnovel.widget;
 
 import com.xian.xnovel.MainActivity;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -26,7 +26,7 @@ public class MainViewGroup extends ViewGroup {
 
 	private Context mContext;
 	private int mWidth, mHeight;
-	private int curScreen = AppSettings.SCREEN_DEFAULT; // 当前屏
+	private int curScreen = AppConfigs.SCREEN_DEFAULT; // 当前屏
 
 	private Scroller mScroller = null;
 
@@ -286,7 +286,7 @@ public class MainViewGroup extends ViewGroup {
 		// scrollTo(mLastScreen * getWidth(), 0);
 		// 为了友好性，我们在增加一个动画效果
 		// 需要再次滑动的距离 屏或者下一屏幕的继续滑动距离
-		whichScreen = Math.max(AppSettings.SCREEN_MIN,
+		whichScreen = Math.max(AppConfigs.SCREEN_MIN,
 				Math.min(whichScreen, getChildCount() - 1));
 		curScreen = whichScreen;
 
@@ -307,7 +307,7 @@ public class MainViewGroup extends ViewGroup {
 		}
 
 
-		currentScreen = Math.max(AppSettings.SCREEN_MIN,
+		currentScreen = Math.max(AppConfigs.SCREEN_MIN,
 				Math.min(currentScreen, getChildCount() - 1));
 		curScreen = currentScreen;
 

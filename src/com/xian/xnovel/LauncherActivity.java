@@ -2,7 +2,7 @@ package com.xian.xnovel;
 
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.domain.MarkInfo;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 import com.xian.xnovel.utils.Utils;
 
 import android.app.Activity;
@@ -54,15 +54,15 @@ public class LauncherActivity extends Activity {
 				float density = dm.density; // 屏幕密度（像素比例：0.75/1.0/1.5/2.0）
 				int densityDPI = dm.densityDpi; // 屏幕密度（每寸像素：120/160/240/320）
 				Editor editor = pref.edit();
-				editor.putString(AppSettings.SETTINGS_VERSION,
-						AppSettings.VERSION);
-				editor.putFloat(AppSettings.SETTINGS_DENSITY, dm.density);
-				editor.putInt(AppSettings.SETTINGS_DPI, dm.densityDpi);
-				editor.putInt(AppSettings.SETTINGS_WIDTH_FULL, dm.widthPixels);
-				editor.putInt(AppSettings.SETTINGS_HEIGHT_FULL, dm.heightPixels);
-				editor.putInt(AppSettings.SETTINGS_WIDTH_VIEW,
+				editor.putString(AppConfigs.SETTINGS_VERSION,
+						AppConfigs.VERSION);
+				editor.putFloat(AppConfigs.SETTINGS_DENSITY, dm.density);
+				editor.putInt(AppConfigs.SETTINGS_DPI, dm.densityDpi);
+				editor.putInt(AppConfigs.SETTINGS_WIDTH_FULL, dm.widthPixels);
+				editor.putInt(AppConfigs.SETTINGS_HEIGHT_FULL, dm.heightPixels);
+				editor.putInt(AppConfigs.SETTINGS_WIDTH_VIEW,
 						mainRl.getMeasuredWidth());
-				editor.putInt(AppSettings.SETTINGS_HEIGHT_VIEW,
+				editor.putInt(AppConfigs.SETTINGS_HEIGHT_VIEW,
 						mainRl.getMeasuredHeight());
 				editor.commit();
 
@@ -82,7 +82,7 @@ public class LauncherActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launcher);
 		mContext = this;
-		pref = mContext.getSharedPreferences(AppSettings.Settings,
+		pref = mContext.getSharedPreferences(AppConfigs.Settings,
 				Context.MODE_PRIVATE);
 
 		initView();
@@ -102,8 +102,8 @@ public class LauncherActivity extends Activity {
 				// TODO Auto-generated method stub
 
 				String lastVersion = pref.getString(
-						AppSettings.SETTINGS_VERSION, "");
-				if (!AppSettings.VERSION.equals(lastVersion)) {
+						AppConfigs.SETTINGS_VERSION, "");
+				if (!AppConfigs.VERSION.equals(lastVersion)) {
 
 					mHandler.sendEmptyMessage(MSG_FIRST_SETTEXT);
 					mHandler.sendEmptyMessageDelayed(MSG_FIRST_SETTINGS, 500);
@@ -121,7 +121,7 @@ public class LauncherActivity extends Activity {
 
 	private void initBookContent(Context context, int num) {
 		for (int i = 1; i <= num; i++) {
-			new LoadBookThread(context, i, num, AppSettings.BOOK_FILE_COUNT)
+			new LoadBookThread(context, i, num, AppConfigs.BOOK_FILE_COUNT)
 					.start();
 		}
 	}
@@ -144,8 +144,8 @@ public class LauncherActivity extends Activity {
 			// TODO Auto-generated method stub
 			int i = id;
 			while (i <= max) {
-				Utils.copyFileFromAssets(context, AppSettings.BOOK_FILE_PREFIX
-						+ i, AppSettings.ASSETS_FILE_PATH + i);
+				Utils.copyFileFromAssets(context, AppConfigs.BOOK_FILE_PREFIX
+						+ i, AppConfigs.ASSETS_FILE_PATH + i);
 				i += offset;
 
 			}

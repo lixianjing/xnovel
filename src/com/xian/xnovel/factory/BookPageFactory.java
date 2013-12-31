@@ -23,10 +23,10 @@ import android.graphics.Paint.Align;
 import android.widget.Toast;
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
 @SuppressLint("NewApi")
-public class BookPageFactory implements AppSettings {
+public class BookPageFactory implements AppConfigs {
 
     private final String m_strCharsetName = "UTF-8";
 
@@ -88,7 +88,7 @@ public class BookPageFactory implements AppSettings {
     private BookPageFactory(Context context) {
         // TODO Auto-generated constructor stub
         mContext = context;
-        pref = mContext.getSharedPreferences(AppSettings.Settings, Context.MODE_PRIVATE);
+        pref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
 
         initPref();
 
@@ -114,7 +114,7 @@ public class BookPageFactory implements AppSettings {
         mBtmPaint.setTextAlign(Align.LEFT);
         mBtmPaint.setTextSize(btmFontSize);
         mBtmPaint.setColor(textColor);
-        percentWidth = (int) mBtmPaint.measureText("99.9%") + 1;
+        percentWidth = (int) mBtmPaint.measureText("99.99%") + 1;
 
         // 行间距设置
         spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -417,7 +417,7 @@ public class BookPageFactory implements AppSettings {
     private int titleWidth;
     private final int percentWidth;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
-    private final DecimalFormat percentFormatter = new DecimalFormat("#0.0");
+    private final DecimalFormat percentFormatter = new DecimalFormat("#0.00");
 
     private void drawBtmInfo(Canvas c) {
 

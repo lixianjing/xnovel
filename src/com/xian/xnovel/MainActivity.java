@@ -9,7 +9,7 @@ import com.xian.xnovel.adapter.MarkListAdapter;
 import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.DialogPositionSettings;
@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener,
-		AppSettings {
+		AppConfigs {
 
 	public static final int MSG_TYPE_MAIN_INIT = 0;
 	public static final int MSG_TYPE_CATALOG = 101;
@@ -228,13 +228,13 @@ public class MainActivity extends Activity implements OnClickListener,
 		historyView = inflater.inflate(R.layout.fragment_histery, null);
 		moreView = inflater.inflate(R.layout.fragment_more, null);
 
-		tabsList = new ArrayList<TextView>(AppSettings.SCREEN_COUNT);
+		tabsList = new ArrayList<TextView>(AppConfigs.SCREEN_COUNT);
 		tabsList.add((TextView) findViewById(R.id.tab_btn_category));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_bookmark));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_history));
 		tabsList.add((TextView) findViewById(R.id.tab_btn_more));
 
-		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
+		for (int i = 0; i < AppConfigs.SCREEN_COUNT; i++) {
 			tabsList.get(i).setOnClickListener(this);
 		}
 
@@ -247,7 +247,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	}
 
 	public void updateCurrentTabs(int index) {
-		for (int i = 0; i < AppSettings.SCREEN_COUNT; i++) {
+		for (int i = 0; i < AppConfigs.SCREEN_COUNT; i++) {
 			if (i == index) {
 				tabsList.get(i).setSelected(true);
 			} else {
@@ -459,10 +459,10 @@ public class MainActivity extends Activity implements OnClickListener,
 			int pos) {
 		Log.e("lmf", "MainActivity>>>statrtBookActivity>");
 		Intent intent = new Intent(mContext, BookActivity.class);
-		intent.putExtra(AppSettings.ID, id);
-		intent.putExtra(AppSettings.TITLE, title);
-		intent.putExtra(AppSettings.CONTENT, content);
-		intent.putExtra(AppSettings.POSITION, pos);
+		intent.putExtra(AppConfigs.ID, id);
+		intent.putExtra(AppConfigs.TITLE, title);
+		intent.putExtra(AppConfigs.CONTENT, content);
+		intent.putExtra(AppConfigs.POSITION, pos);
 		this.startActivityForResult(intent, REQUEST_CODE);
 	}
 

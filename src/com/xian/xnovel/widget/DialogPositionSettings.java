@@ -18,7 +18,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
 public class DialogPositionSettings extends Dialog implements android.view.View.OnClickListener {
 
@@ -215,7 +215,7 @@ public class DialogPositionSettings extends Dialog implements android.view.View.
 
     private void sendMessage(int cur) {
         Message msg = mainHandler.obtainMessage();
-        msg.what = AppSettings.MSG_SETTINGS_POSITION;
+        msg.what = AppConfigs.MSG_SETTINGS_POSITION;
         msg.arg1 = cur;
         mainHandler.sendMessage(msg);
     }

@@ -32,15 +32,15 @@
         android:paddingRight="10.0dip" >
 
         <ImageView
-            android:id="@+id/adjust_brightness"
+            android:id="@+id/screen_brightness_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/book_list_selector"
             android:padding="5.0dip"
-            android:src="@drawable/icon_adjust_light" />
+            android:src="@drawable/icon_light_adjust" />
 
         <SeekBar
-            android:id="@+id/brightness"
+            android:max="100"
+            android:id="@+id/screen_dlg_brightness_sb"
             style="@style/Widget.SeekBar.Normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
         </LinearLayout>
 
         <ToggleButton
-            android:id="@+id/keep_screen_on"
+            android:id="@+id/screen_dlg_keep_light_tb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -151,7 +151,7 @@
         </LinearLayout>
 
         <ToggleButton
-            android:id="@+id/show_sys_caption_bar"
+            android:id="@+id/screen_dlg_show_statusbar_tb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

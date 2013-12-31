@@ -19,9 +19,9 @@ import android.widget.Scroller;
 
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
-public class PageView extends View implements AppSettings {
+public class PageView extends View implements AppConfigs {
 
     private static final String TAG = "lmf";
     private static final int ANIM_DURATION = 1000;

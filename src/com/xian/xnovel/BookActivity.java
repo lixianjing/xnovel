@@ -28,12 +28,12 @@ import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
-public class BookActivity extends Activity implements AppSettings {
+public class BookActivity extends Activity implements AppConfigs {
 
     private Context mContext;
     private SharedPreferences pref;
@@ -163,8 +163,8 @@ public class BookActivity extends Activity implements AppSettings {
                 mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
             }
         });
-        pref = mContext.getSharedPreferences(AppSettings.Settings, Context.MODE_PRIVATE);
-        pageMode = pref.getInt(AppSettings.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
+        pref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
+        pageMode = pref.getInt(AppConfigs.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
         menuBtmLayout.setMainHandler(mHandler);
         menuBtmLayout.setBookActivity(this);
         mPageView.setMainHandler(mHandler);
@@ -172,8 +172,8 @@ public class BookActivity extends Activity implements AppSettings {
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
-        fullWidth = pref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 0);
-        fullHeight = pref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 0);
+        fullWidth = pref.getInt(AppConfigs.SETTINGS_WIDTH_FULL, 0);
+        fullHeight = pref.getInt(AppConfigs.SETTINGS_HEIGHT_FULL, 0);
         mWidth = fullWidth;
         mHeight = fullHeight;
 
@@ -194,7 +194,7 @@ public class BookActivity extends Activity implements AppSettings {
             mNextPageCanvas = new Canvas(mNextPageBitmap);
 
             mPageView.setPagefactory(pagefactory);
-            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+            pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
             pagefactory.setTitleName(bookContent);
             menuTopLayout.setCenterText(bookTitle + " " + bookContent);
             pagefactory.setCurPosition(position);
@@ -255,7 +255,7 @@ public class BookActivity extends Activity implements AppSettings {
 
     private void reLoadBook() {
         pagefactory.closeBook();
-        pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+        pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
         pagefactory.setTitleName(bookContent);
         menuTopLayout.setCenterText(bookTitle + " " + bookContent);
         pagefactory.setCurPosition(position);
@@ -265,10 +265,10 @@ public class BookActivity extends Activity implements AppSettings {
     }
 
     private void getIntentData(Intent intent) {
-        bookTitle = intent.getStringExtra(AppSettings.TITLE);
-        bookContent = intent.getStringExtra(AppSettings.CONTENT);
-        bookId = intent.getIntExtra(AppSettings.ID, BOOK_FILE_NULL);
-        position = intent.getIntExtra(AppSettings.POSITION, 0);
+        bookTitle = intent.getStringExtra(AppConfigs.TITLE);
+        bookContent = intent.getStringExtra(AppConfigs.CONTENT);
+        bookId = intent.getIntExtra(AppConfigs.ID, BOOK_FILE_NULL);
+        position = intent.getIntExtra(AppConfigs.POSITION, 0);
     }
 
     @Override
@@ -352,12 +352,12 @@ public class BookActivity extends Activity implements AppSettings {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        bookTitle = savedInstanceState.getString(AppSettings.TITLE);
-        bookContent = savedInstanceState.getString(AppSettings.CONTENT);
-        bookId = savedInstanceState.getInt(AppSettings.ID, BOOK_FILE_NULL);
-        position = savedInstanceState.getInt(AppSettings.POSITION, 0);
+        bookTitle = savedInstanceState.getString(AppConfigs.TITLE);
+        bookContent = savedInstanceState.getString(AppConfigs.CONTENT);
+        bookId = savedInstanceState.getInt(AppConfigs.ID, BOOK_FILE_NULL);
+        position = savedInstanceState.getInt(AppConfigs.POSITION, 0);
         if (bookId != BOOK_FILE_NULL) {
-            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+            pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
             pagefactory.setCurPosition(position);
             mPageView.invalidate();
 
@@ -372,10 +372,10 @@ public class BookActivity extends Activity implements AppSettings {
     protected void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
 
-        outState.putString(AppSettings.TITLE, bookTitle);
-        outState.putString(AppSettings.CONTENT, bookContent);
-        outState.putInt(AppSettings.ID, bookId);
-        outState.putInt(AppSettings.POSITION, pagefactory.getCurPosition());
+        outState.putString(AppConfigs.TITLE, bookTitle);
+        outState.putString(AppConfigs.CONTENT, bookContent);
+        outState.putInt(AppConfigs.ID, bookId);
+        outState.putInt(AppConfigs.POSITION, pagefactory.getCurPosition());
 
         super.onSaveInstanceState(outState);
     }
@@ -504,7 +504,7 @@ public class BookActivity extends Activity implements AppSettings {
     public void setPageMode(int pageMode) {
         this.pageMode = pageMode;
         Editor editor = pref.edit();
-        editor.putInt(AppSettings.PREF_PAGE_MODE, pageMode);
+        editor.putInt(AppConfigs.PREF_PAGE_MODE, pageMode);
         editor.commit();
     }
 

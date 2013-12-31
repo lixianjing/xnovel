@@ -2,7 +2,7 @@ package com.xian.xnovel.widget;
 
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ToggleButton;
 
 public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarChangeListener,
-		AppSettings {
+		AppConfigs {
 
 	private Context mContext;
 	private Handler mainHandler;
@@ -76,7 +76,7 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
 		addFlipperView(tabLeftLl);
 		addFlipperView(tabRightLl);
 
-		pref = mContext.getSharedPreferences(AppSettings.Settings,
+		pref = mContext.getSharedPreferences(AppConfigs.Settings,
 				Context.MODE_PRIVATE);
 
 		prefLineSpace = pref.getInt(PREF_LINE_SPACE, PREF_LINE_SPACE_DEFAULT);

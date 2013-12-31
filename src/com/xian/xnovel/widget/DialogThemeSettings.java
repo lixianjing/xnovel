@@ -7,7 +7,7 @@ import java.io.IOException;
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.DialogThemeGridAdapter;
-import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.AppConfigs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DialogThemeSettings extends DialogTab2Settings implements
-		View.OnClickListener, AppSettings {
+		View.OnClickListener, AppConfigs {
 
 	private Context mContext;
 	private Handler mainHandler;
@@ -122,7 +122,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements
 		addFlipperView(tabLeftLl);
 		addFlipperView(tabRightLl);
 
-		pref = mContext.getSharedPreferences(AppSettings.Settings,
+		pref = mContext.getSharedPreferences(AppConfigs.Settings,
 				Context.MODE_PRIVATE);
 		prefMode = pref.getInt(PREF_THEME_MODE, PREF_THEME_MODE_DEFAULT);
 		switch (prefMode) {
