@@ -16,6 +16,15 @@ public class AppSettings {
     public static final int SCREEN_MODE_USER_LIGHT = 1;
     public static final int SCREEN_MODE_DEFAULT = SCREEN_MODE_SYS_LIGHT;
 
+    public static final String SCREEN_KEEP_LIGHT = "screen_keep_light";
+
+    public static final boolean SCREEN_KEEP_LIGHT_DEFAULT = true;
+
+    public static final String SCREEN_SHOW_STATEBAR = "screen_show_statebar";
+
+    public static final boolean SCREEN_SHOW_STATEBAR_DEFAULT = false;
+
+
     private final SharedPreferences pref;
     private final Editor editor;
 

@@ -2,10 +2,14 @@ package com.xian.xnovel.widget;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -20,6 +24,8 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
     private final Context mContext;
     private final AppSettings mSettings;
+    private SharedPreferences mPref;
+    private Editor mEditor;
 
     private View mainView;
     private LinearLayout screenModeLl;
@@ -27,7 +33,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     private ImageView screenIv;
     private SeekBar lightSb;
     private ToggleButton keepLightTb;
-    private ToggleButton statusBarTb;
+    private ToggleButton stateBarTb;
 
     private static final int MODE_SYS_LIGHT = 0;
     private static final int MODE_USER_LIGHT = 1;
@@ -45,6 +51,9 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mPref = mSettings.getPref();
+        mEditor = mSettings.getEditor();
+
         mainView = LayoutInflater.from(mContext).inflate(R.layout.dlg_screen_settings, null);
         this.addContentView(mainView, new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
@@ -52,9 +61,29 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
         screenModeLl.setOnClickListener(this);
         lightSb = (SeekBar) mainView.findViewById(R.id.screen_dlg_brightness_sb);
         keepLightTb = (ToggleButton) mainView.findViewById(R.id.screen_dlg_keep_light_tb);
-        statusBarTb = (ToggleButton) mainView.findViewById(R.id.screen_dlg_show_statusbar_tb);
+        stateBarTb = (ToggleButton) mainView.findViewById(R.id.screen_dlg_show_statusbar_tb);
         screenIv = (ImageView) mainView.findViewById(R.id.screen_brightness_mode);
         screenIv.setOnClickListener(this);
+
+        keepLightTb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                mEditor.putBoolean(AppSettings.SCREEN_KEEP_LIGHT, isChecked);
+                mEditor.commit();
+            }
+        });
+
+        stateBarTb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                mEditor.putBoolean(AppSettings.SCREEN_SHOW_STATEBAR, isChecked);
+                mEditor.commit();
+            }
+        });
 
         lightSb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -77,8 +106,12 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
         this.setCanceledOnTouchOutside(true);
 
-        mode = mSettings.getPref().getInt(AppSettings.SCREEN_MODE, AppSettings.SCREEN_MODE_DEFAULT);
+        mode = mPref.getInt(AppSettings.SCREEN_MODE, AppSettings.SCREEN_MODE_DEFAULT);
         setScreenMode(mode);
+        keepLightTb.setChecked(mPref.getBoolean(AppSettings.SCREEN_KEEP_LIGHT,
+                AppSettings.SCREEN_KEEP_LIGHT_DEFAULT));
+        stateBarTb.setChecked(mPref.getBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
+                AppSettings.SCREEN_SHOW_STATEBAR_DEFAULT));
     }
 
 
@@ -99,13 +132,16 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 mode = MODE_SYS_LIGHT;
                 setScreenMode(mode);
             }
+            mEditor.putInt(AppSettings.SCREEN_MODE, mode);
+            mEditor.commit();
         }
 
     }
 
+
+
     private void setScreenMode(int mode) {
         if (mode == MODE_USER_LIGHT) {
-
             screenIv.setImageResource(R.drawable.icon_light_adjust);
             lightSb.setEnabled(true);
         } else {
