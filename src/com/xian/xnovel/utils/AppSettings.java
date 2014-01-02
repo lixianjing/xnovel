@@ -16,6 +16,9 @@ public class AppSettings {
     public static final int SCREEN_MODE_USER_LIGHT = 1;
     public static final int SCREEN_MODE_DEFAULT = SCREEN_MODE_SYS_LIGHT;
 
+    public static final String SCREEN_LIGHT_VALUE = "screen_light_value";
+    public static final float SCREEN_LIGHT_VALUE_DEFAULT = 0.5f;
+
     public static final String SCREEN_KEEP_LIGHT = "screen_keep_light";
 
     public static final boolean SCREEN_KEEP_LIGHT_DEFAULT = true;

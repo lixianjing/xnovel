@@ -29,6 +29,7 @@ import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
 import com.xian.xnovel.utils.AppConfigs;
+import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
@@ -36,7 +37,7 @@ import com.xian.xnovel.widget.PageView;
 public class BookActivity extends Activity implements AppConfigs {
 
     private Context mContext;
-    private SharedPreferences pref;
+    private SharedPreferences mPref;
     private int mWidth, mHeight, fullWidth, fullHeight;
 
     private BookPageFactory pagefactory;
@@ -163,8 +164,8 @@ public class BookActivity extends Activity implements AppConfigs {
                 mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
             }
         });
-        pref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
-        pageMode = pref.getInt(AppConfigs.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
+        mPref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
+        pageMode = mPref.getInt(AppConfigs.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
         menuBtmLayout.setMainHandler(mHandler);
         menuBtmLayout.setBookActivity(this);
         mPageView.setMainHandler(mHandler);
@@ -172,14 +173,27 @@ public class BookActivity extends Activity implements AppConfigs {
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
-        fullWidth = pref.getInt(AppConfigs.SETTINGS_WIDTH_FULL, 0);
-        fullHeight = pref.getInt(AppConfigs.SETTINGS_HEIGHT_FULL, 0);
+        fullWidth = mPref.getInt(AppConfigs.SETTINGS_WIDTH_FULL, 0);
+        fullHeight = mPref.getInt(AppConfigs.SETTINGS_HEIGHT_FULL, 0);
         mWidth = fullWidth;
         mHeight = fullHeight;
+
+
+        mPref = AppSettings.getInstance(mContext).getPref();
+        int mode = mPref.getInt(AppSettings.SCREEN_MODE, AppSettings.SCREEN_MODE_DEFAULT);
+        if (mode == AppSettings.SCREEN_MODE_USER_LIGHT) {
+            setScreenLight(mPref.getFloat(AppSettings.SCREEN_LIGHT_VALUE,
+                    AppSettings.SCREEN_LIGHT_VALUE_DEFAULT));
+        } else {
+            setScreenLight(-1);
+        }
+
 
         loadBook();
 
     }
+
+
 
     private void loadBook() {
         getIntentData(getIntent());
@@ -503,7 +517,7 @@ public class BookActivity extends Activity implements AppConfigs {
 
     public void setPageMode(int pageMode) {
         this.pageMode = pageMode;
-        Editor editor = pref.edit();
+        Editor editor = mPref.edit();
         editor.putInt(AppConfigs.PREF_PAGE_MODE, pageMode);
         editor.commit();
     }
@@ -514,6 +528,12 @@ public class BookActivity extends Activity implements AppConfigs {
 
     public void setBookId(int bookId) {
         this.bookId = bookId;
+    }
+
+    private void setScreenLight(float val) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = val;
+        getWindow().setAttributes(lp);
     }
 
 }
