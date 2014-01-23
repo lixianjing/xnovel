@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ToggleButton;
 
+import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.RunTimeConfigs;
@@ -26,6 +27,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
     private final Context mContext;
     private final AppSettings mSettings;
+
     private SharedPreferences mPref;
     private Editor mEditor;
 
@@ -36,6 +38,8 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     private SeekBar lightSb;
     private ToggleButton keepLightTb;
     private ToggleButton stateBarTb;
+
+    private BookActivity mBookActivity;
 
 
     public DialogScreenSettings(Context context) {
@@ -108,6 +112,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 RunTimeConfigs.sScreenLight = arg1;
                 Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
                         RunTimeConfigs.sScreenLight);
+                Utils.setScreenBrightness(mBookActivity.getWindow(), RunTimeConfigs.sScreenLight);
             }
         });
 
@@ -162,6 +167,13 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             lightSb.setEnabled(false);
         }
     }
+
+
+
+    public void setBookActivity(BookActivity bookActivity) {
+        this.mBookActivity = bookActivity;
+    }
+
 
 
 }
