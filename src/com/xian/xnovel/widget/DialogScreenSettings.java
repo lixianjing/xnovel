@@ -19,6 +19,8 @@ import android.widget.ToggleButton;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.RunTimeConfigs;
+import com.xian.xnovel.utils.Utils;
 
 public class DialogScreenSettings extends Dialog implements android.view.View.OnClickListener {
 
@@ -35,10 +37,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     private ToggleButton keepLightTb;
     private ToggleButton stateBarTb;
 
-    private static final int MODE_SYS_LIGHT = 0;
-    private static final int MODE_USER_LIGHT = 1;
-
-    private int mode;
 
     public DialogScreenSettings(Context context) {
         super(context, R.style.dialog_theme);
@@ -60,6 +58,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
         screenModeLl = (LinearLayout) mainView.findViewById(R.id.screen_mode_ll);
         screenModeLl.setOnClickListener(this);
         lightSb = (SeekBar) mainView.findViewById(R.id.screen_dlg_brightness_sb);
+        lightSb.setMax(AppSettings.SCREEN_LIGHT_VALUE_MAX);
         keepLightTb = (ToggleButton) mainView.findViewById(R.id.screen_dlg_keep_light_tb);
         stateBarTb = (ToggleButton) mainView.findViewById(R.id.screen_dlg_show_statusbar_tb);
         screenIv = (ImageView) mainView.findViewById(R.id.screen_brightness_mode);
@@ -90,6 +89,11 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
                 // TODO Auto-generated method stub
+                Log.e("lmf", ">>>>>onStopTrackingTouch>>>>>>>>>>" + arg0.getProgress());
+                if (RunTimeConfigs.sScreenMode == AppSettings.SCREEN_MODE_USER_LIGHT) {
+                    mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, arg0.getProgress());
+                    mEditor.commit();
+                }
             }
 
             @Override
@@ -101,17 +105,21 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
                 // TODO Auto-generated method stub
                 Log.e("lmf", ">>>>>onProgressChanged>>>>>>>>>>" + arg1);
+                RunTimeConfigs.sScreenLight = arg1;
+                Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
+                        RunTimeConfigs.sScreenLight);
             }
         });
 
         this.setCanceledOnTouchOutside(true);
 
-        mode = mPref.getInt(AppSettings.SCREEN_MODE, AppSettings.SCREEN_MODE_DEFAULT);
-        setScreenMode(mode);
+        setScreenMode(RunTimeConfigs.sScreenMode);
+
         keepLightTb.setChecked(mPref.getBoolean(AppSettings.SCREEN_KEEP_LIGHT,
                 AppSettings.SCREEN_KEEP_LIGHT_DEFAULT));
         stateBarTb.setChecked(mPref.getBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
                 AppSettings.SCREEN_SHOW_STATEBAR_DEFAULT));
+
     }
 
 
@@ -125,14 +133,14 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             }
             mDialogList.show();
         } else if (id == R.id.screen_brightness_mode) {
-            if (mode == MODE_SYS_LIGHT) {
-                mode = MODE_USER_LIGHT;
-                setScreenMode(mode);
+            if (RunTimeConfigs.sScreenMode == AppSettings.SCREEN_MODE_SYS_LIGHT) {
+                RunTimeConfigs.sScreenMode = AppSettings.SCREEN_MODE_USER_LIGHT;
+                setScreenMode(RunTimeConfigs.sScreenMode);
             } else {
-                mode = MODE_SYS_LIGHT;
-                setScreenMode(mode);
+                RunTimeConfigs.sScreenMode = AppSettings.SCREEN_MODE_SYS_LIGHT;
+                setScreenMode(RunTimeConfigs.sScreenMode);
             }
-            mEditor.putInt(AppSettings.SCREEN_MODE, mode);
+            mEditor.putInt(AppSettings.SCREEN_MODE, RunTimeConfigs.sScreenMode);
             mEditor.commit();
         }
 
@@ -141,14 +149,18 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
 
     private void setScreenMode(int mode) {
-        if (mode == MODE_USER_LIGHT) {
+        if (mode == AppSettings.SCREEN_MODE_USER_LIGHT) {
             screenIv.setImageResource(R.drawable.icon_light_adjust);
+            RunTimeConfigs.sScreenLight =
+                    mPref.getInt(AppSettings.SCREEN_LIGHT_VALUE, RunTimeConfigs.sScreenLight);
+            lightSb.setProgress(RunTimeConfigs.sScreenLight);
             lightSb.setEnabled(true);
         } else {
             screenIv.setImageResource(R.drawable.icon_light_sys);
+            RunTimeConfigs.sScreenLight = Utils.getSysScreenBrightness(mContext);
+            lightSb.setProgress(RunTimeConfigs.sScreenLight);
             lightSb.setEnabled(false);
         }
-
     }
 
 

@@ -34,7 +34,7 @@ import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
-public class BookActivity extends Activity implements AppConfigs {
+public class BookActivity extends BaseActivity implements AppConfigs {
 
     private Context mContext;
     private SharedPreferences mPref;
@@ -180,13 +180,6 @@ public class BookActivity extends Activity implements AppConfigs {
 
 
         mPref = AppSettings.getInstance(mContext).getPref();
-        int mode = mPref.getInt(AppSettings.SCREEN_MODE, AppSettings.SCREEN_MODE_DEFAULT);
-        if (mode == AppSettings.SCREEN_MODE_USER_LIGHT) {
-            setScreenLight(mPref.getFloat(AppSettings.SCREEN_LIGHT_VALUE,
-                    AppSettings.SCREEN_LIGHT_VALUE_DEFAULT));
-        } else {
-            setScreenLight(-1);
-        }
 
 
         loadBook();
@@ -530,10 +523,5 @@ public class BookActivity extends Activity implements AppConfigs {
         this.bookId = bookId;
     }
 
-    private void setScreenLight(float val) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = val;
-        getWindow().setAttributes(lp);
-    }
 
 }

@@ -39,7 +39,6 @@
             android:src="@drawable/icon_light_adjust" />
 
         <SeekBar
-            android:max="100"
             android:id="@+id/screen_dlg_brightness_sb"
             style="@style/Widget.SeekBar.Normal"
             android:layout_width="match_parent"

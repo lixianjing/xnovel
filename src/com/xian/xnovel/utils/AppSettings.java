@@ -14,10 +14,9 @@ public class AppSettings {
 
     public static final int SCREEN_MODE_SYS_LIGHT = 0;
     public static final int SCREEN_MODE_USER_LIGHT = 1;
-    public static final int SCREEN_MODE_DEFAULT = SCREEN_MODE_SYS_LIGHT;
 
     public static final String SCREEN_LIGHT_VALUE = "screen_light_value";
-    public static final float SCREEN_LIGHT_VALUE_DEFAULT = 0.5f;
+    public static final int SCREEN_LIGHT_VALUE_MAX = 255;
 
     public static final String SCREEN_KEEP_LIGHT = "screen_keep_light";
 
@@ -26,6 +25,9 @@ public class AppSettings {
     public static final String SCREEN_SHOW_STATEBAR = "screen_show_statebar";
 
     public static final boolean SCREEN_SHOW_STATEBAR_DEFAULT = false;
+
+    public static final String SETTINGS_VERSION_CODE = "version_code";
+
 
 
     private final SharedPreferences pref;
