@@ -19,9 +19,9 @@ import android.widget.Scroller;
 
 import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppConfigs;
+import com.xian.xnovel.utils.AppSettings;
 
-public class PageView extends View implements AppConfigs {
+public class PageView extends View {
 
     private static final String TAG = "lmf";
     private static final int ANIM_DURATION = 1000;
@@ -111,8 +111,8 @@ public class PageView extends View implements AppConfigs {
             case MotionEvent.ACTION_DOWN:
                 clickStatus = ONCLICK_NORMAL;
 
-                if (bookActivity.getMenuStatus() == STATUS_MENU_SHOW) {
-                    mainHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+                if (bookActivity.getMenuStatus() == AppSettings.STATUS_MENU_SHOW) {
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
                     return false;
                 }
 
@@ -124,7 +124,7 @@ public class PageView extends View implements AppConfigs {
                     clickStatus = ONCLICK_READY;
                 } else {
 
-                    if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
 
                         calcCornerXY(x, y);
                         mTouch.x = x;
@@ -141,7 +141,7 @@ public class PageView extends View implements AppConfigs {
                             return true;
                         }
                     }
-                    if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
                         clickStatus = ONCLICK_NORMAL;
                         calcCornerXY(x, y);
                         mTouch.x = x;
@@ -150,7 +150,7 @@ public class PageView extends View implements AppConfigs {
                     } else {}
 
                 } else {
-                    if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
                         mTouch.x = x;
                         mTouch.y = y;
                         this.postInvalidate();
@@ -162,14 +162,14 @@ public class PageView extends View implements AppConfigs {
 
             case MotionEvent.ACTION_UP:
                 if (clickStatus == ONCLICK_READY) {
-                    mainHandler.sendEmptyMessage(MSG_MENU_SHOW);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_SHOW);
                     calcCornerXY(0, 0);
                     mTouch.x = 0;
                     mTouch.y = 0;
                     this.postInvalidate();
                 } else {
 
-                    if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
                         startAnimation(ANIM_DURATION);
                         this.postInvalidate();
                     } else {
@@ -372,7 +372,7 @@ public class PageView extends View implements AppConfigs {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+        if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
             canvas.drawColor(0xAA111111);
 
             if (dragToRight()) {
@@ -606,7 +606,7 @@ public class PageView extends View implements AppConfigs {
 
     private void startAnimation(int delayMillis) {
 
-        if (bookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+        if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
             int dx, dy;
             // dx 水平方向滑动的距离，负值会使滚动向左滚动
             // dy 垂直方向滑动的距离，负值会使滚动向上滚动

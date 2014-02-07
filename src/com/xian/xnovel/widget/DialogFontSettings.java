@@ -1,9 +1,6 @@
 package com.xian.xnovel.widget;
 
 
-import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppConfigs;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -17,131 +14,127 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ToggleButton;
 
-public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarChangeListener,
-		AppConfigs {
+import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
 
-	private Context mContext;
-	private Handler mainHandler;
-	private SharedPreferences pref;
-	private LayoutInflater mInflater;
+public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarChangeListener {
 
-	private int prefLineSpace = PREF_LINE_SPACE_DEFAULT;
-	private int prefFontSize = PREF_FONT_SIZE_DEFAULT;
-	private int prefFontColor = PREF_FONT_COLOR_DEFAULT;
+    private final Context mContext;
+    private Handler mainHandler;
+    private SharedPreferences pref;
+    private final LayoutInflater mInflater;
 
-	private LinearLayout tabLeftLl, tabRightLl;
-	private SeekBar fontSizeSb, lineSpaceSb;
-	private ToggleButton fontBoldTb, fontItalicTb;
-	private ColorPickerView colorSelectCv;
+    private int prefLineSpace = AppSettings.PREF_LINE_SPACE_DEFAULT;
+    private int prefFontSize = AppSettings.PREF_FONT_SIZE_DEFAULT;
+    private int prefFontColor = AppSettings.PREF_FONT_COLOR_DEFAULT;
 
-	public DialogFontSettings(Context context) {
-		super(context);
-		mContext = context;
-		mInflater = LayoutInflater.from(mContext);
-	}
+    private LinearLayout tabLeftLl, tabRightLl;
+    private SeekBar fontSizeSb, lineSpaceSb;
+    private ToggleButton fontBoldTb, fontItalicTb;
+    private ColorPickerView colorSelectCv;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    public DialogFontSettings(Context context) {
+        super(context);
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+    }
 
-		tabLeftLl = (LinearLayout) mInflater.inflate(
-				R.layout.tab_font_settings, null);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		tabRightLl = (LinearLayout) mInflater.inflate(
-				R.layout.tab_font_color_settings, null);
-		colorSelectCv = (ColorPickerView) tabRightLl
-				.findViewById(R.id.font_cpv_color);
-		fontSizeSb = (SeekBar) tabLeftLl.findViewById(R.id.font_size_sb);
-		lineSpaceSb = (SeekBar) tabLeftLl.findViewById(R.id.line_space_sb);
-		fontBoldTb = (ToggleButton) tabLeftLl.findViewById(R.id.font_bold_tb);
-		fontItalicTb = (ToggleButton) tabLeftLl
-				.findViewById(R.id.font_italic_tb);
-		setTabTitle(R.string.settings_font_size, R.string.settings_font_color);
+        tabLeftLl = (LinearLayout) mInflater.inflate(R.layout.tab_font_settings, null);
 
-		colorSelectCv
-				.setOnColorChangeListener(new ColorPickerView.OnColorChangedListener() {
+        tabRightLl = (LinearLayout) mInflater.inflate(R.layout.tab_font_color_settings, null);
+        colorSelectCv = (ColorPickerView) tabRightLl.findViewById(R.id.font_cpv_color);
+        fontSizeSb = (SeekBar) tabLeftLl.findViewById(R.id.font_size_sb);
+        lineSpaceSb = (SeekBar) tabLeftLl.findViewById(R.id.line_space_sb);
+        fontBoldTb = (ToggleButton) tabLeftLl.findViewById(R.id.font_bold_tb);
+        fontItalicTb = (ToggleButton) tabLeftLl.findViewById(R.id.font_italic_tb);
+        setTabTitle(R.string.settings_font_size, R.string.settings_font_color);
 
-					@Override
-					public void colorChanged(int color) {
-						// TODO Auto-generated method stub
-						sendMessage(MSG_SETTINGS_FONT_COLOR, color,
-								0);
-						prefFontColor = color;
-					}
-				});
-		
-		fontSizeSb.setOnSeekBarChangeListener(this);
-		lineSpaceSb.setOnSeekBarChangeListener(this);
+        colorSelectCv.setOnColorChangeListener(new ColorPickerView.OnColorChangedListener() {
 
-		addFlipperView(tabLeftLl);
-		addFlipperView(tabRightLl);
+            @Override
+            public void colorChanged(int color) {
+                // TODO Auto-generated method stub
+                sendMessage(AppSettings.MSG_SETTINGS_FONT_COLOR, color, 0);
+                prefFontColor = color;
+            }
+        });
 
-		pref = mContext.getSharedPreferences(AppConfigs.Settings,
-				Context.MODE_PRIVATE);
+        fontSizeSb.setOnSeekBarChangeListener(this);
+        lineSpaceSb.setOnSeekBarChangeListener(this);
 
-		prefLineSpace = pref.getInt(PREF_LINE_SPACE, PREF_LINE_SPACE_DEFAULT);
-		prefFontSize = pref.getInt(PREF_FONT_SIZE, PREF_FONT_SIZE_DEFAULT);
-		prefFontColor = pref.getInt(PREF_FONT_COLOR, PREF_FONT_COLOR_DEFAULT);
-		fontSizeSb.setProgress(100);
-		lineSpaceSb.setProgress(0);
-		colorSelectCv.setInitialColor(prefFontColor);
+        addFlipperView(tabLeftLl);
+        addFlipperView(tabRightLl);
 
-	}
+        pref = AppSettings.getInstance(mContext).getPref();
 
-	@Override
-	public void dismiss() {
-		// TODO Auto-generated method stub
-		savePrefThread.start();
-		super.dismiss();
-	}
+        prefLineSpace =
+                pref.getInt(AppSettings.PREF_LINE_SPACE, AppSettings.PREF_LINE_SPACE_DEFAULT);
+        prefFontSize = pref.getInt(AppSettings.PREF_FONT_SIZE, AppSettings.PREF_FONT_SIZE_DEFAULT);
+        prefFontColor =
+                pref.getInt(AppSettings.PREF_FONT_COLOR, AppSettings.PREF_FONT_COLOR_DEFAULT);
+        fontSizeSb.setProgress(100);
+        lineSpaceSb.setProgress(0);
+        colorSelectCv.setInitialColor(prefFontColor);
 
-	private Thread savePrefThread = new Thread(new Runnable() {
+    }
 
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			Editor editor = pref.edit();
-			editor.putInt(PREF_LINE_SPACE, prefLineSpace);
-			editor.putInt(PREF_FONT_SIZE, prefFontSize);
-			editor.putInt(PREF_FONT_COLOR, prefFontColor);
+    @Override
+    public void dismiss() {
+        // TODO Auto-generated method stub
+        savePrefThread.start();
+        super.dismiss();
+    }
 
-			editor.commit();
-		}
-	});
+    private final Thread savePrefThread = new Thread(new Runnable() {
 
-	private void sendMessage(int what, int arg0, int arg1) {
-		Message msg = Message.obtain();
-		msg.what = what;
-		msg.arg1 = arg0;
-		msg.arg2 = arg1;
-		mainHandler.sendMessage(msg);
-	}
-	
-	public void setMainHandler(Handler mainHandler) {
-		this.mainHandler = mainHandler;
-	}
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Editor editor = pref.edit();
+            editor.putInt(AppSettings.PREF_LINE_SPACE, prefLineSpace);
+            editor.putInt(AppSettings.PREF_FONT_SIZE, prefFontSize);
+            editor.putInt(AppSettings.PREF_FONT_COLOR, prefFontColor);
 
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
-		// TODO Auto-generated method stub
-		if(seekBar.getId()==R.id.font_size_sb){
-			Log.e("lmf", "onProgressChanged>>>>>>>>font_size_sb>>>>>>>>"+progress);
-		}else{
-			Log.e("lmf", "onProgressChanged>>>>>>>>else>>>>>>>>"+progress);
-		}
-	}
+            editor.commit();
+        }
+    });
 
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
-	}
+    private void sendMessage(int what, int arg0, int arg1) {
+        Message msg = Message.obtain();
+        msg.what = what;
+        msg.arg1 = arg0;
+        msg.arg2 = arg1;
+        mainHandler.sendMessage(msg);
+    }
 
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setMainHandler(Handler mainHandler) {
+        this.mainHandler = mainHandler;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        // TODO Auto-generated method stub
+        if (seekBar.getId() == R.id.font_size_sb) {
+            Log.e("lmf", "onProgressChanged>>>>>>>>font_size_sb>>>>>>>>" + progress);
+        } else {
+            Log.e("lmf", "onProgressChanged>>>>>>>>else>>>>>>>>" + progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

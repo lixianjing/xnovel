@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,17 +29,16 @@ import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppConfigs;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
-public class BookActivity extends BaseActivity implements AppConfigs {
+public class BookActivity extends BaseActivity {
 
     private Context mContext;
     private SharedPreferences mPref;
-    private int mWidth, mHeight, fullWidth, fullHeight;
+    private int mWidth, mHeight;
 
     private BookPageFactory pagefactory;
     private String bookTitle, bookContent;
@@ -50,8 +50,8 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     private Bitmap mCurPageBitmap, mNextPageBitmap;
     private Canvas mCurPageCanvas, mNextPageCanvas;
 
-    private int menuStatus = STATUS_MENU_HIDE;
-    private int pageMode = PREF_PAGE_MODE_DRAG;
+    private int menuStatus = AppSettings.STATUS_MENU_HIDE;
+    private int pageMode = AppSettings.PREF_PAGE_MODE_DRAG;
 
     private PageView mPageView;
     private RelativeLayout menuRl;
@@ -68,7 +68,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             switch (msg.what) {
-                case MSG_MENU_SHOW:
+                case AppSettings.MSG_MENU_SHOW:
                     pagefactory.draw(mCurPageCanvas);
                     menuIv.setImageBitmap(mCurPageBitmap);
                     menuRl.setVisibility(View.VISIBLE);
@@ -79,37 +79,37 @@ public class BookActivity extends BaseActivity implements AppConfigs {
                     menuTopLayout.setRightText(pagefactory.getCurTime());
                     menuTopLayout.showEx();
                     menuTopLayout.requestFocus();
-                    menuStatus = STATUS_MENU_SHOW;
+                    menuStatus = AppSettings.STATUS_MENU_SHOW;
                     break;
-                case MSG_MENU_HIDE_TRANSLATE:
+                case AppSettings.MSG_MENU_HIDE_TRANSLATE:
                     menuBtmLayout.hideEx(0);
                     menuTopLayout.hideEx(0);
-                    menuStatus = STATUS_MENU_HIDE;
+                    menuStatus = AppSettings.STATUS_MENU_HIDE;
                     break;
-                case MSG_MENU_HIDE_DISAPPEAR:
+                case AppSettings.MSG_MENU_HIDE_DISAPPEAR:
                     menuBtmLayout.hideEx(1);
                     menuTopLayout.hideEx(1);
-                    sendEmptyMessage(MSG_MENU_SHOW_BOOK);
-                    menuStatus = STATUS_MENU_HIDE;
+                    sendEmptyMessage(AppSettings.MSG_MENU_SHOW_BOOK);
+                    menuStatus = AppSettings.STATUS_MENU_HIDE;
                     break;
-                case MSG_MENU_SHOW_BOOK:
+                case AppSettings.MSG_MENU_SHOW_BOOK:
                     mPageView.setVisibility(View.VISIBLE);
                     menuRl.setVisibility(View.GONE);
                     menuIv.setVisibility(View.GONE);
                     break;
-                case MSG_PICK_PICTURE:
+                case AppSettings.MSG_PICK_PICTURE:
                     onPickFromGalleryChosen();
                     break;
 
-                case MSG_SETTINGS_THEME_BG:
+                case AppSettings.MSG_SETTINGS_THEME_BG:
                     pagefactory.setBgBitmap(msg.arg1);
                     updatePageFactory();
                     break;
-                case MSG_SETTINGS_THEME_COLOR:
+                case AppSettings.MSG_SETTINGS_THEME_COLOR:
                     pagefactory.setBgColor(msg.arg1);
                     updatePageFactory();
                     break;
-                case MSG_SETTINGS_THEME_PICTURE:
+                case AppSettings.MSG_SETTINGS_THEME_PICTURE:
                     if (pictureBitmap != null && !pictureBitmap.isRecycled()) {
                         pagefactory.setBgBitmap(pictureBitmap);
                         updatePageFactory();
@@ -118,13 +118,21 @@ public class BookActivity extends BaseActivity implements AppConfigs {
                                 Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case MSG_SETTINGS_FONT_COLOR:
+                case AppSettings.MSG_SETTINGS_FONT_COLOR:
                     pagefactory.setFontColor(msg.arg1);
                     updatePageFactory();
                     break;
-                case MSG_SETTINGS_POSITION:
+                case AppSettings.MSG_SETTINGS_POSITION:
                     pagefactory.setCurPosition(msg.arg1);
                     updatePageFactory();
+                    break;
+
+                case AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_TRUE:
+                    wakeLock.release();
+
+                    break;
+                case AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_FALSE:
+                    wakeLock.acquire();
                     break;
             }
             super.handleMessage(msg);
@@ -142,8 +150,19 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 设置全屏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Log.e("lmf", "onCreate>>>>>>>>>>>>>>>>>>>>>>");
+        mPref = AppSettings.getInstance(mContext).getPref();
+        if (AppSettings.Configs.sScreenShowStatebar) {
+            mWidth = mPref.getInt(AppSettings.SETTINGS_WIDTH_VIEW, 480);
+            mHeight = mPref.getInt(AppSettings.SETTINGS_HEIGHT_VIEW, 800);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            mWidth = mPref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 480);
+            mHeight = mPref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 800);
+        }
+
+
 
         setContentView(R.layout.activity_book);
         mContext = this;
@@ -161,22 +180,20 @@ public class BookActivity extends BaseActivity implements AppConfigs {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+                mHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
             }
         });
-        mPref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
-        pageMode = mPref.getInt(AppConfigs.PREF_PAGE_MODE, PREF_PAGE_MODE_DRAG);
+
+        pageMode = mPref.getInt(AppSettings.PREF_PAGE_MODE, AppSettings.PREF_PAGE_MODE_DRAG);
         menuBtmLayout.setMainHandler(mHandler);
         menuBtmLayout.setBookActivity(this);
         mPageView.setMainHandler(mHandler);
         mPageView.setBookActivity(this);
 
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-        wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
-        fullWidth = mPref.getInt(AppConfigs.SETTINGS_WIDTH_FULL, 0);
-        fullHeight = mPref.getInt(AppConfigs.SETTINGS_HEIGHT_FULL, 0);
-        mWidth = fullWidth;
-        mHeight = fullHeight;
+        wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "keep light");
+        wakeLock.setReferenceCounted(false);
+
 
 
         mPref = AppSettings.getInstance(mContext).getPref();
@@ -190,7 +207,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
 
     private void loadBook() {
         getIntentData(getIntent());
-        if (bookId != BOOK_FILE_NULL) {
+        if (bookId != AppSettings.BOOK_FILE_NULL) {
             pagefactory = BookPageFactory.getInstance(this);
             pagefactory.setBookSize(mWidth, mHeight);
 
@@ -201,7 +218,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
             mNextPageCanvas = new Canvas(mNextPageBitmap);
 
             mPageView.setPagefactory(pagefactory);
-            pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
+            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
             pagefactory.setTitleName(bookContent);
             menuTopLayout.setCenterText(bookTitle + " " + bookContent);
             pagefactory.setCurPosition(position);
@@ -217,7 +234,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     }
 
     public void preChapter() {
-        if (bookId == BOOK_FILE_BEGIN) {
+        if (bookId == AppSettings.BOOK_FILE_BEGIN) {
             return;
         }
         CatalogInfo catalog = dbControl.getCatalog(bookId - 1);
@@ -232,7 +249,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     }
 
     public void nextChapter() {
-        if (bookId == BOOK_FILE_END) {
+        if (bookId == AppSettings.BOOK_FILE_END) {
             return;
         }
         CatalogInfo catalog = dbControl.getCatalog(bookId + 1);
@@ -262,7 +279,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
 
     private void reLoadBook() {
         pagefactory.closeBook();
-        pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
+        pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
         pagefactory.setTitleName(bookContent);
         menuTopLayout.setCenterText(bookTitle + " " + bookContent);
         pagefactory.setCurPosition(position);
@@ -272,10 +289,10 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     }
 
     private void getIntentData(Intent intent) {
-        bookTitle = intent.getStringExtra(AppConfigs.TITLE);
-        bookContent = intent.getStringExtra(AppConfigs.CONTENT);
-        bookId = intent.getIntExtra(AppConfigs.ID, BOOK_FILE_NULL);
-        position = intent.getIntExtra(AppConfigs.POSITION, 0);
+        bookTitle = intent.getStringExtra(AppSettings.TITLE);
+        bookContent = intent.getStringExtra(AppSettings.CONTENT);
+        bookId = intent.getIntExtra(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
+        position = intent.getIntExtra(AppSettings.POSITION, 0);
     }
 
     @Override
@@ -288,26 +305,29 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
-        wakeLock.acquire();
-
+        if (!AppSettings.Configs.sScreenCloseLight) {
+            wakeLock.acquire();
+        }
         super.onStart();
     }
 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
+
         wakeLock.release();
+
         if (isSaveHistory && position != pagefactory.getCurPosition()) {
             saveHistory();
             isSaveHistory = false;
         }
-        if (menuStatus == STATUS_MENU_SHOW) {
+        if (menuStatus == AppSettings.STATUS_MENU_SHOW) {
             mPageView.setVisibility(View.VISIBLE);
             menuRl.setVisibility(View.GONE);
             menuIv.setVisibility(View.GONE);
             menuBtmLayout.setVisibility(View.GONE);
             menuTopLayout.setVisibility(View.GONE);
-            menuStatus = STATUS_MENU_SHOW;
+            menuStatus = AppSettings.STATUS_MENU_SHOW;
         }
 
         super.onStop();
@@ -359,12 +379,12 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        bookTitle = savedInstanceState.getString(AppConfigs.TITLE);
-        bookContent = savedInstanceState.getString(AppConfigs.CONTENT);
-        bookId = savedInstanceState.getInt(AppConfigs.ID, BOOK_FILE_NULL);
-        position = savedInstanceState.getInt(AppConfigs.POSITION, 0);
-        if (bookId != BOOK_FILE_NULL) {
-            pagefactory.openBook(AppConfigs.BOOK_FILE_PATH, AppConfigs.BOOK_FILE_PREFIX + bookId);
+        bookTitle = savedInstanceState.getString(AppSettings.TITLE);
+        bookContent = savedInstanceState.getString(AppSettings.CONTENT);
+        bookId = savedInstanceState.getInt(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
+        position = savedInstanceState.getInt(AppSettings.POSITION, 0);
+        if (bookId != AppSettings.BOOK_FILE_NULL) {
+            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
             pagefactory.setCurPosition(position);
             mPageView.invalidate();
 
@@ -379,10 +399,10 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     protected void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
 
-        outState.putString(AppConfigs.TITLE, bookTitle);
-        outState.putString(AppConfigs.CONTENT, bookContent);
-        outState.putInt(AppConfigs.ID, bookId);
-        outState.putInt(AppConfigs.POSITION, pagefactory.getCurPosition());
+        outState.putString(AppSettings.TITLE, bookTitle);
+        outState.putString(AppSettings.CONTENT, bookContent);
+        outState.putInt(AppSettings.ID, bookId);
+        outState.putInt(AppSettings.POSITION, pagefactory.getCurPosition());
 
         super.onSaveInstanceState(outState);
     }
@@ -420,7 +440,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         if (menuBtmLayout.getVisibility() == View.VISIBLE) {
-            mHandler.sendEmptyMessage(MSG_MENU_HIDE_TRANSLATE);
+            mHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
         } else {
             super.onBackPressed();
         }
@@ -433,7 +453,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
-            case REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
+            case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
                 if (resultCode != Activity.RESULT_OK) return;
                 // As we are coming back to this view, the editor will be
@@ -454,8 +474,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
                         Bitmap temp =
                                 BitmapFactory.decodeStream(getContentResolver()
                                         .openInputStream(uri));
-                        pictureBitmap =
-                                Bitmap.createScaledBitmap(temp, fullWidth, fullHeight, false);
+                        pictureBitmap = Bitmap.createScaledBitmap(temp, mWidth, mHeight, false);
                         if (pictureBitmap != null) {
                             pictureChangedListener.pictureChanged(pictureBitmap);
                         }
@@ -475,7 +494,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
      */
     public void onPickFromGalleryChosen() {
         final Intent intent = getPhotoPickIntent();
-        startActivityForResult(intent, REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
+        startActivityForResult(intent, AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA);
     }
 
     /**
@@ -511,7 +530,7 @@ public class BookActivity extends BaseActivity implements AppConfigs {
     public void setPageMode(int pageMode) {
         this.pageMode = pageMode;
         Editor editor = mPref.edit();
-        editor.putInt(AppConfigs.PREF_PAGE_MODE, pageMode);
+        editor.putInt(AppSettings.PREF_PAGE_MODE, pageMode);
         editor.commit();
     }
 

@@ -66,9 +66,9 @@
     <string name="settings_font_t_desc">设置后小说文字为斜体</string>
     <!--  -->
     <string name="settings_screen_orientation">屏幕方向</string>
-    <string name="settings_screen_orientation_horizontal">横屏</string>
-    <string name="settings_screen_orientation_vertical">竖屏</string>
-    <string name="settings_screen_orientation_auto">重力感应</string>
+    <string name="settings_screen_orientation_landscape">横屏</string>
+    <string name="settings_screen_orientation_portrait">竖屏</string>
+    <string name="settings_screen_orientation_sensor">重力感应</string>
 
     <!--  -->
     <string name="settings_font_size">字体</string>

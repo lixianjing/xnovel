@@ -23,10 +23,10 @@ import android.graphics.Paint.Align;
 import android.widget.Toast;
 
 import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppConfigs;
+import com.xian.xnovel.utils.AppSettings;
 
 @SuppressLint("NewApi")
-public class BookPageFactory implements AppConfigs {
+public class BookPageFactory {
 
     private final String m_strCharsetName = "UTF-8";
 
@@ -42,12 +42,12 @@ public class BookPageFactory implements AppConfigs {
     private int mWidth;
     private int mHeight;
 
-    private int bgColor = PREF_THEME_COLOR_DEFAULT; // 背景颜色
+    private int bgColor = AppSettings.PREF_THEME_COLOR_DEFAULT; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
 
-    private int textColor = PREF_FONT_COLOR_DEFAULT; // 文字颜色
-    private int mFontSize = PREF_FONT_SIZE_DEFAULT;
-    private int spaceSize = PREF_LINE_SPACE_DEFAULT;// 行间距大小
+    private int textColor = AppSettings.PREF_FONT_COLOR_DEFAULT; // 文字颜色
+    private int mFontSize = AppSettings.PREF_FONT_SIZE_DEFAULT;
+    private int spaceSize = AppSettings.PREF_LINE_SPACE_DEFAULT;// 行间距大小
 
     private Vector<String> mShowLine = new Vector<String>();
 
@@ -88,7 +88,7 @@ public class BookPageFactory implements AppConfigs {
     private BookPageFactory(Context context) {
         // TODO Auto-generated constructor stub
         mContext = context;
-        pref = mContext.getSharedPreferences(AppConfigs.Settings, Context.MODE_PRIVATE);
+        pref = AppSettings.getInstance(mContext).getPref();
 
         initPref();
 
@@ -124,22 +124,26 @@ public class BookPageFactory implements AppConfigs {
     }
 
     private void initPref() {
-        int mode = pref.getInt(PREF_THEME_MODE, PREF_THEME_MODE_BG);
+        int mode = pref.getInt(AppSettings.PREF_THEME_MODE, AppSettings.PREF_THEME_MODE_BG);
         switch (mode) {
-            case PREF_THEME_MODE_BG:
-                int index = pref.getInt(PREF_THEME_BG_INDEX, PREF_THEME_BG_DEFAULT);
+            case AppSettings.PREF_THEME_MODE_BG:
+                int index =
+                        pref.getInt(AppSettings.PREF_THEME_BG_INDEX,
+                                AppSettings.PREF_THEME_BG_DEFAULT);
                 setBgBitmap(BitmapFactory
                         .decodeResource(mContext.getResources(), themeBgRes[index]));
                 break;
-            case PREF_THEME_MODE_COLOR:
-                int color = pref.getInt(PREF_THEME_COLOR_VALUE, PREF_THEME_COLOR_DEFAULT);
+            case AppSettings.PREF_THEME_MODE_COLOR:
+                int color =
+                        pref.getInt(AppSettings.PREF_THEME_COLOR_VALUE,
+                                AppSettings.PREF_THEME_COLOR_DEFAULT);
                 bgColor = color;
                 setBgColor(color);
                 break;
-            case PREF_THEME_MODE_PICTURE:
+            case AppSettings.PREF_THEME_MODE_PICTURE:
                 try {
                     setBgBitmap(BitmapFactory.decodeStream(mContext
-                            .openFileInput(PREF_THEME_PICTURE_NAME)));
+                            .openFileInput(AppSettings.PREF_THEME_PICTURE_NAME)));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -150,9 +154,9 @@ public class BookPageFactory implements AppConfigs {
 
         }
 
-        textColor = pref.getInt(PREF_FONT_COLOR, PREF_FONT_COLOR_DEFAULT);
-        mFontSize = pref.getInt(PREF_FONT_SIZE, PREF_FONT_SIZE_DEFAULT);
-        spaceSize = pref.getInt(PREF_LINE_SPACE, PREF_LINE_SPACE_DEFAULT);
+        textColor = pref.getInt(AppSettings.PREF_FONT_COLOR, AppSettings.PREF_FONT_COLOR_DEFAULT);
+        mFontSize = pref.getInt(AppSettings.PREF_FONT_SIZE, AppSettings.PREF_FONT_SIZE_DEFAULT);
+        spaceSize = pref.getInt(AppSettings.PREF_LINE_SPACE, AppSettings.PREF_LINE_SPACE_DEFAULT);
 
     }
 

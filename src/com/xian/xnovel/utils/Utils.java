@@ -70,7 +70,7 @@ public class Utils {
             // intent.setType("text/plain"); //use this line for testing in the
             // emulator
             intent.setType("message/rfc822"); // use from live device
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {AppConfigs.CONTACT_EMAIL});
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {AppSettings.CONTACT_EMAIL});
             intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.contact_email_title));
             context.startActivity(Intent.createChooser(intent,
                     context.getString(R.string.select_application)));

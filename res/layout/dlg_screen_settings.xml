@@ -167,7 +167,7 @@
         android:src="@drawable/bs_list_divider" />
 
     <LinearLayout
-        android:id="@+id/screen_mode_ll"
+        android:id="@+id/screen_orientation_ll"
         android:layout_width="fill_parent"
         android:layout_height="64.0dip"
         android:background="@drawable/book_list_selector"
@@ -195,7 +195,7 @@
                 android:textSize="16.0sp" />
 
             <TextView
-                android:id="@+id/screen_mode_desc"
+                android:id="@+id/screen_orientation_desc"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -204,7 +204,6 @@
                 android:shadowDy="1.0"
                 android:shadowRadius="1.0"
                 android:singleLine="true"
-                android:text="@string/settings_screen_orientation_vertical"
                 android:textColor="#ff858585"
                 android:textSize="11.0sp" />
         </LinearLayout>

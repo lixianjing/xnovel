@@ -1,10 +1,6 @@
 package com.xian.xnovel.widget;
 
-import com.xian.xnovel.MainActivity;
-import com.xian.xnovel.utils.AppConfigs;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,357 +8,348 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Scroller;
+
+import com.xian.xnovel.MainActivity;
+import com.xian.xnovel.utils.AppSettings;
 
 public class MainViewGroup extends ViewGroup {
 
-	private static String TAG = "MainViewGroup";
-	
-	private static final int SCROLL_TIME = 600;
-	// ///////////////////////////////////////////////////¹ØÓÚ¹ö¶¯²¿·ÖµÄ´úÂë///////////////////////////////////////////////////////////////////////
-	private static final int INVALID_POINTER = -1;
-	private int mActivePointerId = INVALID_POINTER;
-
-	private Context mContext;
-	private int mWidth, mHeight;
-	private int curScreen = AppConfigs.SCREEN_DEFAULT; // µ±Ç°ÆÁ
-
-	private Scroller mScroller = null;
-
-	public MainViewGroup(Context context) {
-		super(context);
-		mContext = context;
-		init();
-	}
-
-	public MainViewGroup(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		mContext = context;
-		init();
-	}
-
-	// startScroll »¬ÆÁ
-	public void startMove() {
-		curScreen++;
-		Log.i(TAG, "----startMove---- curScreen " + curScreen);
-
-		Log.i(TAG, "----width  " + getWidth());
-		// ²ÉÓÃScrollerÀà¿ØÖÆ»¬¶¯¹ý³Ì
-		mScroller.startScroll((curScreen - 1) * getWidth(), 0, getWidth(), 0,
-				3000);
-		// ±©Á¦µãÖ±½Óµ½Ä¿±ê³ö
-		// scrollTo(curScreen * getWidth(), 0);
-		// ÆäÊµÔÚµã»÷°´Å¥µÄÊ±ºò£¬¾Í»Ø´¥·¢View»æÖÆÁ÷³Ì£¬Õâ¶ùÎÒÃÇÔÚÇ¿ÖÆ»æÖÆÏÂView
-		invalidate();
-	}
-
-	// Í£Ö¹»¬ÆÁ
-	public void stopMove() {
-
-		Log.v(TAG, "----stopMove ----");
-
-		if (mScroller != null) {
-			// Èç¹û¶¯»­»¹Ã»½áÊø£¬ÎÒÃÇ¾Í°´ÏÂÁË½áÊøµÄ°´Å¥£¬ÄÇÎÒÃÇ¾Í½áÊø¸Ã¶¯»­£¬¼´ÂíÉÏ»¬¶¯Ö¸¶¨Î»ÖÃ
-			if (!mScroller.isFinished()) {
-
-				int scrollCurX = mScroller.getCurrX();
-				// ÅÐ¶ÏÊÇ·ñ´ïµ½ÏÂÒ»ÆÁµÄÖÐ¼äÎ»ÖÃ£¬Èç¹û´ïµ½¾ÍµÖ´ïÏÂÒ»ÆÁ£¬·ñÔò±£³ÖÔÚÔ­ÆÁÄ»
-				// int moveX = scrollCurX - mScroller.getStartX() ;
-				// Log.i(TAG, "----mScroller.is not finished ---- shouldNext" +
-				// shouldNext);
-				// boolean shouldNext = moveX >= getWidth() / 2 ;
-				int descScreen = (scrollCurX + getWidth() / 2) / getWidth();
-
-				Log.i(TAG, "----mScroller.is not finished ---- shouldNext"
-						+ descScreen);
-
-				Log.i(TAG, "----mScroller.is not finished ---- scrollCurX "
-						+ scrollCurX);
-				mScroller.abortAnimation();
-
-				// Í£Ö¹ÁË¶¯»­£¬ÎÒÃÇÂíÉÏ»¬µ¹Ä¿±êÎ»ÖÃ
-				scrollTo(descScreen * getWidth(), 0);
-				mScroller.forceFinished(true);
-
-				curScreen = descScreen;
-			}
-		} else
-			Log.i(TAG, "----OK mScroller.is  finished ---- ");
-	}
-
-	// Ö»ÓÐµ±Ç°LAYOUTÖÐµÄÄ³¸öCHILDµ¼ÖÂSCROLL·¢Éú¹ö¶¯£¬²Å»áÖÂÊ¹×Ô¼ºµÄCOMPUTESCROLL±»µ÷ÓÃ
-	@Override
-	public void computeScroll() {
-		// TODO Auto-generated method stub
-		Log.e(TAG, "computeScroll");
-		// Èç¹û·µ»Øtrue£¬±íÊ¾¶¯»­»¹Ã»ÓÐ½áÊø
-		// ÒòÎªÇ°ÃæstartScroll£¬ËùÒÔÖ»ÓÐÔÚstartScrollÍê³ÉÊ± ²Å»áÎªfalse
-		if (mScroller.computeScrollOffset()) {
-			// ²úÉúÁË¶¯»­Ð§¹û Ã¿´Î¹ö¶¯Ò»µã
-			scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-
-			// Ë¢ÐÂView ·ñÔòÐ§¹û¿ÉÄÜÓÐÎó²î
-			postInvalidate();
-		} else
-			Log.i(TAG, "have done the scoller -----");
-	}
-
-	private static final int TOUCH_STATE_REST = 0;
-	private static final int TOUCH_STATE_SCROLLING = 1;
-	private int mTouchState = TOUCH_STATE_REST;
-	// --------------------------
-	// ´¦Àí´¥ÃþÊÂ¼þ ~
-	public static int SNAP_VELOCITY = 600;
-	private int mTouchSlop = 0;
-	private float mLastionMotionX = 0;
-	// ´¦Àí´¥ÃþµÄËÙÂÊ
-	private VelocityTracker mVelocityTracker = null;
-
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		return super.dispatchTouchEvent(ev);
-	}
-
-	// Õâ¸ö¸Ð¾õÃ»Ê²Ã´×÷ÓÃ ²»¹Ütrue»¹ÊÇfalse ¶¼ÊÇ»áÖ´ÐÐonTouchEventµÄ ÒòÎª×ÓviewÀïÃæonTouchEvent·µ»ØfalseÁË
-	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		// TODO Auto-generated method stub
-
-		final int action = ev.getAction();
-		// ±íÊ¾ÒÑ¾­¿ªÊ¼»¬¶¯ÁË£¬²»ÐèÒª×ß¸ÃAction_MOVE·½·¨ÁË(µÚÒ»´ÎÊ±¿ÉÄÜµ÷ÓÃ)¡£
-		if ((action == MotionEvent.ACTION_MOVE)
-				&& (mTouchState != TOUCH_STATE_REST)) {
-			return true;
-		}
-
-		switch (action & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_MOVE:
-			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-			final float x = ev.getX(pointerIndex);
-			final int xDiff = (int) Math.abs(mLastionMotionX - x);
-			// ³¬¹ýÁË×îÐ¡»¬¶¯¾àÀë
-			if (xDiff > mTouchSlop) {
-				mTouchState = TOUCH_STATE_SCROLLING;
-			}
-			break;
-
-		case MotionEvent.ACTION_DOWN:
-			Log.e(TAG, "onInterceptTouchEvent down");
-			mLastionMotionX = ev.getX();
-			mActivePointerId = ev.getPointerId(0);
-			Log.e(TAG, mScroller.isFinished() + "");
-			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
-					: TOUCH_STATE_SCROLLING;
-
-			break;
-		case MotionEvent.ACTION_POINTER_UP:
-			onSecondaryPointerUp(ev);
-			break;
-		case MotionEvent.ACTION_CANCEL:
-		case MotionEvent.ACTION_UP:
-			Log.e(TAG, "onInterceptTouchEvent up or cancel");
-			mTouchState = TOUCH_STATE_REST;
-			mActivePointerId = INVALID_POINTER;
-			break;
-		}
-		return mTouchState != TOUCH_STATE_REST;
-	}
-
-	public boolean onTouchEvent(MotionEvent event) {
-
-		Log.i(TAG, "--- onTouchEvent--> " + event.getAction());
-
-		// TODO Auto-generated method stub
-		if (mVelocityTracker == null) {
-			Log.e(TAG, "onTouchEvent start-------** VelocityTracker.obtain");
-			mVelocityTracker = VelocityTracker.obtain();
-		}
-		mVelocityTracker.addMovement(event);
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_DOWN:
-			// Èç¹ûÆÁÄ»µÄ¶¯»­»¹Ã»½áÊø£¬Äã¾Í°´ÏÂÁË£¬ÎÒÃÇ¾Í½áÊø¸Ã¶¯»­
-			if (mScroller != null) {
-				if (!mScroller.isFinished()) {
-					mScroller.abortAnimation();
-				}
-			}
-			mActivePointerId = event.getPointerId(0);
-			mLastionMotionX = event.getX();
-			break;
-		case MotionEvent.ACTION_MOVE:
-			final int pointerIndex = event.findPointerIndex(mActivePointerId);
-			final float x = event.getX(pointerIndex);
-
-			int detaX = (int) (mLastionMotionX - x);
-			scrollBy(detaX, 0);
-
-			Log.e(TAG, "--- MotionEvent.ACTION_MOVE--> detaX is " + detaX);
-			mLastionMotionX = x;
-
-			break;
-		case MotionEvent.ACTION_UP:
-
-			final VelocityTracker velocityTracker = mVelocityTracker;
-			velocityTracker.computeCurrentVelocity(1000);
-
-			int velocityX = (int) velocityTracker.getXVelocity();
-
-			Log.e(TAG, "---velocityX---" + velocityX);
-
-			// »¬¶¯ËÙÂÊ´ïµ½ÁËÒ»¸ö±ê×¼(¿ìËÙÏòÓÒ»¬ÆÁ£¬·µ»ØÉÏÒ»¸öÆÁÄ») ÂíÉÏ½øÐÐÇÐÆÁ´¦Àí
-			if (velocityX > SNAP_VELOCITY && curScreen > 0) {
-				// Fling enough to move left
-				Log.e(TAG, "snap left");
-				snapToScreen(curScreen - 1);
-			}
-			// ¿ìËÙÏò×ó»¬ÆÁ£¬·µ»ØÏÂÒ»¸öÆÁÄ»)
-			else if (velocityX < -SNAP_VELOCITY
-					&& curScreen < (getChildCount() - 1)) {
-				Log.e(TAG, "snap right");
-				snapToScreen(curScreen + 1);
-			}
-			// ÒÔÉÏÎª¿ìËÙÒÆ¶¯µÄ £¬Ç¿ÖÆÇÐ»»ÆÁÄ»
-			else {
-				// ÎÒÃÇÊÇ»ºÂýÒÆ¶¯µÄ£¬Òò´ËÏÈÅÐ¶ÏÊÇ±£ÁôÔÚ±¾ÆÁÄ»»¹ÊÇµ½ÏÂÒ»ÆÁÄ»
-				snapToDestination();
-			}
-
-			if (mVelocityTracker != null) {
-				mVelocityTracker.recycle();
-				mVelocityTracker = null;
-			}
-			mActivePointerId = INVALID_POINTER;
-			mTouchState = TOUCH_STATE_REST;
-
-			break;
-		case MotionEvent.ACTION_CANCEL:
-			mActivePointerId = INVALID_POINTER;
-			mTouchState = TOUCH_STATE_REST;
-			break;
-		case MotionEvent.ACTION_POINTER_UP:
-			onSecondaryPointerUp(event);
-			break;
-		}
-
-		return true;
-	}
-
-	private void onSecondaryPointerUp(MotionEvent ev) {
-		final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-		final int pointerId = ev.getPointerId(pointerIndex);
-		if (pointerId == mActivePointerId) {
-			// This was our active pointer going up. Choose a new
-			// active pointer and adjust accordingly.
-			// TODO: Make this decision more intelligent.
-			final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-			mLastionMotionX = ev.getX(newPointerIndex);
-			mActivePointerId = ev.getPointerId(newPointerIndex);
-			if (mVelocityTracker != null) {
-				mVelocityTracker.clear();
-			}
-		}
-	}
-
-	// //ÎÒÃÇÊÇ»ºÂýÒÆ¶¯µÄ
-	private void snapToDestination() {
-
-		// ÅÐ¶ÏÊÇ·ñ³¬¹ýÏÂÒ»ÆÁµÄÖÐ¼äÎ»ÖÃ£¬Èç¹û´ïµ½¾ÍµÖ´ïÏÂÒ»ÆÁ£¬·ñÔò±£³ÖÔÚÔ­ÆÁÄ»
-		// Ö±½ÓÊ¹ÓÃÕâ¸ö¹«Ê½ÅÐ¶ÏÊÇÄÄÒ»¸öÆÁÄ» Ç°ºó»òÕß×Ô¼º
-		// ÅÐ¶ÏÊÇ·ñ³¬¹ýÏÂÒ»ÆÁµÄÖÐ¼äÎ»ÖÃ£¬Èç¹û´ïµ½¾ÍµÖ´ïÏÂÒ»ÆÁ£¬·ñÔò±£³ÖÔÚÔ­ÆÁÄ»
-		// ÕâÑùµÄÒ»¸ö¼òµ¥¹«Ê½ÒâË¼ÊÇ£º¼ÙÉèµ±Ç°»¬ÆÁÆ«ÒÆÖµ¼´ scrollCurX ¼ÓÉÏÃ¿¸öÆÁÄ»Ò»°ëµÄ¿í¶È£¬³ýÒÔÃ¿¸öÆÁÄ»µÄ¿í¶È¾ÍÊÇ
-		// ÎÒÃÇÄ¿±êÆÁËùÔÚÎ»ÖÃÁË¡£ ¼ÙÈçÃ¿¸öÆÁÄ»¿í¶ÈÎª320dip, ÎÒÃÇ»¬µ½ÁË500dip´¦£¬ºÜÏÔÈ»ÎÒÃÇÓ¦¸Ãµ½´ïµÚ¶þÆÁ
-		int destScreen = (getScrollX() + getWidth() / 3 * 2) / getWidth();
-
-		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx destScreen " + destScreen);
-
-		snapToScreen(destScreen);
-	}
-
-	public void snapToScreen(int whichScreen) {
-		// ¼òµ¥µÄÒÆµ½Ä¿±êÆÁÄ»£¬¿ÉÄÜÊÇµ±Ç°ÆÁ»òÕßÏÂÒ»ÆÁÄ»
-		// Ö±½ÓÌø×ª¹ýÈ¥£¬²»Ì«ÓÑºÃ
-		// scrollTo(mLastScreen * getWidth(), 0);
-		// ÎªÁËÓÑºÃÐÔ£¬ÎÒÃÇÔÚÔö¼ÓÒ»¸ö¶¯»­Ð§¹û
-		// ÐèÒªÔÙ´Î»¬¶¯µÄ¾àÀë ÆÁ»òÕßÏÂÒ»ÆÁÄ»µÄ¼ÌÐø»¬¶¯¾àÀë
-		whichScreen = Math.max(AppConfigs.SCREEN_MIN,
-				Math.min(whichScreen, getChildCount() - 1));
-		curScreen = whichScreen;
-
-		int dx = curScreen * getWidth() - getScrollX();
-
-		Log.e(TAG, "### onTouchEvent  ACTION_UP### dx is " + dx);
-		mScroller.startScroll(getScrollX(), 0, dx, 0,SCROLL_TIME);
-
-		mainActivity.updateCurrentTabs(curScreen);
-		// ´ËÊ±ÐèÒªÊÖ¶¯Ë¢ÐÂView ·ñÔòÃ»Ð§¹û
-		invalidate();
-
-	}
-
-	public void setCurrentScreen(int currentScreen) {
-		if (!mScroller.isFinished()) {
-			mScroller.abortAnimation();
-		}
-
-
-		currentScreen = Math.max(AppConfigs.SCREEN_MIN,
-				Math.min(currentScreen, getChildCount() - 1));
-		curScreen = currentScreen;
-
-		scrollTo((curScreen) * mWidth, 0);
-
-		mainActivity.updateCurrentTabs(curScreen);
-
-		invalidate();
-	}
-
-	private void init() {
-
-		mScroller = new Scroller(mContext);
-
-		// ³õÊ¼»¯Ò»¸ö×îÐ¡»¬¶¯¾àÀë
-		mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-	}
-
-	// measure¹ý³Ì
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-		Log.i(TAG, "--- start onMeasure --");
-
-		// ÉèÖÃ¸ÃViewGroupµÄ´óÐ¡
-		mWidth = MeasureSpec.getSize(widthMeasureSpec);
-		mHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-		for (int i = 0; i < getChildCount(); i++) {
-			View child = getChildAt(i);
-			// ÉèÖÃÃ¿¸ö×ÓÊÓÍ¼µÄ´óÐ¡ £¬ ¼´È«ÆÁ
-			child.measure(widthMeasureSpec, heightMeasureSpec);
-		}
-	}
-
-	// layout¹ý³Ì
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		// TODO Auto-generated method stub
-
-		int left = 0;
-		for (int i = 0; i < getChildCount(); i++) {
-			View child = getChildAt(i);
-			child.layout(left, 0, left + mWidth, mHeight);
-			left = left + getWidth();
-		}
-	}
-
-	// ///////////////////////////////////////////////////¹ØÓÚŒ¬F·½ÃæµÄ´úÂë///////////////////////////////////////////////////////////////////////
-
-	private MainActivity mainActivity;
-
-	public void setMainActivity(MainActivity activity) {
-		mainActivity = activity;
-	}
+    private static String TAG = "MainViewGroup";
+
+    private static final int SCROLL_TIME = 600;
+    // ///////////////////////////////////////////////////ï¿½ï¿½ï¿½Ú¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÄ´ï¿½ï¿½ï¿½///////////////////////////////////////////////////////////////////////
+    private static final int INVALID_POINTER = -1;
+    private int mActivePointerId = INVALID_POINTER;
+
+    private final Context mContext;
+    private int mWidth, mHeight;
+    private int curScreen = AppSettings.SCREEN_DEFAULT; // ï¿½ï¿½Ç°ï¿½ï¿½
+
+    private Scroller mScroller = null;
+
+    public MainViewGroup(Context context) {
+        super(context);
+        mContext = context;
+        init();
+    }
+
+    public MainViewGroup(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mContext = context;
+        init();
+    }
+
+    // startScroll ï¿½ï¿½ï¿½ï¿½
+    public void startMove() {
+        curScreen++;
+        Log.i(TAG, "----startMove---- curScreen " + curScreen);
+
+        Log.i(TAG, "----width  " + getWidth());
+        // ï¿½ï¿½ï¿½ï¿½Scrollerï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        mScroller.startScroll((curScreen - 1) * getWidth(), 0, getWidth(), 0, 3000);
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Óµï¿½Ä¿ï¿½ï¿½ï¿½
+        // scrollTo(curScreen * getWidth(), 0);
+        // ï¿½ï¿½Êµï¿½Úµï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½Ê±ï¿½ò£¬¾Í»Ø´ï¿½ï¿½ï¿½Viewï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½View
+        invalidate();
+    }
+
+    // Í£Ö¹ï¿½ï¿½ï¿½ï¿½
+    public void stopMove() {
+
+        Log.v(TAG, "----stopMove ----");
+
+        if (mScroller != null) {
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾Í°ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½Ä°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾Í½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Î»ï¿½ï¿½
+            if (!mScroller.isFinished()) {
+
+                int scrollCurX = mScroller.getCurrX();
+                // ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ïµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ïµ½ï¿½ÍµÖ´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò±£³ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ä»
+                // int moveX = scrollCurX - mScroller.getStartX() ;
+                // Log.i(TAG, "----mScroller.is not finished ---- shouldNext" +
+                // shouldNext);
+                // boolean shouldNext = moveX >= getWidth() / 2 ;
+                int descScreen = (scrollCurX + getWidth() / 2) / getWidth();
+
+                Log.i(TAG, "----mScroller.is not finished ---- shouldNext" + descScreen);
+
+                Log.i(TAG, "----mScroller.is not finished ---- scrollCurX " + scrollCurX);
+                mScroller.abortAnimation();
+
+                // Í£Ö¹ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Î»ï¿½ï¿½
+                scrollTo(descScreen * getWidth(), 0);
+                mScroller.forceFinished(true);
+
+                curScreen = descScreen;
+            }
+        } else
+            Log.i(TAG, "----OK mScroller.is  finished ---- ");
+    }
+
+    // Ö»ï¿½Ðµï¿½Ç°LAYOUTï¿½Ðµï¿½Ä³ï¿½ï¿½CHILDï¿½ï¿½ï¿½ï¿½SCROLLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½ï¿½ï¿½Ê¹ï¿½Ô¼ï¿½ï¿½ï¿½COMPUTESCROLLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    @Override
+    public void computeScroll() {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "computeScroll");
+        // ï¿½ï¿½ï¿½ï¿½trueï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ÎªÇ°ï¿½ï¿½startScrollï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½startScrollï¿½ï¿½ï¿½Ê± ï¿½Å»ï¿½Îªfalse
+        if (mScroller.computeScrollOffset()) {
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ Ã¿ï¿½Î¹ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+
+            // Ë¢ï¿½ï¿½View ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            postInvalidate();
+        } else
+            Log.i(TAG, "have done the scoller -----");
+    }
+
+    private static final int TOUCH_STATE_REST = 0;
+    private static final int TOUCH_STATE_SCROLLING = 1;
+    private int mTouchState = TOUCH_STATE_REST;
+    // --------------------------
+    // ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½Â¼ï¿½ ~
+    public static int SNAP_VELOCITY = 600;
+    private int mTouchSlop = 0;
+    private float mLastionMotionX = 0;
+    // ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private VelocityTracker mVelocityTracker = null;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
+    }
+
+    // ï¿½ï¿½ï¿½ï¿½Ð¾ï¿½Ã»Ê²Ã´ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½trueï¿½ï¿½ï¿½ï¿½false ï¿½ï¿½ï¿½Ç»ï¿½Ö´ï¿½ï¿½onTouchEventï¿½ï¿½ ï¿½ï¿½Îªï¿½ï¿½viewï¿½ï¿½ï¿½ï¿½onTouchEventï¿½ï¿½ï¿½ï¿½falseï¿½ï¿½
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // TODO Auto-generated method stub
+
+        final int action = ev.getAction();
+        // ï¿½ï¿½Ê¾ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ß¸ï¿½Action_MOVEï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½)ï¿½ï¿½
+        if ((action == MotionEvent.ACTION_MOVE) && (mTouchState != TOUCH_STATE_REST)) {
+            return true;
+        }
+
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_MOVE:
+                final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                final float x = ev.getX(pointerIndex);
+                final int xDiff = (int) Math.abs(mLastionMotionX - x);
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                if (xDiff > mTouchSlop) {
+                    mTouchState = TOUCH_STATE_SCROLLING;
+                }
+                break;
+
+            case MotionEvent.ACTION_DOWN:
+                Log.e(TAG, "onInterceptTouchEvent down");
+                mLastionMotionX = ev.getX();
+                mActivePointerId = ev.getPointerId(0);
+                Log.e(TAG, mScroller.isFinished() + "");
+                mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST : TOUCH_STATE_SCROLLING;
+
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                onSecondaryPointerUp(ev);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                Log.e(TAG, "onInterceptTouchEvent up or cancel");
+                mTouchState = TOUCH_STATE_REST;
+                mActivePointerId = INVALID_POINTER;
+                break;
+        }
+        return mTouchState != TOUCH_STATE_REST;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        Log.i(TAG, "--- onTouchEvent--> " + event.getAction());
+
+        // TODO Auto-generated method stub
+        if (mVelocityTracker == null) {
+            Log.e(TAG, "onTouchEvent start-------** VelocityTracker.obtain");
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+        mVelocityTracker.addMovement(event);
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½Ç¾Í½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½
+                if (mScroller != null) {
+                    if (!mScroller.isFinished()) {
+                        mScroller.abortAnimation();
+                    }
+                }
+                mActivePointerId = event.getPointerId(0);
+                mLastionMotionX = event.getX();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                final int pointerIndex = event.findPointerIndex(mActivePointerId);
+                final float x = event.getX(pointerIndex);
+
+                int detaX = (int) (mLastionMotionX - x);
+                scrollBy(detaX, 0);
+
+                Log.e(TAG, "--- MotionEvent.ACTION_MOVE--> detaX is " + detaX);
+                mLastionMotionX = x;
+
+                break;
+            case MotionEvent.ACTION_UP:
+
+                final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.computeCurrentVelocity(1000);
+
+                int velocityX = (int) velocityTracker.getXVelocity();
+
+                Log.e(TAG, "---velocityX---" + velocityX);
+
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ïµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½×¼(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ä») ï¿½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                if (velocityX > SNAP_VELOCITY && curScreen > 0) {
+                    // Fling enough to move left
+                    Log.e(TAG, "snap left");
+                    snapToScreen(curScreen - 1);
+                }
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ä»)
+                else if (velocityX < -SNAP_VELOCITY && curScreen < (getChildCount() - 1)) {
+                    Log.e(TAG, "snap right");
+                    snapToScreen(curScreen + 1);
+                }
+                // ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½Ä»
+                else {
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ä»
+                    snapToDestination();
+                }
+
+                if (mVelocityTracker != null) {
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                }
+                mActivePointerId = INVALID_POINTER;
+                mTouchState = TOUCH_STATE_REST;
+
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mActivePointerId = INVALID_POINTER;
+                mTouchState = TOUCH_STATE_REST;
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                onSecondaryPointerUp(event);
+                break;
+        }
+
+        return true;
+    }
+
+    private void onSecondaryPointerUp(MotionEvent ev) {
+        final int pointerIndex =
+                (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+        final int pointerId = ev.getPointerId(pointerIndex);
+        if (pointerId == mActivePointerId) {
+            // This was our active pointer going up. Choose a new
+            // active pointer and adjust accordingly.
+            // TODO: Make this decision more intelligent.
+            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+            mLastionMotionX = ev.getX(newPointerIndex);
+            mActivePointerId = ev.getPointerId(newPointerIndex);
+            if (mVelocityTracker != null) {
+                mVelocityTracker.clear();
+            }
+        }
+    }
+
+    // //ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½
+    private void snapToDestination() {
+
+        // ï¿½Ð¶ï¿½ï¿½Ç·ñ³¬¹ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ïµ½ï¿½ÍµÖ´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò±£³ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ä»
+        // Ö±ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ä» Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½
+        // ï¿½Ð¶ï¿½ï¿½Ç·ñ³¬¹ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ïµ½ï¿½ÍµÖ´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò±£³ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Ä»
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½òµ¥¹ï¿½Ê½ï¿½ï¿½Ë¼ï¿½Ç£ï¿½ï¿½ï¿½ï¿½èµ±Ç°ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½Öµï¿½ï¿½ scrollCurX ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ä»Ò»ï¿½ï¿½Ä¿ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Ä¿ï¿½È¾ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ë¡ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Îª320dip, ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½500dipï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ãµï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½
+        int destScreen = (getScrollX() + getWidth() / 3 * 2) / getWidth();
+
+        Log.e(TAG, "### onTouchEvent  ACTION_UP### dx destScreen " + destScreen);
+
+        snapToScreen(destScreen);
+    }
+
+    public void snapToScreen(int whichScreen) {
+        // ï¿½òµ¥µï¿½ï¿½Æµï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ä»
+        // Ö±ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½Ì«ï¿½Ñºï¿½
+        // scrollTo(mLastScreen * getWidth(), 0);
+        // Îªï¿½ï¿½ï¿½Ñºï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+        // ï¿½ï¿½Òªï¿½Ù´Î»ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ä»ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        whichScreen = Math.max(AppSettings.SCREEN_MIN, Math.min(whichScreen, getChildCount() - 1));
+        curScreen = whichScreen;
+
+        int dx = curScreen * getWidth() - getScrollX();
+
+        Log.e(TAG, "### onTouchEvent  ACTION_UP### dx is " + dx);
+        mScroller.startScroll(getScrollX(), 0, dx, 0, SCROLL_TIME);
+
+        mainActivity.updateCurrentTabs(curScreen);
+        // ï¿½ï¿½Ê±ï¿½ï¿½Òªï¿½Ö¶ï¿½Ë¢ï¿½ï¿½View ï¿½ï¿½ï¿½ï¿½Ã»Ð§ï¿½ï¿½
+        invalidate();
+
+    }
+
+    public void setCurrentScreen(int currentScreen) {
+        if (!mScroller.isFinished()) {
+            mScroller.abortAnimation();
+        }
+
+
+        currentScreen =
+                Math.max(AppSettings.SCREEN_MIN, Math.min(currentScreen, getChildCount() - 1));
+        curScreen = currentScreen;
+
+        scrollTo((curScreen) * mWidth, 0);
+
+        mainActivity.updateCurrentTabs(curScreen);
+
+        invalidate();
+    }
+
+    private void init() {
+
+        mScroller = new Scroller(mContext);
+
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        Log.i(TAG, "--- start onMeasure --");
+
+        mWidth = MeasureSpec.getSize(widthMeasureSpec);
+        mHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        // TODO Auto-generated method stub
+
+        int left = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.layout(left, 0, left + mWidth, mHeight);
+            left = left + getWidth();
+        }
+    }
+
+
+    private MainActivity mainActivity;
+
+    public void setMainActivity(MainActivity activity) {
+        mainActivity = activity;
+    }
 }

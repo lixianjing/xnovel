@@ -23,9 +23,9 @@ import com.xian.xnovel.BookActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
 import com.xian.xnovel.factory.BookPageFactory;
-import com.xian.xnovel.utils.AppConfigs;
+import com.xian.xnovel.utils.AppSettings;
 
-public class MenuBtmLayout extends LinearLayout implements View.OnClickListener, AppConfigs {
+public class MenuBtmLayout extends LinearLayout implements View.OnClickListener {
 
     private static final int INDEX_TOOLS_PAGE = 0;
     private static final int INDEX_SETTINGS_PAGE = 1;
@@ -76,7 +76,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
             @Override
             public void onAnimationEnd(Animation animation) {
                 // TODO Auto-generated method stub
-                mainHandler.sendEmptyMessage(MSG_MENU_SHOW_BOOK);
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_SHOW_BOOK);
 
             }
         });
@@ -175,29 +175,29 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
             switch (arg2) {
                 case 0:
                     intent = new Intent();
-                    intent.putExtra(DATA_TAB_INDEX, TAB_CATALOG);
+                    intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_CATALOG);
                     mBookActivity.setResult(Activity.RESULT_OK, intent);
                     mBookActivity.finish();
                     break;
                 case 1:
-                    if (mBookActivity.getBookId() == BOOK_FILE_BEGIN) {
-                        mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+                    if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_BEGIN) {
+                        mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                         Toast.makeText(mContext, R.string.settings_first_chapter,
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     mBookActivity.preChapter();
                     Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    if (mBookActivity.getBookId() == BOOK_FILE_END) {
-                        mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+                    if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_END) {
+                        mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                         Toast.makeText(mContext, R.string.settings_last_chapter, Toast.LENGTH_SHORT)
                                 .show();
                         return;
                     }
-                    mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     mBookActivity.nextChapter();
                     Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
                     break;
@@ -207,7 +207,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
                 case 4:
 
                     intent = new Intent();
-                    intent.putExtra(DATA_TAB_INDEX, TAB_MARK);
+                    intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_MARK);
                     mBookActivity.setResult(Activity.RESULT_OK, intent);
                     mBookActivity.finish();
                     break;
@@ -220,13 +220,13 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
                         Toast.makeText(mContext, R.string.menu_addmark_fail, Toast.LENGTH_SHORT)
                                 .show();
                     }
-                    mainHandler.sendEmptyMessage(MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     break;
                 case 6:
                     Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
                     break;
                 case 7:
-                    mainHandler.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     if (seekDialog == null) {
                         seekDialog = new DialogPositionSettings(mContext);
                         seekDialog.setMainHandler(mainHandler);
@@ -252,15 +252,16 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
             // TODO Auto-generated method stub
             switch (position) {
                 case 0:
-                    mainHandler.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     if (screenDialog == null) {
                         screenDialog = new DialogScreenSettings(mContext);
                         screenDialog.setBookActivity(mBookActivity);
+                        screenDialog.setHandler(mainHandler);
                     }
                     screenDialog.show();
                     break;
                 case 1:
-                    mainHandler.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     if (fontDialog == null) {
                         fontDialog = new DialogFontSettings(mContext);
                         fontDialog.setMainHandler(mainHandler);
@@ -291,7 +292,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
                 }
                     break;
                 case 3:
-                    mainHandler.sendEmptyMessage(BookActivity.MSG_MENU_HIDE_DISAPPEAR);
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     if (themeSettingsDialog == null) {
                         themeSettingsDialog = new DialogThemeSettings(mContext);
                         themeSettingsDialog.setMainHandler(mainHandler);
@@ -352,7 +353,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener,
     public void setBookActivity(BookActivity bookActivity) {
 
         this.mBookActivity = bookActivity;
-        if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+        if (mBookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
             settingsImgRes[2] = R.drawable.icon_mode_drag;
             settingsStrsRes[2] = R.string.menu_mode_drag;
         } else {
