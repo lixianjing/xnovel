@@ -151,7 +151,8 @@ public class BookActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // 设置全屏
         Log.e("lmf", "onCreate>>>>>>>>>>>>>>>>>>>>>>");
-        mPref = AppSettings.getInstance(mContext).getPref();
+        mContext = this;
+        mPref = AppSettings.getInstance(this).getPref();
         if (AppSettings.Configs.sScreenShowStatebar) {
             mWidth = mPref.getInt(AppSettings.SETTINGS_WIDTH_VIEW, 480);
             mHeight = mPref.getInt(AppSettings.SETTINGS_HEIGHT_VIEW, 800);
@@ -165,7 +166,7 @@ public class BookActivity extends BaseActivity {
 
 
         setContentView(R.layout.activity_book);
-        mContext = this;
+
         dbControl = AppDBControl.getInstance(mContext);
 
         mPageView = (PageView) findViewById(R.id.book_pv);

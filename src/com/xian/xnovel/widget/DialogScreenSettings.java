@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -190,10 +191,10 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             AppSettings.Configs.sScreenLight = Utils.getSysScreenBrightness(mContext);
             lightSb.setProgress(AppSettings.Configs.sScreenLight);
             lightSb.setEnabled(false);
+            Log.e("lmf", "    AppSettings.Configs.sScreenLight >>>>>>>>>"
+                    + AppSettings.Configs.sScreenLight);
         }
     }
-
-
 
     public void setBookActivity(BookActivity bookActivity) {
         this.mBookActivity = bookActivity;

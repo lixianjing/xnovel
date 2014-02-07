@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.DialogScreenModeListAdapter;
+import com.xian.xnovel.utils.AppSettings;
 
 public class DialogScreenList extends Dialog {
 
@@ -54,12 +55,18 @@ public class DialogScreenList extends Dialog {
 
             }
         });
+
+        mAdapter.setSelectIndex(AppSettings.Configs.sScreenOrientation);
+        mAdapter.notifyDataSetChanged();
+        mListView.invalidate();
+
         this.setCanceledOnTouchOutside(true);
     }
 
     public void setHandler(Handler handler) {
         parentHandler = handler;
     }
+
 
 
 }

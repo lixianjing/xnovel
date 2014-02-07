@@ -158,7 +158,7 @@ public class AppSettings {
         if (mSettings != null) {
             return mSettings;
         }
-        mSettings = new AppSettings(context);
+        mSettings = new AppSettings(context.getApplicationContext());
         return mSettings;
     }
 
