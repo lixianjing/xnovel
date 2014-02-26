@@ -94,6 +94,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 AppSettings.Configs.sScreenCloseLight = isChecked;
                 mEditor.putBoolean(AppSettings.SCREEN_CLOSE_LIGHT, isChecked);
                 mEditor.commit();
+                keepLightTb.setChecked(AppSettings.Configs.sScreenCloseLight);
                 if (isChecked) {
                     parentHandler
                             .sendEmptyMessage(AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_TRUE);
@@ -112,6 +113,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 AppSettings.Configs.sScreenShowStatebar = isChecked;
                 mEditor.putBoolean(AppSettings.SCREEN_SHOW_STATEBAR, isChecked);
                 mEditor.commit();
+                stateBarTb.setChecked(AppSettings.Configs.sScreenShowStatebar);
             }
         });
 
@@ -120,11 +122,10 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
                 // TODO Auto-generated method stub
-                if (AppSettings.Configs.sScreenMode == AppSettings.SCREEN_MODE_USER_LIGHT) {
-                    AppSettings.Configs.sScreenLight = arg0.getProgress();
-                    mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, arg0.getProgress());
-                    mEditor.commit();
-                }
+                Log.e("lmf", "onStopTrackingTouch>>>>>>>>>>>" + arg0.getProgress());
+                AppSettings.Configs.sScreenLight = arg0.getProgress();
+                mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, arg0.getProgress());
+                mEditor.commit();
             }
 
             @Override
@@ -135,6 +136,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             @Override
             public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
                 // TODO Auto-generated method stub
+                Log.e("lmf", "onProgressChanged>>>>>>>>>>>" + arg1);
                 AppSettings.Configs.sScreenLight = arg1;
                 Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
                         AppSettings.Configs.sScreenLight);
@@ -146,6 +148,8 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
         this.setCanceledOnTouchOutside(true);
 
         setScreenMode(AppSettings.Configs.sScreenMode);
+        lightSb.setProgress(AppSettings.Configs.sScreenLight);
+
         keepLightTb.setChecked(AppSettings.Configs.sScreenCloseLight);
         stateBarTb.setChecked(AppSettings.Configs.sScreenShowStatebar);
 
@@ -191,9 +195,9 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             AppSettings.Configs.sScreenLight = Utils.getSysScreenBrightness(mContext);
             lightSb.setProgress(AppSettings.Configs.sScreenLight);
             lightSb.setEnabled(false);
-            Log.e("lmf", "    AppSettings.Configs.sScreenLight >>>>>>>>>"
-                    + AppSettings.Configs.sScreenLight);
+
         }
+        Log.e("lmf", " setScreenMode >>>>>>>>>" + mode + ":" + AppSettings.Configs.sScreenLight);
     }
 
     public void setBookActivity(BookActivity bookActivity) {
