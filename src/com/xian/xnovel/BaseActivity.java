@@ -1,7 +1,6 @@
 package com.xian.xnovel;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
@@ -13,8 +12,6 @@ public class BaseActivity extends Activity {
         // TODO Auto-generated method stub
         super.onResume();
         Utils.setScreenBrightness(getWindow(), AppSettings.Configs.sScreenLight);
-        Log.e("lmf", "BaseActivity>>>>>>>>setScreenBrightness>>>>>>>>>>"
-                + AppSettings.Configs.sScreenLight);
     }
 
 

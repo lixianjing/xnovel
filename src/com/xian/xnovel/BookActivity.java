@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -396,6 +397,7 @@ public class BookActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
@@ -542,6 +544,14 @@ public class BookActivity extends BaseActivity {
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        Log.e("lmf", ">>>>>>>>>onConfigurationChanged>>>>>>>>>>>>>>>>>>>" + newConfig.orientation);
+        super.onConfigurationChanged(newConfig);
+    }
+
 
 
 }

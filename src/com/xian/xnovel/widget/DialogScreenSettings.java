@@ -138,8 +138,8 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 // TODO Auto-generated method stub
                 Log.e("lmf", "onProgressChanged>>>>>>>>>>>" + arg1);
                 AppSettings.Configs.sScreenLight = arg1;
-                Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
-                        AppSettings.Configs.sScreenLight);
+                // Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
+                // AppSettings.Configs.sScreenLight);
                 Utils.setScreenBrightness(mBookActivity.getWindow(),
                         AppSettings.Configs.sScreenLight);
             }
