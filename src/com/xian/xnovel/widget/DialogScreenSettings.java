@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.widget;
 
 import android.app.Dialog;
@@ -49,13 +50,18 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
-            setScreenOrientation(msg.what);
-            AppSettings.Configs.sScreenOrientation = msg.what;
+            int screenOrientation = msg.what;
+            setScreenOrientation(screenOrientation);
+            AppSettings.Configs.sScreenOrientation = screenOrientation;
             mEditor.putInt(AppSettings.SCREEN_ORIENTATION, AppSettings.Configs.sScreenOrientation);
             mEditor.commit();
 
-        }
+            Message parentMsg = Message.obtain();
+            parentMsg.what = AppSettings.MSG_SETTINGS_SCREEN_ORIENTATION;
+            parentMsg.arg1 = screenOrientation;
+            parentHandler.sendMessage(parentMsg);
 
+        }
 
     };
 
@@ -64,7 +70,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
         mContext = context;
         mSettings = AppSettings.getInstance(mContext);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +100,16 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
                 mEditor.putBoolean(AppSettings.SCREEN_CLOSE_LIGHT, isChecked);
                 mEditor.commit();
                 keepLightTb.setChecked(AppSettings.Configs.sScreenCloseLight);
+                Message msg = Message.obtain();
+                msg.what = AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT;
+
                 if (isChecked) {
-                    parentHandler
-                            .sendEmptyMessage(AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_TRUE);
+                    msg.arg1 = 1;
                 } else {
-                    parentHandler
-                            .sendEmptyMessage(AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_FALSE);
+                    msg.arg1 = 0;
                 }
+                parentHandler.sendMessage(msg);
+
             }
         });
 
@@ -157,8 +165,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
     }
 
-
-
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
@@ -183,8 +189,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
     }
 
-
-
     private void setScreenMode(int mode) {
         if (mode == AppSettings.SCREEN_MODE_USER_LIGHT) {
             screenIv.setImageResource(R.drawable.icon_light_adjust);
@@ -205,7 +209,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     }
 
     private void setScreenOrientation(int args) {
-
         switch (args) {
             case AppSettings.SCREEN_ORIENTATION_LANDSCAPE:
                 screenOrientationTv.setText(R.string.settings_screen_orientation_landscape);
@@ -225,7 +228,5 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     public void setHandler(Handler handler) {
         parentHandler = handler;
     }
-
-
 
 }

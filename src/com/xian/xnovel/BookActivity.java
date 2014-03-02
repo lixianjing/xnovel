@@ -1,12 +1,12 @@
-package com.xian.xnovel;
 
-import java.io.IOException;
+package com.xian.xnovel;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +34,8 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
+
+import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -128,12 +130,18 @@ public class BookActivity extends BaseActivity {
                     updatePageFactory();
                     break;
 
-                case AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_TRUE:
-                    wakeLock.release();
+                case AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT:
+                    if (msg.arg1 == 0) {
+                        wakeLock.acquire();
+                    } else {
+                        wakeLock.release();
+                    }
 
                     break;
-                case AppSettings.MSG_SETTINGS_SCREEN_CLOSE_LIGHT_FALSE:
-                    wakeLock.acquire();
+                case AppSettings.MSG_SETTINGS_SCREEN_ORIENTATION:
+
+                    setOrientation(msg.arg1);
+
                     break;
             }
             super.handleMessage(msg);
@@ -154,20 +162,17 @@ public class BookActivity extends BaseActivity {
         Log.e("lmf", "onCreate>>>>>>>>>>>>>>>>>>>>>>");
         mContext = this;
         mPref = AppSettings.getInstance(this).getPref();
-        if (AppSettings.Configs.sScreenShowStatebar) {
-            mWidth = mPref.getInt(AppSettings.SETTINGS_WIDTH_VIEW, 480);
-            mHeight = mPref.getInt(AppSettings.SETTINGS_HEIGHT_VIEW, 800);
-        } else {
+        if (!AppSettings.Configs.sScreenShowStatebar) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            mWidth = mPref.getInt(AppSettings.SETTINGS_WIDTH_FULL, 480);
-            mHeight = mPref.getInt(AppSettings.SETTINGS_HEIGHT_FULL, 800);
         }
+        setOrientation(AppSettings.Configs.sScreenOrientation);
 
-
+        Log.e("lmf", ">>>>>onCreate>>>>>>>>>>>" + AppSettings.Configs.sScreenWidth + ":"
+                + AppSettings.Configs.sScreenHeight + ":"
+                + AppSettings.Configs.sScreenStatusBarHeight + ":" + getRequestedOrientation());
 
         setContentView(R.layout.activity_book);
-
         dbControl = AppDBControl.getInstance(mContext);
 
         mPageView = (PageView) findViewById(R.id.book_pv);
@@ -196,16 +201,11 @@ public class BookActivity extends BaseActivity {
         wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "keep light");
         wakeLock.setReferenceCounted(false);
 
-
-
         mPref = AppSettings.getInstance(mContext).getPref();
-
 
         loadBook();
 
     }
-
-
 
     private void loadBook() {
         getIntentData(getIntent());
@@ -397,7 +397,6 @@ public class BookActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
@@ -458,7 +457,8 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK) return;
+                if (resultCode != Activity.RESULT_OK)
+                    return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -501,7 +501,8 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and
+     * returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
@@ -552,6 +553,44 @@ public class BookActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
     }
 
+    private void setOrientation(int type) {
+        switch (type) {
+            case AppSettings.SCREEN_ORIENTATION_PORTRAIT:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                if (AppSettings.Configs.sScreenShowStatebar) {
+                    mWidth = AppSettings.Configs.sScreenWidth;
+                    mHeight = AppSettings.Configs.sScreenHeight
+                            - AppSettings.Configs.sScreenStatusBarHeight;
+                } else {
+                    mWidth = AppSettings.Configs.sScreenWidth;
+                    mHeight = AppSettings.Configs.sScreenHeight;
+                }
+                break;
+            case AppSettings.SCREEN_ORIENTATION_LANDSCAPE:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                if (AppSettings.Configs.sScreenShowStatebar) {
+                    mWidth = AppSettings.Configs.sScreenHeight
+                            - AppSettings.Configs.sScreenStatusBarHeight;
+                    mHeight = AppSettings.Configs.sScreenWidth;
 
+                } else {
+                    mWidth = AppSettings.Configs.sScreenHeight;
+                    mHeight = AppSettings.Configs.sScreenWidth;
+                }
+                break;
+            case AppSettings.SCREEN_ORIENTATION_SENSOR:
+            default:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                if (AppSettings.Configs.sScreenShowStatebar) {
+                    mWidth = AppSettings.Configs.sScreenWidth;
+                    mHeight = AppSettings.Configs.sScreenHeight
+                            - AppSettings.Configs.sScreenStatusBarHeight;
+                } else {
+                    mWidth = AppSettings.Configs.sScreenWidth;
+                    mHeight = AppSettings.Configs.sScreenHeight;
+                }
+                break;
+        }
+    }
 
 }

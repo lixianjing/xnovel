@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name="com.xian.xnovel.BookActivity"
-            android:configChanges="orientation|keyboard"
+            android:configChanges="orientation|keyboard|screenSize"
             android:hardwareAccelerated="false" >
         </activity>
     </application>

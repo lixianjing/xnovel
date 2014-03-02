@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.utils;
 
 import android.app.Activity;
@@ -6,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 public class AppSettings {
-
-
 
     public static final String ID = "id";
     public static final String TITLE = "title";
@@ -22,7 +21,6 @@ public class AppSettings {
     public static final String BOOK_FILE_PATH = "/data/data/com.xian.xnovel/files/";
     public static final String BOOK_FILE_PREFIX = ".";
 
-
     // book info
     public static final int BOOK_FILE_COUNT = 120;
     public static final int BOOK_FILE_BEGIN = 1;
@@ -36,8 +34,6 @@ public class AppSettings {
 
     // data
     public static final String DATA_TAB_INDEX = "tab_index";
-
-
 
     public static final int SCREEN_DEFAULT = 0;
     public static final int SCREEN_MIN = 0;
@@ -68,15 +64,14 @@ public class AppSettings {
 
     public static final int MSG_SETTINGS_POSITION = 2051;
 
-    public static final int MSG_SETTINGS_SCREEN_CLOSE_LIGHT_TRUE = 2061;
-    public static final int MSG_SETTINGS_SCREEN_CLOSE_LIGHT_FALSE = 2062;
+    public static final int MSG_SETTINGS_SCREEN_CLOSE_LIGHT = 2060;
+
+    public static final int MSG_SETTINGS_SCREEN_ORIENTATION = 2070;
 
     public static final int STATUS_MENU_HIDE = 0;
     public static final int STATUS_MENU_SHOW = 1;
 
-
     private static final String PREFERENCE_FILENAME = "home_settings";
-
 
     public static final String SCREEN_MODE = "screen_mode";
     public static final int SCREEN_MODE_SYS_LIGHT = 0;
@@ -87,9 +82,7 @@ public class AppSettings {
 
     public static final String SCREEN_CLOSE_LIGHT = "screen_CLOSE_light";
 
-
     public static final String SCREEN_SHOW_STATEBAR = "screen_show_statebar";
-
 
     public static final String SCREEN_ORIENTATION = "screen_orientation";
     public static final int SCREEN_ORIENTATION_SENSOR = 0;
@@ -98,15 +91,11 @@ public class AppSettings {
 
     public static final String SETTINGS_VERSION_CODE = "version_code";
 
-
     public static final String SETTINGS_DENSITY = "density";
     public static final String SETTINGS_DPI = "densityDpi";
-    public static final String SETTINGS_WIDTH_FULL = "widthPixels";
-    public static final String SETTINGS_HEIGHT_FULL = "heightPixels";
-    public static final String SETTINGS_WIDTH_VIEW = "widthView";
-    public static final String SETTINGS_HEIGHT_VIEW = "heightView";
-
-
+    public static final String SETTINGS_WIDTH = "widthPixels";
+    public static final String SETTINGS_HEIGHT = "heightPixels";
+    public static final String SETTINGS_STATUSBAR_HEIGHT = "statusBarHeight";
 
     public static final String PREF_PAGE_MODE = "page_mode";
 
@@ -139,8 +128,6 @@ public class AppSettings {
     public static final int PREF_FONT_COLOR_DEFAULT = 0xFF000000;
     // font settings end
 
-
-
     private final SharedPreferences pref;
     private final Editor editor;
 
@@ -170,7 +157,6 @@ public class AppSettings {
         return editor;
     }
 
-
     public static class Configs {
 
         public static int sScreenMode = SCREEN_MODE_SYS_LIGHT;
@@ -178,8 +164,10 @@ public class AppSettings {
         public static boolean sScreenCloseLight = false;
         public static boolean sScreenShowStatebar = false;
         public static int sScreenOrientation = SCREEN_ORIENTATION_SENSOR;
+        public static int sScreenWidth = 400;
+        public static int sScreenHeight = 800;
+        public static int sScreenStatusBarHeight = 0;
 
     }
-
 
 }

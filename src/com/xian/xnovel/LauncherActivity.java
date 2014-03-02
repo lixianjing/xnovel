@@ -1,3 +1,4 @@
+
 package com.xian.xnovel;
 
 import android.content.Context;
@@ -52,10 +53,13 @@ public class LauncherActivity extends BaseActivity {
                     editor.putFloat(AppSettings.SETTINGS_DENSITY, dm.density);
                     // 屏幕密度（每寸像素：120/160/240/320）
                     editor.putInt(AppSettings.SETTINGS_DPI, dm.densityDpi);
-                    editor.putInt(AppSettings.SETTINGS_WIDTH_FULL, dm.widthPixels);
-                    editor.putInt(AppSettings.SETTINGS_HEIGHT_FULL, dm.heightPixels);
-                    editor.putInt(AppSettings.SETTINGS_WIDTH_VIEW, mainRl.getMeasuredWidth());
-                    editor.putInt(AppSettings.SETTINGS_HEIGHT_VIEW, mainRl.getMeasuredHeight());
+                    editor.putInt(AppSettings.SETTINGS_WIDTH, dm.widthPixels);
+                    editor.putInt(AppSettings.SETTINGS_HEIGHT, dm.heightPixels);
+                    int statusBarHeight = dm.heightPixels - mainRl.getMeasuredHeight();
+                    if (statusBarHeight == 0) {
+                        statusBarHeight = dm.widthPixels - mainRl.getMeasuredWidth();
+                    }
+                    editor.putInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT, statusBarHeight);
                     editor.commit();
 
                     break;
@@ -102,30 +106,14 @@ public class LauncherActivity extends BaseActivity {
                         AppDatabaseHelper mDbHelper = new AppDatabaseHelper(mContext);
                         mDbHelper.getWritableDatabase();
                         initBookContent(mContext, 5);
+                        initSettings();
                     }
 
                     @Override
                     public void onRun(int versionCode) {
                         // TODO Auto-generated method stub
                         Log.e("lmf", "onRun>>>>>>>>>>>" + versionCode + ":");
-                        SharedPreferences pref =
-                                AppSettings.getInstance(LauncherActivity.this).getPref();
-                        AppSettings.Configs.sScreenMode =
-                                pref.getInt(AppSettings.SCREEN_MODE,
-                                        AppSettings.Configs.sScreenMode);
-                        AppSettings.Configs.sScreenLight =
-                                pref.getInt(AppSettings.SCREEN_LIGHT_VALUE,
-                                        AppSettings.Configs.sScreenLight);
-                        AppSettings.Configs.sScreenCloseLight =
-                                pref.getBoolean(AppSettings.SCREEN_CLOSE_LIGHT,
-                                        AppSettings.Configs.sScreenCloseLight);
-                        AppSettings.Configs.sScreenShowStatebar =
-                                pref.getBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
-                                        AppSettings.Configs.sScreenShowStatebar);
-                        AppSettings.Configs.sScreenOrientation =
-                                pref.getInt(AppSettings.SCREEN_ORIENTATION,
-                                        AppSettings.Configs.sScreenOrientation);
-
+                        initSettings();
                         mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 1500);
 
                     }
@@ -133,15 +121,12 @@ public class LauncherActivity extends BaseActivity {
             }
         }).start();
 
-
-
     }
 
     private void initView() {
         coverTv = (TextView) findViewById(R.id.main_tv_cover);
         mainRl = (RelativeLayout) findViewById(R.id.main_rl_cover);
     }
-
 
     private void initBookContent(Context context, int num) {
         for (int i = 1; i <= num; i++) {
@@ -178,13 +163,43 @@ public class LauncherActivity extends BaseActivity {
 
     }
 
+    private void initSettings() {
+
+        SharedPreferences pref =
+                AppSettings.getInstance(LauncherActivity.this).getPref();
+        AppSettings.Configs.sScreenMode =
+                pref.getInt(AppSettings.SCREEN_MODE,
+                        AppSettings.Configs.sScreenMode);
+        AppSettings.Configs.sScreenLight =
+                pref.getInt(AppSettings.SCREEN_LIGHT_VALUE,
+                        AppSettings.Configs.sScreenLight);
+        AppSettings.Configs.sScreenCloseLight =
+                pref.getBoolean(AppSettings.SCREEN_CLOSE_LIGHT,
+                        AppSettings.Configs.sScreenCloseLight);
+        AppSettings.Configs.sScreenShowStatebar =
+                pref.getBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
+                        AppSettings.Configs.sScreenShowStatebar);
+        AppSettings.Configs.sScreenOrientation =
+                pref.getInt(AppSettings.SCREEN_ORIENTATION,
+                        AppSettings.Configs.sScreenOrientation);
+
+        AppSettings.Configs.sScreenWidth =
+                pref.getInt(AppSettings.SETTINGS_WIDTH,
+                        AppSettings.Configs.sScreenWidth);
+        AppSettings.Configs.sScreenHeight =
+                pref.getInt(AppSettings.SETTINGS_HEIGHT,
+                        AppSettings.Configs.sScreenHeight);
+        AppSettings.Configs.sScreenStatusBarHeight =
+                pref.getInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT,
+                        AppSettings.Configs.sScreenStatusBarHeight);
+
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // TODO Auto-generated method stub
         return true;
     }
-
-
 
     private void checkInstallState(Context context, OnCheckVersionListener listener) {
         if (listener == null || context == null) {
@@ -203,7 +218,6 @@ public class LauncherActivity extends BaseActivity {
         }
 
         pref.edit().putInt(AppSettings.SETTINGS_VERSION_CODE, currentVersion).commit();
-
 
     }
 
