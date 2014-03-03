@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -159,7 +160,6 @@ public class BookActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 设置全屏
-        Log.e("lmf", "onCreate>>>>>>>>>>>>>>>>>>>>>>");
         mContext = this;
         mPref = AppSettings.getInstance(this).getPref();
         if (!AppSettings.Configs.sScreenShowStatebar) {
@@ -167,10 +167,6 @@ public class BookActivity extends BaseActivity {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setOrientation(AppSettings.Configs.sScreenOrientation);
-
-        Log.e("lmf", ">>>>>onCreate>>>>>>>>>>>" + AppSettings.Configs.sScreenWidth + ":"
-                + AppSettings.Configs.sScreenHeight + ":"
-                + AppSettings.Configs.sScreenStatusBarHeight + ":" + getRequestedOrientation());
 
         setContentView(R.layout.activity_book);
         dbControl = AppDBControl.getInstance(mContext);
@@ -235,6 +231,35 @@ public class BookActivity extends BaseActivity {
         }
     }
 
+    private void reLoadBook() {
+
+        if (mCurPageBitmap != null) {
+            mCurPageBitmap.recycle();
+            mCurPageBitmap = null;
+        }
+
+        if (mNextPageBitmap != null) {
+            mNextPageBitmap.recycle();
+            mNextPageBitmap = null;
+        }
+
+        pagefactory.setBookSize(mWidth, mHeight);
+
+        mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+        mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+
+        mCurPageCanvas = new Canvas(mCurPageBitmap);
+        mNextPageCanvas = new Canvas(mNextPageBitmap);
+
+        pagefactory.clearBook();
+
+        pagefactory.draw(mCurPageCanvas);
+        mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
+
+        mPageView.invalidate();
+
+    }
+
     public void preChapter() {
         if (bookId == AppSettings.BOOK_FILE_BEGIN) {
             return;
@@ -245,7 +270,7 @@ public class BookActivity extends BaseActivity {
             bookTitle = catalog.getTitle();
             bookContent = catalog.getContent();
             position = 0;
-            reLoadBook();
+            updateBook();
         }
 
     }
@@ -260,7 +285,7 @@ public class BookActivity extends BaseActivity {
             bookTitle = catalog.getTitle();
             bookContent = catalog.getContent();
             position = 0;
-            reLoadBook();
+            updateBook();
         }
 
     }
@@ -279,7 +304,7 @@ public class BookActivity extends BaseActivity {
 
     }
 
-    private void reLoadBook() {
+    private void updateBook() {
         pagefactory.closeBook();
         pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
         pagefactory.setTitleName(bookContent);
@@ -549,47 +574,63 @@ public class BookActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         // TODO Auto-generated method stub
-        Log.e("lmf", ">>>>>>>>>onConfigurationChanged>>>>>>>>>>>>>>>>>>>" + newConfig.orientation);
         super.onConfigurationChanged(newConfig);
+        Log.e("lmf", ">>>>>>>>>onConfigurationChanged>>>>>>>>>>>>>>>>>>>" + newConfig.orientation);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setOrientationLandscape();
+        } else {
+            setOrientationPortrait();
+
+        }
+        reLoadBook();
+
     }
 
     private void setOrientation(int type) {
         switch (type) {
             case AppSettings.SCREEN_ORIENTATION_PORTRAIT:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                if (AppSettings.Configs.sScreenShowStatebar) {
-                    mWidth = AppSettings.Configs.sScreenWidth;
-                    mHeight = AppSettings.Configs.sScreenHeight
-                            - AppSettings.Configs.sScreenStatusBarHeight;
-                } else {
-                    mWidth = AppSettings.Configs.sScreenWidth;
-                    mHeight = AppSettings.Configs.sScreenHeight;
-                }
+                setOrientationPortrait();
                 break;
             case AppSettings.SCREEN_ORIENTATION_LANDSCAPE:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                if (AppSettings.Configs.sScreenShowStatebar) {
-                    mWidth = AppSettings.Configs.sScreenHeight
-                            - AppSettings.Configs.sScreenStatusBarHeight;
-                    mHeight = AppSettings.Configs.sScreenWidth;
-
-                } else {
-                    mWidth = AppSettings.Configs.sScreenHeight;
-                    mHeight = AppSettings.Configs.sScreenWidth;
-                }
+                setOrientationLandscape();
                 break;
             case AppSettings.SCREEN_ORIENTATION_SENSOR:
             default:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                if (AppSettings.Configs.sScreenShowStatebar) {
-                    mWidth = AppSettings.Configs.sScreenWidth;
-                    mHeight = AppSettings.Configs.sScreenHeight
-                            - AppSettings.Configs.sScreenStatusBarHeight;
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                if (dm.widthPixels > dm.heightPixels) {
+                    setOrientationLandscape();
                 } else {
-                    mWidth = AppSettings.Configs.sScreenWidth;
-                    mHeight = AppSettings.Configs.sScreenHeight;
+                    setOrientationPortrait();
                 }
                 break;
+        }
+    }
+
+    private void setOrientationPortrait() {
+        if (AppSettings.Configs.sScreenShowStatebar) {
+            mWidth = AppSettings.Configs.sScreenWidth;
+            mHeight = AppSettings.Configs.sScreenHeight
+                    - AppSettings.Configs.sScreenStatusBarHeight;
+        } else {
+            mWidth = AppSettings.Configs.sScreenWidth;
+            mHeight = AppSettings.Configs.sScreenHeight;
+        }
+    }
+
+    private void setOrientationLandscape() {
+        if (AppSettings.Configs.sScreenShowStatebar) {
+            mWidth = AppSettings.Configs.sScreenHeight
+                    - AppSettings.Configs.sScreenStatusBarHeight;
+            mHeight = AppSettings.Configs.sScreenWidth;
+
+        } else {
+            mWidth = AppSettings.Configs.sScreenHeight;
+            mHeight = AppSettings.Configs.sScreenWidth;
         }
     }
 
