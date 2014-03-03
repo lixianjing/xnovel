@@ -1,14 +1,15 @@
+
 package com.xian.xnovel.widget;
 
-
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -20,13 +21,11 @@ import com.xian.xnovel.utils.AppSettings;
 public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarChangeListener {
 
     private final Context mContext;
-    private Handler mainHandler;
-    private SharedPreferences pref;
-    private final LayoutInflater mInflater;
+    private final AppSettings mSettings;
+    private Editor mEditor;
 
-    private int prefLineSpace = AppSettings.PREF_LINE_SPACE_DEFAULT;
-    private int prefFontSize = AppSettings.PREF_FONT_SIZE_DEFAULT;
-    private int prefFontColor = AppSettings.PREF_FONT_COLOR_DEFAULT;
+    private Handler mainHandler;
+    private final LayoutInflater mInflater;
 
     private LinearLayout tabLeftLl, tabRightLl;
     private SeekBar fontSizeSb, lineSpaceSb;
@@ -37,14 +36,16 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
         super(context);
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
+        mSettings = AppSettings.getInstance(mContext);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tabLeftLl = (LinearLayout) mInflater.inflate(R.layout.tab_font_settings, null);
+        mEditor = mSettings.getEditor();
 
+        tabLeftLl = (LinearLayout) mInflater.inflate(R.layout.tab_font_settings, null);
         tabRightLl = (LinearLayout) mInflater.inflate(R.layout.tab_font_color_settings, null);
         colorSelectCv = (ColorPickerView) tabRightLl.findViewById(R.id.font_cpv_color);
         fontSizeSb = (SeekBar) tabLeftLl.findViewById(R.id.font_size_sb);
@@ -59,7 +60,38 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
             public void colorChanged(int color) {
                 // TODO Auto-generated method stub
                 sendMessage(AppSettings.MSG_SETTINGS_FONT_COLOR, color, 0);
-                prefFontColor = color;
+                mEditor.putInt(AppSettings.FONT_COLOR, color);
+                AppSettings.Configs.sFontColor = color;
+            }
+        });
+
+        fontBoldTb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                if (isChecked) {
+                    sendMessage(AppSettings.MSG_SETTINGS_FONT_BOLD, 1, 0);
+                } else {
+                    sendMessage(AppSettings.MSG_SETTINGS_FONT_BOLD, 0, 0);
+                }
+                mEditor.putBoolean(AppSettings.FONT_BOLD, isChecked);
+                AppSettings.Configs.sFontBold = isChecked;
+            }
+        });
+
+        fontItalicTb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                if (isChecked) {
+                    sendMessage(AppSettings.MSG_SETTINGS_FONT_ITALIC, 1, 0);
+                } else {
+                    sendMessage(AppSettings.MSG_SETTINGS_FONT_ITALIC, 0, 0);
+                }
+                mEditor.putBoolean(AppSettings.FONT_ITALIC, isChecked);
+                AppSettings.Configs.sFontItalic = isChecked;
             }
         });
 
@@ -69,39 +101,20 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
         addFlipperView(tabLeftLl);
         addFlipperView(tabRightLl);
 
-        pref = AppSettings.getInstance(mContext).getPref();
-
-        prefLineSpace =
-                pref.getInt(AppSettings.PREF_LINE_SPACE, AppSettings.PREF_LINE_SPACE_DEFAULT);
-        prefFontSize = pref.getInt(AppSettings.PREF_FONT_SIZE, AppSettings.PREF_FONT_SIZE_DEFAULT);
-        prefFontColor =
-                pref.getInt(AppSettings.PREF_FONT_COLOR, AppSettings.PREF_FONT_COLOR_DEFAULT);
         fontSizeSb.setProgress(100);
         lineSpaceSb.setProgress(0);
-        colorSelectCv.setInitialColor(prefFontColor);
+
+        fontBoldTb.setChecked(AppSettings.Configs.sFontBold);
+        fontItalicTb.setChecked(AppSettings.Configs.sFontItalic);
+        colorSelectCv.setInitialColor(AppSettings.Configs.sFontColor);
 
     }
 
     @Override
     public void dismiss() {
         // TODO Auto-generated method stub
-        savePrefThread.start();
         super.dismiss();
     }
-
-    private final Thread savePrefThread = new Thread(new Runnable() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Editor editor = pref.edit();
-            editor.putInt(AppSettings.PREF_LINE_SPACE, prefLineSpace);
-            editor.putInt(AppSettings.PREF_FONT_SIZE, prefFontSize);
-            editor.putInt(AppSettings.PREF_FONT_COLOR, prefFontColor);
-
-            editor.commit();
-        }
-    });
 
     private void sendMessage(int what, int arg0, int arg1) {
         Message msg = Message.obtain();

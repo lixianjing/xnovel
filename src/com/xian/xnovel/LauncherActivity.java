@@ -193,6 +193,22 @@ public class LauncherActivity extends BaseActivity {
                 pref.getInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT,
                         AppSettings.Configs.sScreenStatusBarHeight);
 
+        AppSettings.Configs.sFontBold =
+                pref.getBoolean(AppSettings.FONT_BOLD,
+                        AppSettings.Configs.sFontBold);
+        AppSettings.Configs.sFontItalic =
+                pref.getBoolean(AppSettings.FONT_ITALIC,
+                        AppSettings.Configs.sFontItalic);
+        AppSettings.Configs.sFontColor =
+                pref.getInt(AppSettings.FONT_COLOR,
+                        AppSettings.Configs.sFontColor);
+        AppSettings.Configs.sFontSize =
+                pref.getInt(AppSettings.FONT_SIZE,
+                        AppSettings.Configs.sFontSize);
+        AppSettings.Configs.sFontLineSpace =
+                pref.getInt(AppSettings.FONT_LINE_SPACE,
+                        AppSettings.Configs.sFontLineSpace);
+
     }
 
     @Override

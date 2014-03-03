@@ -126,6 +126,22 @@ public class BookActivity extends BaseActivity {
                     pagefactory.setFontColor(msg.arg1);
                     updatePageFactory();
                     break;
+                case AppSettings.MSG_SETTINGS_FONT_BOLD:
+                    pagefactory.setFontColor(msg.arg1);
+                    updatePageFactory();
+                    break;
+                case AppSettings.MSG_SETTINGS_FONT_ITALIC:
+                    pagefactory.setFontColor(msg.arg1);
+                    updatePageFactory();
+                    break;
+                case AppSettings.MSG_SETTINGS_FONT_SIZE:
+                    pagefactory.setFontColor(msg.arg1);
+                    updatePageFactory();
+                    break;
+                case AppSettings.MSG_SETTINGS_FONT_LINE_SPACE:
+                    pagefactory.setFontColor(msg.arg1);
+                    updatePageFactory();
+                    break;
                 case AppSettings.MSG_SETTINGS_POSITION:
                     pagefactory.setCurPosition(msg.arg1);
                     updatePageFactory();

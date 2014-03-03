@@ -46,9 +46,11 @@ public class BookPageFactory {
     private int bgColor = AppSettings.PREF_THEME_COLOR_DEFAULT; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
 
-    private int textColor = AppSettings.PREF_FONT_COLOR_DEFAULT; // 文字颜色
-    private int mFontSize = AppSettings.PREF_FONT_SIZE_DEFAULT;
-    private int spaceSize = AppSettings.PREF_LINE_SPACE_DEFAULT;// 行间距大小
+    private int textColor = AppSettings.Configs.sFontColor; // 文字颜色
+    private int mFontSize = AppSettings.Configs.sFontSize;
+    private int spaceSize = AppSettings.Configs.sFontLineSpace;// 行间距大小
+    private final boolean isBlod = AppSettings.Configs.sFontBold;
+    private final boolean isItalic = AppSettings.Configs.sFontItalic;
 
     private Vector<String> mShowLine = new Vector<String>();
 
@@ -67,9 +69,6 @@ public class BookPageFactory {
     private final Paint mPaint;
     private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
-
-    private final boolean isBlod = false;
-    private final boolean isItalic = false;
 
     private final Integer[] themeBgRes = {
             R.drawable.theme_1, R.drawable.theme_2,
@@ -107,9 +106,10 @@ public class BookPageFactory {
         }
 
         if (isItalic) {
-            mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
-        } else {
             mPaint.setTextSkewX(-0.25f); // float类型参数，负数表示右斜，整数左斜
+
+        } else {
+            mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
         }
 
         // 底部文字绘制
@@ -157,9 +157,9 @@ public class BookPageFactory {
 
         }
 
-        textColor = pref.getInt(AppSettings.PREF_FONT_COLOR, AppSettings.PREF_FONT_COLOR_DEFAULT);
-        mFontSize = pref.getInt(AppSettings.PREF_FONT_SIZE, AppSettings.PREF_FONT_SIZE_DEFAULT);
-        spaceSize = pref.getInt(AppSettings.PREF_LINE_SPACE, AppSettings.PREF_LINE_SPACE_DEFAULT);
+        textColor = AppSettings.Configs.sFontColor;
+        mFontSize = AppSettings.Configs.sFontSize;
+        spaceSize = AppSettings.Configs.sFontLineSpace;
 
     }
 

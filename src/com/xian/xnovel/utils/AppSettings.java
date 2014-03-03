@@ -58,7 +58,7 @@ public class AppSettings {
 
     public static final int MSG_SETTINGS_FONT_COLOR = 2041;
     public static final int MSG_SETTINGS_FONT_SIZE = 2042;
-    public static final int MSG_SETTINGS_LINE_SPACE = 2043;
+    public static final int MSG_SETTINGS_FONT_LINE_SPACE = 2043;
     public static final int MSG_SETTINGS_FONT_BOLD = 2044;
     public static final int MSG_SETTINGS_FONT_ITALIC = 2045;
 
@@ -117,15 +117,12 @@ public class AppSettings {
     // theme settings end
 
     // font settings begin
-    public static final String PREF_FONT_COLOR = "font_color";
-    public static final String PREF_FONT_SIZE = "font_size";
-    public static final String PREF_LINE_SPACE = "line_space";
-    public static final String PREF_FONT_BOLD = "font_bold";
-    public static final String PREF_FONT_ITALIC = "font_italic";
+    public static final String FONT_COLOR = "font_color";
+    public static final String FONT_SIZE = "font_size";
+    public static final String FONT_LINE_SPACE = "font_line_space";
+    public static final String FONT_BOLD = "font_bold";
+    public static final String FONT_ITALIC = "font_italic";
 
-    public static final int PREF_LINE_SPACE_DEFAULT = 20;
-    public static final int PREF_FONT_SIZE_DEFAULT = 40;
-    public static final int PREF_FONT_COLOR_DEFAULT = 0xFF000000;
     // font settings end
 
     private final SharedPreferences pref;
@@ -164,9 +161,16 @@ public class AppSettings {
         public static boolean sScreenCloseLight = false;
         public static boolean sScreenShowStatebar = false;
         public static int sScreenOrientation = SCREEN_ORIENTATION_SENSOR;
+
         public static int sScreenWidth = 400;
         public static int sScreenHeight = 800;
         public static int sScreenStatusBarHeight = 0;
+
+        public static boolean sFontBold = false;
+        public static boolean sFontItalic = false;
+        public static int sFontLineSpace = 20;
+        public static int sFontSize = 40;
+        public static int sFontColor = 0xFF000000;
 
     }
 
