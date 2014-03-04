@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.widget;
 
 import android.content.Context;
@@ -6,7 +5,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -60,7 +58,7 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
             public void colorChanged(int color) {
                 // TODO Auto-generated method stub
                 sendMessage(AppSettings.MSG_SETTINGS_FONT_COLOR, color, 0);
-                mEditor.putInt(AppSettings.FONT_COLOR, color);
+                mEditor.putInt(AppSettings.FONT_COLOR, color).commit();
                 AppSettings.Configs.sFontColor = color;
             }
         });
@@ -75,7 +73,7 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
                 } else {
                     sendMessage(AppSettings.MSG_SETTINGS_FONT_BOLD, 0, 0);
                 }
-                mEditor.putBoolean(AppSettings.FONT_BOLD, isChecked);
+                mEditor.putBoolean(AppSettings.FONT_BOLD, isChecked).commit();
                 AppSettings.Configs.sFontBold = isChecked;
             }
         });
@@ -90,7 +88,7 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
                 } else {
                     sendMessage(AppSettings.MSG_SETTINGS_FONT_ITALIC, 0, 0);
                 }
-                mEditor.putBoolean(AppSettings.FONT_ITALIC, isChecked);
+                mEditor.putBoolean(AppSettings.FONT_ITALIC, isChecked).commit();
                 AppSettings.Configs.sFontItalic = isChecked;
             }
         });
@@ -98,15 +96,21 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
         fontSizeSb.setOnSeekBarChangeListener(this);
         lineSpaceSb.setOnSeekBarChangeListener(this);
 
-        addFlipperView(tabLeftLl);
-        addFlipperView(tabRightLl);
+        fontSizeSb.setProgress(AppSettings.Configs.sFontSize - AppSettings.FONT_SIZE_MIN);
+        fontSizeSb.setMax(AppSettings.FONT_SIZE_MAX - AppSettings.FONT_SIZE_MIN);
 
-        fontSizeSb.setProgress(100);
-        lineSpaceSb.setProgress(0);
+
+        lineSpaceSb.setProgress(AppSettings.Configs.sFontLineSpace);
+        lineSpaceSb.setMax(AppSettings.FONT_LINE_SPACE_MAX);
+
 
         fontBoldTb.setChecked(AppSettings.Configs.sFontBold);
         fontItalicTb.setChecked(AppSettings.Configs.sFontItalic);
         colorSelectCv.setInitialColor(AppSettings.Configs.sFontColor);
+
+        addFlipperView(tabLeftLl);
+        addFlipperView(tabRightLl);
+
 
     }
 
@@ -132,9 +136,12 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         // TODO Auto-generated method stub
         if (seekBar.getId() == R.id.font_size_sb) {
-            Log.e("lmf", "onProgressChanged>>>>>>>>font_size_sb>>>>>>>>" + progress);
+            AppSettings.Configs.sFontSize = progress + AppSettings.FONT_SIZE_MIN;
+            sendMessage(AppSettings.MSG_SETTINGS_FONT_SIZE, AppSettings.Configs.sFontSize, 0);
         } else {
-            Log.e("lmf", "onProgressChanged>>>>>>>>else>>>>>>>>" + progress);
+            AppSettings.Configs.sFontLineSpace = progress;
+            sendMessage(AppSettings.MSG_SETTINGS_FONT_LINE_SPACE,
+                    AppSettings.Configs.sFontLineSpace, 0);
         }
     }
 
@@ -147,7 +154,12 @@ public class DialogFontSettings extends DialogTab2Settings implements OnSeekBarC
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
-
+        if (seekBar.getId() == R.id.font_size_sb) {
+            mEditor.putInt(AppSettings.FONT_SIZE, AppSettings.Configs.sFontSize).commit();
+        } else {
+            mEditor.putInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace)
+                    .commit();
+        }
     }
 
 }

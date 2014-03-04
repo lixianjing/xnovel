@@ -1,5 +1,6 @@
-
 package com.xian.xnovel;
+
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,8 +36,6 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
-
-import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -127,19 +126,29 @@ public class BookActivity extends BaseActivity {
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_BOLD:
-                    pagefactory.setFontColor(msg.arg1);
+                    if (msg.arg1 == 0) {
+                        pagefactory.setFontBold(false);
+                    } else {
+                        pagefactory.setFontBold(true);
+                    }
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_ITALIC:
-                    pagefactory.setFontColor(msg.arg1);
+                    if (msg.arg1 == 0) {
+                        pagefactory.setFontItalic(false);
+                    } else {
+                        pagefactory.setFontItalic(true);
+                    }
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_SIZE:
-                    pagefactory.setFontColor(msg.arg1);
+                    pagefactory.setFontSize(msg.arg1);
+                    pagefactory.clearBook();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_LINE_SPACE:
-                    pagefactory.setFontColor(msg.arg1);
+                    pagefactory.setFontLineSpace(msg.arg1);
+                    pagefactory.clearBook();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_POSITION:
@@ -498,8 +507,7 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK)
-                    return;
+                if (resultCode != Activity.RESULT_OK) return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -542,8 +550,7 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and
-     * returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
@@ -630,8 +637,8 @@ public class BookActivity extends BaseActivity {
     private void setOrientationPortrait() {
         if (AppSettings.Configs.sScreenShowStatebar) {
             mWidth = AppSettings.Configs.sScreenWidth;
-            mHeight = AppSettings.Configs.sScreenHeight
-                    - AppSettings.Configs.sScreenStatusBarHeight;
+            mHeight =
+                    AppSettings.Configs.sScreenHeight - AppSettings.Configs.sScreenStatusBarHeight;
         } else {
             mWidth = AppSettings.Configs.sScreenWidth;
             mHeight = AppSettings.Configs.sScreenHeight;
@@ -640,8 +647,7 @@ public class BookActivity extends BaseActivity {
 
     private void setOrientationLandscape() {
         if (AppSettings.Configs.sScreenShowStatebar) {
-            mWidth = AppSettings.Configs.sScreenHeight
-                    - AppSettings.Configs.sScreenStatusBarHeight;
+            mWidth = AppSettings.Configs.sScreenHeight - AppSettings.Configs.sScreenStatusBarHeight;
             mHeight = AppSettings.Configs.sScreenWidth;
 
         } else {

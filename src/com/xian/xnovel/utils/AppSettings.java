@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.utils;
 
 import android.app.Activity;
@@ -122,7 +121,9 @@ public class AppSettings {
     public static final String FONT_LINE_SPACE = "font_line_space";
     public static final String FONT_BOLD = "font_bold";
     public static final String FONT_ITALIC = "font_italic";
-
+    public static final int FONT_SIZE_MIN = 20;
+    public static final int FONT_SIZE_MAX = 100;
+    public static final int FONT_LINE_SPACE_MAX = 80;
     // font settings end
 
     private final SharedPreferences pref;

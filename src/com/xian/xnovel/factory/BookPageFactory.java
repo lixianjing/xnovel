@@ -1,5 +1,16 @@
-
 package com.xian.xnovel.factory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,18 +24,6 @@ import android.widget.Toast;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Vector;
 
 @SuppressLint("NewApi")
 public class BookPageFactory {
@@ -46,11 +45,11 @@ public class BookPageFactory {
     private int bgColor = AppSettings.PREF_THEME_COLOR_DEFAULT; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
 
-    private int textColor = AppSettings.Configs.sFontColor; // 文字颜色
+    private int mFontColor = AppSettings.Configs.sFontColor; // 文字颜色
     private int mFontSize = AppSettings.Configs.sFontSize;
-    private int spaceSize = AppSettings.Configs.sFontLineSpace;// 行间距大小
-    private final boolean isBlod = AppSettings.Configs.sFontBold;
-    private final boolean isItalic = AppSettings.Configs.sFontItalic;
+    private int mFontLineSpace = AppSettings.Configs.sFontLineSpace;// 行间距大小
+    private boolean mFontBlod = AppSettings.Configs.sFontBold;
+    private boolean mFontItalic = AppSettings.Configs.sFontItalic;
 
     private Vector<String> mShowLine = new Vector<String>();
 
@@ -70,11 +69,9 @@ public class BookPageFactory {
     private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
 
-    private final Integer[] themeBgRes = {
-            R.drawable.theme_1, R.drawable.theme_2,
+    private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
             R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5, R.drawable.theme_6,
-            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9
-    };
+            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9};
 
     private static BookPageFactory mInstance = null;
 
@@ -98,16 +95,15 @@ public class BookPageFactory {
         mPaint.setTextAlign(Align.LEFT);
         // mPaint.setTextSize(30);
         mPaint.setTextSize(mFontSize);
-        mPaint.setColor(textColor);
-        if (isBlod) {
+        mPaint.setColor(mFontColor);
+        if (mFontBlod) {
             mPaint.setFakeBoldText(true); // true为粗体，false为非粗体
         } else {
             mPaint.setFakeBoldText(false); // true为粗体，false为非粗体
         }
 
-        if (isItalic) {
+        if (mFontItalic) {
             mPaint.setTextSkewX(-0.25f); // float类型参数，负数表示右斜，整数左斜
-
         } else {
             mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
         }
@@ -116,13 +112,13 @@ public class BookPageFactory {
         mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBtmPaint.setTextAlign(Align.LEFT);
         mBtmPaint.setTextSize(btmFontSize);
-        mBtmPaint.setColor(textColor);
+        mBtmPaint.setColor(mFontColor);
         percentWidth = (int) mBtmPaint.measureText("99.99%") + 1;
 
         // 行间距设置
         spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         spactPaint.setTextAlign(Align.LEFT);
-        spactPaint.setTextSize(spaceSize);
+        spactPaint.setTextSize(mFontLineSpace);
 
     }
 
@@ -157,9 +153,9 @@ public class BookPageFactory {
 
         }
 
-        textColor = AppSettings.Configs.sFontColor;
+        mFontColor = AppSettings.Configs.sFontColor;
         mFontSize = AppSettings.Configs.sFontSize;
-        spaceSize = AppSettings.Configs.sFontLineSpace;
+        mFontLineSpace = AppSettings.Configs.sFontLineSpace;
 
     }
 
@@ -189,7 +185,7 @@ public class BookPageFactory {
         // mPaint.setTextSkewX(0.1f);//设置斜体
         mVisibleWidth = mWidth - marginWidth * 2;
         mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
-        int totalSize = mFontSize + spaceSize;
+        int totalSize = mFontSize + mFontLineSpace;
         mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
 
     }
@@ -249,8 +245,7 @@ public class BookPageFactory {
                 i--;
             }
         }
-        if (i < 0)
-            i = 0;
+        if (i < 0) i = 0;
         int nParaSize = nEnd - i;
         int j;
         byte[] buf = new byte[nParaSize];
@@ -343,8 +338,7 @@ public class BookPageFactory {
     }
 
     protected void pageUp() {
-        if (mReadStart < 0)
-            mReadStart = 0;
+        if (mReadStart < 0) mReadStart = 0;
         Vector<String> lines = new Vector<String>();
         String strParagraph = "";
         while (lines.size() < mLineCount && mReadStart > 0) {
@@ -407,8 +401,7 @@ public class BookPageFactory {
     }
 
     public void draw(Canvas c) {
-        if (mShowLine.size() == 0)
-            mShowLine = pageDown();
+        if (mShowLine.size() == 0) mShowLine = pageDown();
         if (mShowLine.size() > 0) {
             if (bgBitmap == null)
                 c.drawColor(bgColor);
@@ -420,7 +413,7 @@ public class BookPageFactory {
                 y += mFontSize;
                 // mPaint.setTypeface(Typeface.DEFAULT_BOLD);
                 c.drawText(strLine, marginWidth, y, mPaint);
-                y += spaceSize;
+                y += mFontLineSpace;
                 if (i != mShowLine.size() - 1) {
                     c.drawText("", marginWidth, y, spactPaint);
                 }
@@ -479,21 +472,44 @@ public class BookPageFactory {
     }
 
     public void setFontColor(int color) {
-        textColor = color;
-        mPaint.setColor(textColor);
-        mBtmPaint.setColor(textColor);
+        mFontColor = color;
+        mPaint.setColor(mFontColor);
+        mBtmPaint.setColor(mFontColor);
     }
 
-    public void setLineSpace(int size) {
-        spaceSize = size;
-        mLineCount = (int) (mVisibleHeight / (mFontSize + spaceSize)); // 可显示的行数
+    public void setFontLineSpace(int size) {
+        mFontLineSpace = size;
+        mLineCount = (int) (mVisibleHeight / (mFontSize + mFontLineSpace)); // 可显示的行数
     }
 
     public void setFontSize(int size) {
         mFontSize = size;
         mPaint.setTextSize(size);
-        mLineCount = (int) (mVisibleHeight / (mFontSize + spaceSize)); // 可显示的行数
+        mLineCount = (int) (mVisibleHeight / (mFontSize + mFontLineSpace)); // 可显示的行数
     }
+
+    public void setFontBold(boolean b) {
+        mFontBlod = b;
+
+        if (mFontBlod) {
+            mPaint.setFakeBoldText(true); // true为粗体，false为非粗体
+        } else {
+            mPaint.setFakeBoldText(false); // true为粗体，false为非粗体
+        }
+
+
+    }
+
+    public void setFontItalic(boolean b) {
+        mFontItalic = b;
+        if (mFontItalic) {
+            mPaint.setTextSkewX(-0.25f); // float类型参数，负数表示右斜，整数左斜
+        } else {
+            mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
+        }
+    }
+
+
 
     public void setTitleName(String name) {
         titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
