@@ -13,6 +13,7 @@ import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
@@ -29,8 +30,8 @@ public class PageView extends View {
     private BookActivity bookActivity;
     private BookPageFactory pagefactory;
 
-    private int mWidth = 480;
-    private int mHeight = 800;
+    private int mWidth = AppSettings.Configs.sScreenWidth;
+    private int mHeight = AppSettings.Configs.sScreenHeight;
     private int mCornerX = 0; // 拖拽点对应的页脚
     private int mCornerY = 0;
     private Path mPath0;
@@ -216,6 +217,8 @@ public class PageView extends View {
         // TODO Auto-generated method stub
         mWidth = MeasureSpec.getSize(widthMeasureSpec);
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
+        Log.e("lmf", ">>>>>>onMeasure>>>>>>>>>>>>>>" + mWidth + ":" + mHeight + ":"
+                + AppSettings.Configs.sScreenWidth + ":" + AppSettings.Configs.sScreenHeight);
         mMaxLength = (float) Math.hypot(mWidth, mHeight);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

@@ -200,7 +200,6 @@ public class BookActivity extends BaseActivity {
         menuRl = (RelativeLayout) findViewById(R.id.book_menu);
         menuIv = (ImageView) findViewById(R.id.book_menu_iv);
         menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
-        menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
         menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
 
         menuIv.setOnClickListener(new OnClickListener() {
@@ -599,6 +598,16 @@ public class BookActivity extends BaseActivity {
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
         Log.e("lmf", ">>>>>>>>>onConfigurationChanged>>>>>>>>>>>>>>>>>>>" + newConfig.orientation);
+
+        if (menuStatus == AppSettings.STATUS_MENU_SHOW) {
+            mPageView.setVisibility(View.VISIBLE);
+            menuRl.setVisibility(View.GONE);
+            menuIv.setVisibility(View.GONE);
+            menuBtmLayout.setVisibility(View.GONE);
+            menuTopLayout.setVisibility(View.GONE);
+            menuStatus = AppSettings.STATUS_MENU_SHOW;
+        }
+
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setOrientationLandscape();
