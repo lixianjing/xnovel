@@ -1,6 +1,5 @@
-package com.xian.xnovel;
 
-import java.io.IOException;
+package com.xian.xnovel;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,14 +10,12 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +34,8 @@ import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
+import java.io.IOException;
+
 public class BookActivity extends BaseActivity {
 
     private Context mContext;
@@ -50,8 +49,6 @@ public class BookActivity extends BaseActivity {
     private PowerManager powerManager = null;
     private WakeLock wakeLock = null;
     private boolean isSaveHistory = true;
-    private Bitmap mCurPageBitmap, mNextPageBitmap;
-    private Canvas mCurPageCanvas, mNextPageCanvas;
 
     private int menuStatus = AppSettings.STATUS_MENU_HIDE;
     private int pageMode = AppSettings.PREF_PAGE_MODE_DRAG;
@@ -72,8 +69,8 @@ public class BookActivity extends BaseActivity {
             // TODO Auto-generated method stub
             switch (msg.what) {
                 case AppSettings.MSG_MENU_SHOW:
-                    pagefactory.draw(mCurPageCanvas);
-                    menuIv.setImageBitmap(mCurPageBitmap);
+                    mPageView.drawCurrentPageCanvas();
+                    menuIv.setImageBitmap(mPageView.getCurPageBitmap());
                     menuRl.setVisibility(View.VISIBLE);
                     menuIv.setVisibility(View.VISIBLE);
                     mPageView.setVisibility(View.GONE);
@@ -176,8 +173,8 @@ public class BookActivity extends BaseActivity {
     };
 
     private void updatePageFactory() {
-        pagefactory.draw(mCurPageCanvas);
-        pagefactory.draw(mNextPageCanvas);
+        mPageView.drawCurrentPageCanvas();
+        mPageView.drawNextPageCanvas();
         mPageView.postInvalidate();
     }
 
@@ -228,60 +225,21 @@ public class BookActivity extends BaseActivity {
     }
 
     private void loadBook() {
+        Log.e("lmf", "hello>>>>>>>>>>");
         getIntentData(getIntent());
         if (bookId != AppSettings.BOOK_FILE_NULL) {
             pagefactory = BookPageFactory.getInstance(this);
-            pagefactory.setBookSize(mWidth, mHeight);
-
-            mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-            mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-
-            mCurPageCanvas = new Canvas(mCurPageBitmap);
-            mNextPageCanvas = new Canvas(mNextPageBitmap);
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
             pagefactory.setTitleName(bookContent);
             menuTopLayout.setCenterText(bookTitle + " " + bookContent);
             pagefactory.setCurPosition(position);
-            pagefactory.draw(mCurPageCanvas);
-            mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
-
-            mPageView.invalidate();
 
         } else {
             Toast.makeText(mContext, R.string.settings_not_found_book, Toast.LENGTH_SHORT).show();
             BookActivity.this.finish();
         }
-    }
-
-    private void reLoadBook() {
-
-        if (mCurPageBitmap != null) {
-            mCurPageBitmap.recycle();
-            mCurPageBitmap = null;
-        }
-
-        if (mNextPageBitmap != null) {
-            mNextPageBitmap.recycle();
-            mNextPageBitmap = null;
-        }
-
-        pagefactory.setBookSize(mWidth, mHeight);
-
-        mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-        mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-
-        mCurPageCanvas = new Canvas(mCurPageBitmap);
-        mNextPageCanvas = new Canvas(mNextPageBitmap);
-
-        pagefactory.clearBook();
-
-        pagefactory.draw(mCurPageCanvas);
-        mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
-
-        mPageView.invalidate();
-
     }
 
     public void preChapter() {
@@ -334,8 +292,8 @@ public class BookActivity extends BaseActivity {
         pagefactory.setTitleName(bookContent);
         menuTopLayout.setCenterText(bookTitle + " " + bookContent);
         pagefactory.setCurPosition(position);
-        pagefactory.draw(mCurPageCanvas);
-        mPageView.setBitmaps(mCurPageBitmap, mCurPageBitmap);
+        mPageView.drawCurrentPageCanvas();
+        mPageView.drawNextPageCanvas();
         mPageView.invalidate();
     }
 
@@ -459,7 +417,8 @@ public class BookActivity extends BaseActivity {
     }
 
     public boolean updatePage() {
-        pagefactory.draw(mCurPageCanvas);
+        mPageView.drawCurrentPageCanvas();
+
         if (mPageView.dragToRight()) {
             try {
                 pagefactory.prePage();
@@ -470,7 +429,7 @@ public class BookActivity extends BaseActivity {
                 Toast.makeText(mContext, R.string.settings_first_page, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            pagefactory.draw(mNextPageCanvas);
+            mPageView.drawNextPageCanvas();
         } else {
             try {
                 pagefactory.nextPage();
@@ -481,9 +440,8 @@ public class BookActivity extends BaseActivity {
                 Toast.makeText(mContext, R.string.settings_last_page, Toast.LENGTH_SHORT).show();
                 return false;
             }
-            pagefactory.draw(mNextPageCanvas);
+            mPageView.drawNextPageCanvas();
         }
-        mPageView.setBitmaps(mCurPageBitmap, mNextPageBitmap);
         return true;
     }
 
@@ -506,7 +464,8 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK) return;
+                if (resultCode != Activity.RESULT_OK)
+                    return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -549,7 +508,8 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and
+     * returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
@@ -608,60 +568,20 @@ public class BookActivity extends BaseActivity {
             menuStatus = AppSettings.STATUS_MENU_SHOW;
         }
 
-
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setOrientationLandscape();
-        } else {
-            setOrientationPortrait();
-
-        }
-        reLoadBook();
-
     }
 
     private void setOrientation(int type) {
         switch (type) {
             case AppSettings.SCREEN_ORIENTATION_PORTRAIT:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                setOrientationPortrait();
                 break;
             case AppSettings.SCREEN_ORIENTATION_LANDSCAPE:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                setOrientationLandscape();
                 break;
             case AppSettings.SCREEN_ORIENTATION_SENSOR:
             default:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                DisplayMetrics dm = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(dm);
-                if (dm.widthPixels > dm.heightPixels) {
-                    setOrientationLandscape();
-                } else {
-                    setOrientationPortrait();
-                }
                 break;
-        }
-    }
-
-    private void setOrientationPortrait() {
-        if (AppSettings.Configs.sScreenShowStatebar) {
-            mWidth = AppSettings.Configs.sScreenWidth;
-            mHeight =
-                    AppSettings.Configs.sScreenHeight - AppSettings.Configs.sScreenStatusBarHeight;
-        } else {
-            mWidth = AppSettings.Configs.sScreenWidth;
-            mHeight = AppSettings.Configs.sScreenHeight;
-        }
-    }
-
-    private void setOrientationLandscape() {
-        if (AppSettings.Configs.sScreenShowStatebar) {
-            mWidth = AppSettings.Configs.sScreenHeight - AppSettings.Configs.sScreenStatusBarHeight;
-            mHeight = AppSettings.Configs.sScreenWidth;
-
-        } else {
-            mWidth = AppSettings.Configs.sScreenHeight;
-            mHeight = AppSettings.Configs.sScreenWidth;
         }
     }
 

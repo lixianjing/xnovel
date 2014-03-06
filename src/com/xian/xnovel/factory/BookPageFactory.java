@@ -1,4 +1,19 @@
+
 package com.xian.xnovel.factory;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,19 +26,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
-import android.widget.Toast;
-
-import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppSettings;
 
 @SuppressLint("NewApi")
 public class BookPageFactory {
@@ -39,8 +41,8 @@ public class BookPageFactory {
     private int mReadStart = 0;
     private int mReadEnd = 0;
 
-    private int mWidth;
-    private int mHeight;
+    private int mWidth = 0;
+    private int mHeight = 0;
 
     private int bgColor = AppSettings.PREF_THEME_COLOR_DEFAULT; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
@@ -54,7 +56,7 @@ public class BookPageFactory {
     private Vector<String> mShowLine = new Vector<String>();
 
     private final int marginWidth = 15; // 左右与边缘的距离
-    private final int marginHeight = 20; // 上下与边缘的距离
+    private final int marginHeight = 15; // 上下与边缘的距离
     private final int youmiHeight = 0;// 广告条的狂度
 
     private int mLineCount; // 每页可以显示的行数
@@ -69,9 +71,11 @@ public class BookPageFactory {
     private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
 
-    private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
+    private final Integer[] themeBgRes = {
+            R.drawable.theme_1, R.drawable.theme_2,
             R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5, R.drawable.theme_6,
-            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9};
+            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9
+    };
 
     private static BookPageFactory mInstance = null;
 
@@ -175,18 +179,16 @@ public class BookPageFactory {
     }
 
     public void setBookSize(int width, int height) {
-
+        Log.e("lmf", ">>>>>>>setBookSize>>>>>>>>>>>>");
         if (mWidth != width || mHeight != height) {
             mWidth = width;
             mHeight = height;
             initPref();
+            mVisibleWidth = mWidth - marginWidth * 2;
+            mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
+            int totalSize = mFontSize + mFontLineSpace;
+            mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
         }
-
-        // mPaint.setTextSkewX(0.1f);//设置斜体
-        mVisibleWidth = mWidth - marginWidth * 2;
-        mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
-        int totalSize = mFontSize + mFontLineSpace;
-        mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
 
     }
 
@@ -245,7 +247,8 @@ public class BookPageFactory {
                 i--;
             }
         }
-        if (i < 0) i = 0;
+        if (i < 0)
+            i = 0;
         int nParaSize = nEnd - i;
         int j;
         byte[] buf = new byte[nParaSize];
@@ -338,7 +341,8 @@ public class BookPageFactory {
     }
 
     protected void pageUp() {
-        if (mReadStart < 0) mReadStart = 0;
+        if (mReadStart < 0)
+            mReadStart = 0;
         Vector<String> lines = new Vector<String>();
         String strParagraph = "";
         while (lines.size() < mLineCount && mReadStart > 0) {
@@ -401,7 +405,8 @@ public class BookPageFactory {
     }
 
     public void draw(Canvas c) {
-        if (mShowLine.size() == 0) mShowLine = pageDown();
+        if (mShowLine.size() == 0)
+            mShowLine = pageDown();
         if (mShowLine.size() > 0) {
             if (bgBitmap == null)
                 c.drawColor(bgColor);
@@ -498,7 +503,6 @@ public class BookPageFactory {
             mPaint.setFakeBoldText(false); // true为粗体，false为非粗体
         }
 
-
     }
 
     public void setFontItalic(boolean b) {
@@ -509,8 +513,6 @@ public class BookPageFactory {
             mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
         }
     }
-
-
 
     public void setTitleName(String name) {
         titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;

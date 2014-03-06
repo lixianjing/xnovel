@@ -8,7 +8,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RelativeLayout;
@@ -22,7 +21,6 @@ public class LauncherActivity extends BaseActivity {
 
     private static final int MSG_GOTOMAIN_ACTIVITY = 1001;
     private static final int MSG_FIRST_SETTEXT = 1002;
-    private static final int MSG_FIRST_SETTINGS = 1003;
 
     private Context mContext;
     private SharedPreferences pref;
@@ -44,24 +42,6 @@ public class LauncherActivity extends BaseActivity {
                     break;
                 case MSG_FIRST_SETTEXT:
                     coverTv.setText(R.string.launcher_first_load);
-                    break;
-                case MSG_FIRST_SETTINGS:
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-                    // 屏幕密度（像素比例：0.75/1.0/1.5/2.0）
-                    editor.putFloat(AppSettings.SETTINGS_DENSITY, dm.density);
-                    // 屏幕密度（每寸像素：120/160/240/320）
-                    editor.putInt(AppSettings.SETTINGS_DPI, dm.densityDpi);
-                    editor.putInt(AppSettings.SETTINGS_WIDTH, dm.widthPixels);
-                    editor.putInt(AppSettings.SETTINGS_HEIGHT, dm.heightPixels);
-                    int statusBarHeight = dm.heightPixels - mainRl.getMeasuredHeight();
-                    if (statusBarHeight == 0) {
-                        statusBarHeight = dm.widthPixels - mainRl.getMeasuredWidth();
-                    }
-                    editor.putInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT, statusBarHeight);
-                    editor.commit();
-
                     break;
 
                 default:
@@ -102,7 +82,6 @@ public class LauncherActivity extends BaseActivity {
                         Log.e("lmf", "onCreate>>>>>>>>>>>" + versionCode + ":");
                         // TODO Auto-generated method stub
                         mHandler.sendEmptyMessage(MSG_FIRST_SETTEXT);
-                        mHandler.sendEmptyMessageDelayed(MSG_FIRST_SETTINGS, 500);
                         AppDatabaseHelper mDbHelper = new AppDatabaseHelper(mContext);
                         mDbHelper.getWritableDatabase();
                         initBookContent(mContext, 5);
@@ -182,16 +161,6 @@ public class LauncherActivity extends BaseActivity {
         AppSettings.Configs.sScreenOrientation =
                 pref.getInt(AppSettings.SCREEN_ORIENTATION,
                         AppSettings.Configs.sScreenOrientation);
-
-        AppSettings.Configs.sScreenWidth =
-                pref.getInt(AppSettings.SETTINGS_WIDTH,
-                        AppSettings.Configs.sScreenWidth);
-        AppSettings.Configs.sScreenHeight =
-                pref.getInt(AppSettings.SETTINGS_HEIGHT,
-                        AppSettings.Configs.sScreenHeight);
-        AppSettings.Configs.sScreenStatusBarHeight =
-                pref.getInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT,
-                        AppSettings.Configs.sScreenStatusBarHeight);
 
         AppSettings.Configs.sFontBold =
                 pref.getBoolean(AppSettings.FONT_BOLD,
