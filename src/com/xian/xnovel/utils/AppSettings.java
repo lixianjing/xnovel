@@ -14,7 +14,6 @@ public class AppSettings {
     public static final String POSITION = "position";
 
     public static final String CONTACT_EMAIL = "flower_is@163.com";
-    public static final String COPYRIGHT_OWNER = "神谕者";
 
     public static final String ASSETS_FILE_PATH = "data/";
     public static final String BOOK_CATA_NAME = "cate_sub";
@@ -108,7 +107,6 @@ public class AppSettings {
     public static final int THEME_MODE_PICTURE = 1;
     public static final int THEME_MODE_COLOR = 2;
 
-
     // theme settings end
 
     // font settings begin
@@ -170,8 +168,6 @@ public class AppSettings {
         public static int sThemeMode = THEME_MODE_THEME;
         public static int sThemeIndex = 0;
         public static int sThemeColor = 0xFF000000;
-
-
 
     }
 
