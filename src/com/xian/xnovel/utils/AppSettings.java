@@ -100,19 +100,18 @@ public class AppSettings {
 
     public static final int PREF_PAGE_MODE_DRAG = 0;
     public static final int PREF_PAGE_MODE_SCROLL = 1;
+
     // theme settings begin
-    public static final String PREF_THEME_MODE = "theme_mode";
-    public static final String PREF_THEME_BG_INDEX = "theme_bg_index";
-    public static final String PREF_THEME_COLOR_VALUE = "theme_color_value";
-    public static final String PREF_THEME_PICTURE_NAME = "theme_picture";
+    public static final String THEME_MODE = "theme_mode";
+    public static final String THEME_THEME_INDEX = "theme_theme_index";
+    public static final String THEME_COLOR_VALUE = "theme_color_value";
+    public static final String THEME_PICTURE = "theme_picture";
 
-    public static final int PREF_THEME_MODE_BG = 0;
-    public static final int PREF_THEME_MODE_PICTURE = 1;
-    public static final int PREF_THEME_MODE_COLOR = 2;
+    public static final int THEME_MODE_THEME = 0;
+    public static final int THEME_MODE_PICTURE = 1;
+    public static final int THEME_MODE_COLOR = 2;
 
-    public static final int PREF_THEME_MODE_DEFAULT = PREF_THEME_MODE_BG;
-    public static final int PREF_THEME_BG_DEFAULT = 0;
-    public static final int PREF_THEME_COLOR_DEFAULT = 0xFF000000;
+
     // theme settings end
 
     // font settings begin
@@ -172,6 +171,12 @@ public class AppSettings {
         public static int sFontLineSpace = 20;
         public static int sFontSize = 40;
         public static int sFontColor = 0xFF000000;
+
+        public static int sThemeMode = THEME_MODE_THEME;
+        public static int sThemeIndex = 0;
+        public static int sThemeColor = 0xFF000000;
+
+
 
     }
 

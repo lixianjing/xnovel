@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.widget;
 
 import android.app.Dialog;
@@ -28,7 +27,6 @@ import com.xian.xnovel.utils.Utils;
 public class DialogScreenSettings extends Dialog implements android.view.View.OnClickListener {
 
     private final Context mContext;
-    private final AppSettings mSettings;
 
     private Editor mEditor;
 
@@ -68,14 +66,13 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
     public DialogScreenSettings(Context context) {
         super(context, R.style.dialog_theme);
         mContext = context;
-        mSettings = AppSettings.getInstance(mContext);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mEditor = mSettings.getEditor();
+        mEditor = AppSettings.getInstance(mContext).getEditor();
 
         mainView = LayoutInflater.from(mContext).inflate(R.layout.dlg_screen_settings, null);
         this.addContentView(mainView, new LayoutParams(LayoutParams.WRAP_CONTENT,

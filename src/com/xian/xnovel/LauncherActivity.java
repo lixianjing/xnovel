@@ -1,4 +1,3 @@
-
 package com.xian.xnovel;
 
 import android.content.Context;
@@ -165,14 +164,11 @@ public class LauncherActivity extends BaseActivity {
 
     private void initSettings() {
 
-        SharedPreferences pref =
-                AppSettings.getInstance(LauncherActivity.this).getPref();
+        SharedPreferences pref = AppSettings.getInstance(LauncherActivity.this).getPref();
         AppSettings.Configs.sScreenMode =
-                pref.getInt(AppSettings.SCREEN_MODE,
-                        AppSettings.Configs.sScreenMode);
+                pref.getInt(AppSettings.SCREEN_MODE, AppSettings.Configs.sScreenMode);
         AppSettings.Configs.sScreenLight =
-                pref.getInt(AppSettings.SCREEN_LIGHT_VALUE,
-                        AppSettings.Configs.sScreenLight);
+                pref.getInt(AppSettings.SCREEN_LIGHT_VALUE, AppSettings.Configs.sScreenLight);
         AppSettings.Configs.sScreenCloseLight =
                 pref.getBoolean(AppSettings.SCREEN_CLOSE_LIGHT,
                         AppSettings.Configs.sScreenCloseLight);
@@ -180,34 +176,36 @@ public class LauncherActivity extends BaseActivity {
                 pref.getBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
                         AppSettings.Configs.sScreenShowStatebar);
         AppSettings.Configs.sScreenOrientation =
-                pref.getInt(AppSettings.SCREEN_ORIENTATION,
-                        AppSettings.Configs.sScreenOrientation);
+                pref.getInt(AppSettings.SCREEN_ORIENTATION, AppSettings.Configs.sScreenOrientation);
 
         AppSettings.Configs.sScreenWidth =
-                pref.getInt(AppSettings.SETTINGS_WIDTH,
-                        AppSettings.Configs.sScreenWidth);
+                pref.getInt(AppSettings.SETTINGS_WIDTH, AppSettings.Configs.sScreenWidth);
         AppSettings.Configs.sScreenHeight =
-                pref.getInt(AppSettings.SETTINGS_HEIGHT,
-                        AppSettings.Configs.sScreenHeight);
+                pref.getInt(AppSettings.SETTINGS_HEIGHT, AppSettings.Configs.sScreenHeight);
         AppSettings.Configs.sScreenStatusBarHeight =
                 pref.getInt(AppSettings.SETTINGS_STATUSBAR_HEIGHT,
                         AppSettings.Configs.sScreenStatusBarHeight);
-
+        // font settings
         AppSettings.Configs.sFontBold =
-                pref.getBoolean(AppSettings.FONT_BOLD,
-                        AppSettings.Configs.sFontBold);
+                pref.getBoolean(AppSettings.FONT_BOLD, AppSettings.Configs.sFontBold);
         AppSettings.Configs.sFontItalic =
-                pref.getBoolean(AppSettings.FONT_ITALIC,
-                        AppSettings.Configs.sFontItalic);
+                pref.getBoolean(AppSettings.FONT_ITALIC, AppSettings.Configs.sFontItalic);
         AppSettings.Configs.sFontColor =
-                pref.getInt(AppSettings.FONT_COLOR,
-                        AppSettings.Configs.sFontColor);
+                pref.getInt(AppSettings.FONT_COLOR, AppSettings.Configs.sFontColor);
         AppSettings.Configs.sFontSize =
-                pref.getInt(AppSettings.FONT_SIZE,
-                        AppSettings.Configs.sFontSize);
+                pref.getInt(AppSettings.FONT_SIZE, AppSettings.Configs.sFontSize);
         AppSettings.Configs.sFontLineSpace =
-                pref.getInt(AppSettings.FONT_LINE_SPACE,
-                        AppSettings.Configs.sFontLineSpace);
+                pref.getInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace);
+
+
+        // theme settings
+        AppSettings.Configs.sThemeMode =
+                pref.getInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+        AppSettings.Configs.sThemeIndex =
+                pref.getInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
+        AppSettings.Configs.sThemeColor =
+                pref.getInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
+
 
     }
 

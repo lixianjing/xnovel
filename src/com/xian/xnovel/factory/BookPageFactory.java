@@ -42,7 +42,7 @@ public class BookPageFactory {
     private int mWidth;
     private int mHeight;
 
-    private int bgColor = AppSettings.PREF_THEME_COLOR_DEFAULT; // 背景颜色
+    private int bgColor = AppSettings.Configs.sThemeColor; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
 
     private int mFontColor = AppSettings.Configs.sFontColor; // 文字颜色
@@ -89,7 +89,7 @@ public class BookPageFactory {
         mContext = context;
         pref = AppSettings.getInstance(mContext).getPref();
 
-        initPref();
+        updateViewBg();
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setTextAlign(Align.LEFT);
@@ -122,27 +122,20 @@ public class BookPageFactory {
 
     }
 
-    private void initPref() {
-        int mode = pref.getInt(AppSettings.PREF_THEME_MODE, AppSettings.PREF_THEME_MODE_BG);
-        switch (mode) {
-            case AppSettings.PREF_THEME_MODE_BG:
-                int index =
-                        pref.getInt(AppSettings.PREF_THEME_BG_INDEX,
-                                AppSettings.PREF_THEME_BG_DEFAULT);
-                setBgBitmap(BitmapFactory
-                        .decodeResource(mContext.getResources(), themeBgRes[index]));
+    private void updateViewBg() {
+        switch (AppSettings.Configs.sThemeMode) {
+            case AppSettings.THEME_MODE_THEME:
+                setBgBitmap(BitmapFactory.decodeResource(mContext.getResources(),
+                        themeBgRes[AppSettings.Configs.sThemeIndex]));
                 break;
-            case AppSettings.PREF_THEME_MODE_COLOR:
-                int color =
-                        pref.getInt(AppSettings.PREF_THEME_COLOR_VALUE,
-                                AppSettings.PREF_THEME_COLOR_DEFAULT);
-                bgColor = color;
-                setBgColor(color);
+            case AppSettings.THEME_MODE_COLOR:
+                bgColor = AppSettings.Configs.sThemeColor;
+                setBgColor(bgColor);
                 break;
-            case AppSettings.PREF_THEME_MODE_PICTURE:
+            case AppSettings.THEME_MODE_PICTURE:
                 try {
                     setBgBitmap(BitmapFactory.decodeStream(mContext
-                            .openFileInput(AppSettings.PREF_THEME_PICTURE_NAME)));
+                            .openFileInput(AppSettings.THEME_PICTURE)));
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -179,7 +172,7 @@ public class BookPageFactory {
         if (mWidth != width || mHeight != height) {
             mWidth = width;
             mHeight = height;
-            initPref();
+            updateViewBg();
         }
 
         // mPaint.setTextSkewX(0.1f);//设置斜体

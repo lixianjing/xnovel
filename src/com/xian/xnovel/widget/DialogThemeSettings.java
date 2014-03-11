@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,7 +30,7 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
 
     private final Context mContext;
     private Handler mainHandler;
-    private SharedPreferences pref;
+    private Editor mEditor;
 
     private final LayoutInflater mInflater;
     private LinearLayout tabLeftLl, tabRightLl;
@@ -45,10 +44,6 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
     private ImageView themeBgIv;
     private TextView themeBgTv;
 
-    private int prefMode = AppSettings.PREF_THEME_MODE_DEFAULT;
-    private int prefResIndex = AppSettings.PREF_THEME_BG_DEFAULT;
-    private int prefColor = AppSettings.PREF_THEME_COLOR_DEFAULT;
-    private Bitmap pictureBitmap = null;
 
     public DialogThemeSettings(Context context) {
         super(context);
@@ -60,6 +55,8 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mEditor = AppSettings.getInstance(mContext).getEditor();
 
         tabLeftLl = (LinearLayout) mInflater.inflate(R.layout.tab_theme_settings, null);
 
@@ -76,8 +73,12 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
                 // TODO Auto-generated method stub
                 setColor(color);
                 sendMessage(AppSettings.MSG_SETTINGS_THEME_COLOR, color);
-                prefMode = AppSettings.PREF_THEME_MODE_COLOR;
-                prefColor = color;
+
+                AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_COLOR;
+                AppSettings.Configs.sThemeColor = color;
+                mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+                mEditor.putInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
+                mEditor.commit();
             }
         });
         if (mContext instanceof BookActivity) {
@@ -89,8 +90,9 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
                             // TODO Auto-generated method stub
                             setPicture(bitmap);
                             sendMessage(AppSettings.MSG_SETTINGS_THEME_PICTURE, 0);
-                            prefMode = AppSettings.PREF_THEME_MODE_PICTURE;
-                            pictureBitmap = bitmap;
+                            writeThemePicture(bitmap);
+
+
                         }
                     });
         }
@@ -104,8 +106,13 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
                 // TODO Auto-generated method stub
                 setThemeSelected(index);
                 sendMessage(AppSettings.MSG_SETTINGS_THEME_BG, index);
-                prefMode = AppSettings.PREF_THEME_MODE_BG;
-                prefResIndex = index;
+
+                AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;
+                AppSettings.Configs.sThemeIndex = index;
+                mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+                mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
+                mEditor.commit();
+
             }
         });
 
@@ -113,35 +120,32 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
         addFlipperView(tabLeftLl);
         addFlipperView(tabRightLl);
 
-        pref = AppSettings.getInstance(mContext).getPref();
-        prefMode = pref.getInt(AppSettings.PREF_THEME_MODE, AppSettings.PREF_THEME_MODE_DEFAULT);
-        switch (prefMode) {
-            case AppSettings.PREF_THEME_MODE_BG:
-                prefResIndex =
-                        pref.getInt(AppSettings.PREF_THEME_BG_INDEX,
-                                AppSettings.PREF_THEME_BG_DEFAULT);
-                setThemeSelected(prefResIndex);
+        switch (AppSettings.Configs.sThemeMode) {
+            case AppSettings.THEME_MODE_THEME:
+                setThemeSelected(AppSettings.Configs.sThemeIndex);
                 break;
-            case AppSettings.PREF_THEME_MODE_COLOR:
-                prefColor =
-                        pref.getInt(AppSettings.PREF_THEME_COLOR_VALUE,
-                                AppSettings.PREF_THEME_COLOR_DEFAULT);
-                setColor(prefColor);
-                colorSelectCv.setInitialColor(prefColor);
+            case AppSettings.THEME_MODE_COLOR:
+                setColor(AppSettings.Configs.sThemeColor);
+                colorSelectCv.setInitialColor(AppSettings.Configs.sThemeColor);
                 break;
-            case AppSettings.PREF_THEME_MODE_PICTURE:
+            case AppSettings.THEME_MODE_PICTURE:
+                Bitmap bitmap = null;
                 try {
-                    pictureBitmap =
+                    bitmap =
                             BitmapFactory.decodeStream(mContext
-                                    .openFileInput(AppSettings.PREF_THEME_PICTURE_NAME));
-                    setPicture(pictureBitmap);
+                                    .openFileInput(AppSettings.THEME_PICTURE));
+                    setPicture(bitmap);
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    pictureBitmap = null;
-                    prefMode = AppSettings.PREF_THEME_MODE_BG;
-                    prefResIndex = 0;
-                    setThemeSelected(prefResIndex);
+                    if (bitmap != null) bitmap.recycle();
+                    bitmap = null;
+                    AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;
+                    AppSettings.Configs.sThemeIndex = 0;
+                    mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+                    mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
+                    mEditor.commit();
+                    setThemeSelected(AppSettings.Configs.sThemeIndex);
                 }
                 break;
 
@@ -205,49 +209,34 @@ public class DialogThemeSettings extends DialogTab2Settings implements View.OnCl
     @Override
     public void dismiss() {
         // TODO Auto-generated method stub
-        savePrefThread.start();
         super.dismiss();
     }
 
-    private final Thread savePrefThread = new Thread(new Runnable() {
 
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Editor editor = pref.edit();
-            editor.putInt(AppSettings.PREF_THEME_MODE, prefMode);
-            if (prefMode == AppSettings.PREF_THEME_MODE_PICTURE) {
-                FileOutputStream fos = null;
+    private void writeThemePicture(Bitmap bitmap) {
+        FileOutputStream fos = null;
+        try {
+            fos = mContext.openFileOutput(AppSettings.THEME_PICTURE, Context.MODE_PRIVATE);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, fos);
+            fos.flush();
+            AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_PICTURE;
+            mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+            mEditor.commit();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(mContext, R.string.settings_theme_bg_picture_error, Toast.LENGTH_SHORT)
+                    .show();
+        } finally {
+            if (fos != null) {
                 try {
-                    fos =
-                            mContext.openFileOutput(AppSettings.PREF_THEME_PICTURE_NAME,
-                                    Context.MODE_PRIVATE);
-                    pictureBitmap.compress(Bitmap.CompressFormat.PNG, 80, fos);
-                    fos.flush();
-                } catch (Exception e) {
+                    fos.close();
+                } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    editor.putInt(AppSettings.PREF_THEME_MODE, AppSettings.PREF_THEME_MODE_DEFAULT);
-                    Toast.makeText(mContext, R.string.settings_theme_bg_picture_error,
-                            Toast.LENGTH_SHORT).show();
-                } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
                 }
-
-            } else {
-                editor.putInt(AppSettings.PREF_THEME_BG_INDEX, prefResIndex);
-                editor.putInt(AppSettings.PREF_THEME_COLOR_VALUE, prefColor);
             }
-
-            editor.commit();
         }
-    });
+    }
 
 }
