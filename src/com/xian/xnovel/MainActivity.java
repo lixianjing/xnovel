@@ -1,7 +1,5 @@
-package com.xian.xnovel;
 
-import java.util.ArrayList;
-import java.util.List;
+package com.xian.xnovel;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +29,9 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.MainViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
@@ -68,7 +69,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private int historyDataSize;
 
     // more page
-    private Button moreShareBtn, moreReviewBtn, moreSendMessageBtn, moreCopyBtn;
+    private Button moreShareBtn, moreReviewBtn, moreSendMessageBtn, moreAppBtn, moreCopyBtn;
     private TextView moreVersionTv;
     private DialogCommon commonDialog;
 
@@ -196,11 +197,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         moreShareBtn = (Button) moreView.findViewById(R.id.more_btn_share);
         moreReviewBtn = (Button) moreView.findViewById(R.id.more_btn_review);
         moreSendMessageBtn = (Button) moreView.findViewById(R.id.more_btn_sendMail);
+        moreAppBtn = (Button) moreView.findViewById(R.id.more_btn_app);
         moreCopyBtn = (Button) moreView.findViewById(R.id.more_btn_copy);
         moreVersionTv = (TextView) moreView.findViewById(R.id.more_tv_version);
         moreShareBtn.setOnClickListener(this);
         moreReviewBtn.setOnClickListener(this);
         moreSendMessageBtn.setOnClickListener(this);
+        moreAppBtn.setOnClickListener(this);
         moreCopyBtn.setOnClickListener(this);
         moreVersionTv.setText(mContext.getText(R.string.more_version_text)
                 + Utils.getVersionName(mContext));
@@ -305,7 +308,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 commonDialog.show();
                 break;
             case R.id.more_btn_review:
-
+                Toast.makeText(mContext, R.string.settings_nothing, 1000).show();
+                break;
+            case R.id.more_btn_app:
+                Toast.makeText(mContext, R.string.settings_nothing, 1000).show();
                 break;
             case R.id.more_btn_sendMail:
                 Utils.sendEMailForMe(mContext);

@@ -72,6 +72,14 @@
                         android:background="@drawable/more_btn_se"
                         android:text="@string/more_share_btn"
                         android:textColor="#FF414141" />
+                    
+                         <Button
+                        android:id="@+id/more_btn_app"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/more_btn_se"
+                        android:text="@string/more_more_btn"
+                        android:textColor="#FF414141" />
 
                     <Button
                         android:id="@+id/more_btn_copy"
