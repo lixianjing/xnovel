@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.utils;
 
 import android.app.Activity;
@@ -83,18 +84,14 @@ public class AppSettings {
 
     public static final String SCREEN_SHOW_STATEBAR = "screen_show_statebar";
 
+    public static final String SCREEN_DENSITY = "screen_density";
+
     public static final String SCREEN_ORIENTATION = "screen_orientation";
     public static final int SCREEN_ORIENTATION_SENSOR = 0;
     public static final int SCREEN_ORIENTATION_PORTRAIT = 1;
     public static final int SCREEN_ORIENTATION_LANDSCAPE = 2;
 
     public static final String SETTINGS_VERSION_CODE = "version_code";
-
-    public static final String SETTINGS_DENSITY = "density";
-    public static final String SETTINGS_DPI = "densityDpi";
-    public static final String SETTINGS_WIDTH = "widthPixels";
-    public static final String SETTINGS_HEIGHT = "heightPixels";
-    public static final String SETTINGS_STATUSBAR_HEIGHT = "statusBarHeight";
 
     public static final String PREF_PAGE_MODE = "page_mode";
 
@@ -162,9 +159,7 @@ public class AppSettings {
         public static boolean sScreenShowStatebar = false;
         public static int sScreenOrientation = SCREEN_ORIENTATION_SENSOR;
 
-        public static int sScreenWidth = 400;
-        public static int sScreenHeight = 800;
-        public static int sScreenStatusBarHeight = 0;
+        public static float sScreenDensity = 1.0f;
 
         public static boolean sFontBold = false;
         public static boolean sFontItalic = false;

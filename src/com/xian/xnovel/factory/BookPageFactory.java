@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.xian.xnovel.R;
@@ -39,8 +40,8 @@ public class BookPageFactory {
     private int mReadStart = 0;
     private int mReadEnd = 0;
 
-    private int mWidth;
-    private int mHeight;
+    private int mWidth = 0;
+    private int mHeight = 0;
 
     private int bgColor = AppSettings.Configs.sThemeColor; // 背景颜色
     private Bitmap bgBitmap = null; // 背景图片
@@ -54,7 +55,7 @@ public class BookPageFactory {
     private Vector<String> mShowLine = new Vector<String>();
 
     private final int marginWidth = 15; // 左右与边缘的距离
-    private final int marginHeight = 20; // 上下与边缘的距离
+    private final int marginHeight = 15; // 上下与边缘的距离
     private final int youmiHeight = 0;// 广告条的狂度
 
     private int mLineCount; // 每页可以显示的行数
@@ -168,18 +169,16 @@ public class BookPageFactory {
     }
 
     public void setBookSize(int width, int height) {
-
+        Log.e("lmf", ">>>>>>>setBookSize>>>>>>>>>>>>");
         if (mWidth != width || mHeight != height) {
             mWidth = width;
             mHeight = height;
             updateViewBg();
+            mVisibleWidth = mWidth - marginWidth * 2;
+            mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
+            int totalSize = mFontSize + mFontLineSpace;
+            mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
         }
-
-        // mPaint.setTextSkewX(0.1f);//设置斜体
-        mVisibleWidth = mWidth - marginWidth * 2;
-        mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
-        int totalSize = mFontSize + mFontLineSpace;
-        mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
 
     }
 
@@ -491,7 +490,6 @@ public class BookPageFactory {
             mPaint.setFakeBoldText(false); // true为粗体，false为非粗体
         }
 
-
     }
 
     public void setFontItalic(boolean b) {
@@ -502,8 +500,6 @@ public class BookPageFactory {
             mPaint.setTextSkewX(0); // float类型参数，负数表示右斜，整数左斜
         }
     }
-
-
 
     public void setTitleName(String name) {
         titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;

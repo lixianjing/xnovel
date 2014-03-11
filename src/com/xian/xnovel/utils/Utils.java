@@ -1,16 +1,5 @@
-package com.xian.xnovel.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Arrays;
+package com.xian.xnovel.utils;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -28,6 +17,18 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.xian.xnovel.R;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Arrays;
 
 /**
  * @author limingfeng
@@ -70,7 +71,9 @@ public class Utils {
             // intent.setType("text/plain"); //use this line for testing in the
             // emulator
             intent.setType("message/rfc822"); // use from live device
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {AppSettings.CONTACT_EMAIL});
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {
+                AppSettings.CONTACT_EMAIL
+            });
             intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.contact_email_title));
             context.startActivity(Intent.createChooser(intent,
                     context.getString(R.string.select_application)));
@@ -79,7 +82,6 @@ public class Utils {
             e.printStackTrace();
         }
     }
-
 
     /***********************************************************
      * file control begin
@@ -105,7 +107,6 @@ public class Utils {
     }
 
     /**
-     * 
      * @param context
      * @param fileName
      * @return
@@ -205,12 +206,14 @@ public class Utils {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException e1) {}
+                } catch (IOException e1) {
+                }
             }
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException e1) {}
+                } catch (IOException e1) {
+                }
             }
         }
     }
@@ -260,8 +263,6 @@ public class Utils {
         }
     }
 
-
-
     public static int getSysScreenBrightness(Context context) {
         int value = 0;
         ContentResolver cr = context.getContentResolver();
@@ -276,8 +277,10 @@ public class Utils {
     public static void setScreenBrightness(Window window, int value) {
         WindowManager.LayoutParams params = window.getAttributes();
         params.screenBrightness = value / 255f;
-        if (params.screenBrightness > 1) params.screenBrightness = 1;
-        if (params.screenBrightness < 0.1) params.screenBrightness = 0.1f;
+        if (params.screenBrightness > 1)
+            params.screenBrightness = 1;
+        if (params.screenBrightness < 0.1)
+            params.screenBrightness = 0.1f;
         window.setAttributes(params);
     }
 
@@ -306,6 +309,16 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static int dip2px(Context context, float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
+
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
     }
 
 }

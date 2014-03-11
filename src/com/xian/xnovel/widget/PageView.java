@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.widget;
 
 import android.content.Context;
@@ -30,14 +31,15 @@ public class PageView extends View {
     private BookActivity bookActivity;
     private BookPageFactory pagefactory;
 
-    private int mWidth = AppSettings.Configs.sScreenWidth;
-    private int mHeight = AppSettings.Configs.sScreenHeight;
+    private Bitmap mCurPageBitmap, mNextPageBitmap;
+    private Canvas mCurPageCanvas, mNextPageCanvas;
+
+    private int mWidth = 0;
+    private int mHeight = 0;
     private int mCornerX = 0; // 拖拽点对应的页脚
     private int mCornerY = 0;
     private Path mPath0;
     private Path mPath1;
-    Bitmap mCurPageBitmap = null; // 当前页
-    Bitmap mNextPageBitmap = null;
 
     PointF mTouch = new PointF(); // 拖拽点
     PointF mBezierStart1 = new PointF(); // 贝塞尔曲线起始点
@@ -56,7 +58,9 @@ public class PageView extends View {
     float mTouchToCornerDis;
     ColorMatrixColorFilter mColorMatrixFilter;
     Matrix mMatrix;
-    float[] mMatrixArray = {0, 0, 0, 0, 0, 0, 0, 0, 1.0f};
+    float[] mMatrixArray = {
+            0, 0, 0, 0, 0, 0, 0, 0, 1.0f
+    };
 
     boolean mIsRTandLB; // 是否属于右上左下
     float mMaxLength = (float) Math.hypot(mWidth, mHeight);
@@ -131,7 +135,8 @@ public class PageView extends View {
                         mTouch.x = x;
                         mTouch.y = y;
                         return bookActivity.updatePage();
-                    } else {}
+                    } else {
+                    }
 
                 }
 
@@ -148,14 +153,16 @@ public class PageView extends View {
                         mTouch.x = x;
                         mTouch.y = y;
                         return bookActivity.updatePage();
-                    } else {}
+                    } else {
+                    }
 
                 } else {
                     if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
                         mTouch.x = x;
                         mTouch.y = y;
                         this.postInvalidate();
-                    } else {}
+                    } else {
+                    }
 
                 }
 
@@ -201,8 +208,10 @@ public class PageView extends View {
 
         ColorMatrix cm = new ColorMatrix();
         float array[] =
-                {0.55f, 0, 0, 0, 80.0f, 0, 0.55f, 0, 0, 80.0f, 0, 0, 0.55f, 0, 80.0f, 0, 0, 0,
-                        0.2f, 0};
+        {
+                0.55f, 0, 0, 0, 80.0f, 0, 0.55f, 0, 0, 80.0f, 0, 0, 0.55f, 0, 80.0f, 0, 0, 0,
+                0.2f, 0
+        };
         cm.set(array);
         mColorMatrixFilter = new ColorMatrixColorFilter(cm);
         mMatrix = new Matrix();
@@ -215,11 +224,17 @@ public class PageView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO Auto-generated method stub
-        mWidth = MeasureSpec.getSize(widthMeasureSpec);
-        mHeight = MeasureSpec.getSize(heightMeasureSpec);
-        Log.e("lmf", ">>>>>>onMeasure>>>>>>>>>>>>>>" + mWidth + ":" + mHeight + ":"
-                + AppSettings.Configs.sScreenWidth + ":" + AppSettings.Configs.sScreenHeight);
-        mMaxLength = (float) Math.hypot(mWidth, mHeight);
+
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+
+        if (width != mWidth || height != mHeight) {
+            mWidth = width;
+            mHeight = height;
+            mMaxLength = (float) Math.hypot(mWidth, mHeight);
+            initBitmap();
+        }
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -274,7 +289,8 @@ public class PageView extends View {
         // 如果继续翻页，会出现BUG故在此限制
         if (mTouch.x > 0 && mTouch.x < mWidth) {
             if (mBezierStart1.x < 0 || mBezierStart1.x > mWidth) {
-                if (mBezierStart1.x < 0) mBezierStart1.x = mWidth - mBezierStart1.x;
+                if (mBezierStart1.x < 0)
+                    mBezierStart1.x = mWidth - mBezierStart1.x;
 
                 float f1 = Math.abs(mCornerX - mTouch.x);
                 float f2 = mWidth * f1 / mBezierStart1.x;
@@ -307,7 +323,8 @@ public class PageView extends View {
         mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1, mBezierStart2);
 
         /*
-         * mBeziervertex1.x 推导 ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
+         * mBeziervertex1.x 推导
+         * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
          * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
          */
         mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
@@ -367,11 +384,6 @@ public class PageView extends View {
         canvas.restore();
     }
 
-    public void setBitmaps(Bitmap bm1, Bitmap bm2) {
-        mCurPageBitmap = bm1;
-        mNextPageBitmap = bm2;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -405,7 +417,9 @@ public class PageView extends View {
      * Author : hmg25 Version: 1.0 Description : 创建阴影的GradientDrawable
      */
     private void createDrawable() {
-        int[] color = {0x333333, 0xb0333333};
+        int[] color = {
+                0x333333, 0xb0333333
+        };
         mFolderShadowDrawableRL =
                 new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, color);
         mFolderShadowDrawableRL.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -414,7 +428,9 @@ public class PageView extends View {
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, color);
         mFolderShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        mBackShadowColors = new int[] {0xff111111, 0x111111};
+        mBackShadowColors = new int[] {
+                0xff111111, 0x111111
+        };
         mBackShadowDrawableRL =
                 new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, mBackShadowColors);
         mBackShadowDrawableRL.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -423,7 +439,9 @@ public class PageView extends View {
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, mBackShadowColors);
         mBackShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        mFrontShadowColors = new int[] {0x80111111, 0x111111};
+        mFrontShadowColors = new int[] {
+                0x80111111, 0x111111
+        };
         mFrontShadowDrawableVLR =
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, mFrontShadowColors);
         mFrontShadowDrawableVLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -624,7 +642,8 @@ public class PageView extends View {
                 dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
             }
             mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy, delayMillis);
-        } else {}
+        } else {
+        }
 
     }
 
@@ -638,7 +657,8 @@ public class PageView extends View {
      * Author : hmg25 Version: 1.0 Description : 是否从左边翻向右边
      */
     public boolean dragToRight() {
-        if (mCornerX > 0) return false;
+        if (mCornerX > 0)
+            return false;
         return true;
     }
 
@@ -675,7 +695,54 @@ public class PageView extends View {
 
     }
 
+    public void initBitmap() {
+        Log.e("lmf", ">>>>>>>>>>>>initBitmap>>>>>>>>>>");
+
+        pagefactory.setBookSize(mWidth, mHeight);
+
+        if (mCurPageBitmap != null) {
+            mCurPageBitmap.recycle();
+            mCurPageBitmap = null;
+            mCurPageCanvas = null;
+        }
+
+        if (mNextPageBitmap != null) {
+            mNextPageBitmap.recycle();
+            mNextPageBitmap = null;
+            mNextPageCanvas = null;
+        }
+
+        mCurPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+        mNextPageBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+
+        mCurPageCanvas = new Canvas(mCurPageBitmap);
+        mNextPageCanvas = new Canvas(mNextPageBitmap);
+
+        pagefactory.clearBook();
+        pagefactory.draw(mCurPageCanvas);
+        pagefactory.draw(mNextPageCanvas);
+        this.invalidate();
+
+    }
+
     public void setMainHandler(Handler mainHandler) {
         this.mainHandler = mainHandler;
     }
+
+    public void drawCurrentPageCanvas() {
+        pagefactory.draw(mCurPageCanvas);
+    }
+
+    public void drawNextPageCanvas() {
+        pagefactory.draw(mNextPageCanvas);
+    }
+
+    public Bitmap getCurPageBitmap() {
+        return mCurPageBitmap;
+    }
+
+    public Bitmap getNextPageBitmap() {
+        return mNextPageBitmap;
+    }
+
 }
