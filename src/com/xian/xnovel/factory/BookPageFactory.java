@@ -14,7 +14,6 @@ import java.util.Vector;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -32,7 +31,6 @@ public class BookPageFactory {
     private final String m_strCharsetName = "UTF-8";
 
     private final Context mContext;
-    private final SharedPreferences pref;
 
     private File bookFile = null;
     private MappedByteBuffer mapFileBuffer = null;
@@ -62,12 +60,12 @@ public class BookPageFactory {
     private float mVisibleHeight; // 绘制内容的宽
     private float mVisibleWidth; // 绘制内容的宽
     private boolean isFirstPage, isLastPage;
-    private final int btmFontSize = 16;// 底部文字大小
+    // private final int btmFontSize = 16;// 底部文字大小
 
-    private String titleName = "";
+    // private String titleName = "";
 
     private final Paint mPaint;
-    private final Paint mBtmPaint;// 底部文字绘制
+    // private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
 
     private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
@@ -88,7 +86,6 @@ public class BookPageFactory {
     private BookPageFactory(Context context) {
         // TODO Auto-generated constructor stub
         mContext = context;
-        pref = AppSettings.getInstance(mContext).getPref();
 
         updateViewBg();
 
@@ -110,11 +107,11 @@ public class BookPageFactory {
         }
 
         // 底部文字绘制
-        mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBtmPaint.setTextAlign(Align.LEFT);
-        mBtmPaint.setTextSize(btmFontSize);
-        mBtmPaint.setColor(mFontColor);
-        percentWidth = (int) mBtmPaint.measureText("99.99%") + 1;
+        // mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        // mBtmPaint.setTextAlign(Align.LEFT);
+        // mBtmPaint.setTextSize(btmFontSize);
+        // mBtmPaint.setColor(mFontColor);
+        // percentWidth = (int) mBtmPaint.measureText("99.99%") + 1;
 
         // 行间距设置
         spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -413,24 +410,24 @@ public class BookPageFactory {
                 i++;
             }
         }
-        drawBtmInfo(c);
+        // drawBtmInfo(c);
     }
 
     private int titleWidth;
-    private final int percentWidth;
+    // private final int percentWidth;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
     private final DecimalFormat percentFormatter = new DecimalFormat("#0.00");
 
-    private void drawBtmInfo(Canvas c) {
-
-        c.drawText(getCurPercent(), mWidth - percentWidth, mHeight - 5, mBtmPaint);
-
-        Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
-        String str = dateFormatter.format(curDate);
-        c.drawText(str, 5, mHeight - 5, mBtmPaint);
-
-        c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - 5, mBtmPaint);
-    }
+    // private void drawBtmInfo(Canvas c) {
+    //
+    // c.drawText(getCurPercent(), mWidth - percentWidth, mHeight - 5, mBtmPaint);
+    //
+    // Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+    // String str = dateFormatter.format(curDate);
+    // c.drawText(str, 5, mHeight - 5, mBtmPaint);
+    //
+    // c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - 5, mBtmPaint);
+    // }
 
     public void setBgBitmap(Bitmap bg) {
         if (mWidth != 0 && (bg.getWidth() != mWidth || bg.getHeight() != mHeight)) {
@@ -467,7 +464,7 @@ public class BookPageFactory {
     public void setFontColor(int color) {
         mFontColor = color;
         mPaint.setColor(mFontColor);
-        mBtmPaint.setColor(mFontColor);
+        // mBtmPaint.setColor(mFontColor);
     }
 
     public void setFontLineSpace(int size) {
@@ -501,10 +498,10 @@ public class BookPageFactory {
         }
     }
 
-    public void setTitleName(String name) {
-        titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
-        this.titleName = name;
-    }
+    // public void setTitleName(String name) {
+    // titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
+    // this.titleName = name;
+    // }
 
     public int getCurPosition() {
         return mReadStart;

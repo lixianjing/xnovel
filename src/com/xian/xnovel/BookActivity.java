@@ -1,5 +1,6 @@
-
 package com.xian.xnovel;
+
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,8 +34,6 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
-
-import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -232,7 +231,7 @@ public class BookActivity extends BaseActivity {
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-            pagefactory.setTitleName(bookContent);
+            // pagefactory.setTitleName(bookContent);
             menuTopLayout.setCenterText(bookTitle + " " + bookContent);
             pagefactory.setCurPosition(position);
 
@@ -289,7 +288,7 @@ public class BookActivity extends BaseActivity {
     private void updateBook() {
         pagefactory.closeBook();
         pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-        pagefactory.setTitleName(bookContent);
+        // pagefactory.setTitleName(bookContent);
         menuTopLayout.setCenterText(bookTitle + " " + bookContent);
         pagefactory.setCurPosition(position);
         mPageView.drawCurrentPageCanvas();
@@ -464,8 +463,7 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK)
-                    return;
+                if (resultCode != Activity.RESULT_OK) return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -508,8 +506,7 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and
-     * returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
