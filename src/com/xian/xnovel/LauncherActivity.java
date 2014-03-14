@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
@@ -55,6 +56,8 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        // umeng send data
+        MobclickAgent.updateOnlineConfig(mContext);
         setContentView(R.layout.activity_launcher);
         mContext = this;
         pref = AppSettings.getInstance(mContext).getPref();
