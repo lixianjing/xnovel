@@ -1,11 +1,5 @@
-package com.xian.xnovel.utils;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.Thread.UncaughtExceptionHandler;
-import java.lang.reflect.Field;
-import java.util.Properties;
+package com.xian.xnovel.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,12 +11,16 @@ import android.util.Log;
 
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.lang.reflect.Field;
+import java.util.Properties;
+
 /**
- * 
- * 
  * UncaughtExceptionHandler：线程未捕获异常控制器是用来处理未捕获异常的。 如果程序出现了未捕获异常默认情况下则会出现强行关闭对话框
  * 实现该接口并注册为程序中的默认未捕获异常处理 这样当未捕获异常发生时，就可以做些异常处理操作 例如：收集异常信息，发送错误报告 等。
- * 
  * UncaughtException处理类,当程序发生Uncaught异常的时候,由该类来接管程序,并记录发送错误报告.
  */
 public class CrashHandler implements UncaughtExceptionHandler {
@@ -44,13 +42,14 @@ public class CrashHandler implements UncaughtExceptionHandler {
     private static final String BUILD_TIME = "BUILD_TIME";
     private static final String STACK_TRACE = "STACK_TRACE";
 
-
     /** 保证只有一个CrashHandler实例 */
-    private CrashHandler() {}
+    private CrashHandler() {
+    }
 
     /** 获取CrashHandler实例 ,单例模式 */
     public static CrashHandler getInstance() {
-        if (INSTANCE == null) INSTANCE = new CrashHandler();
+        if (INSTANCE == null)
+            INSTANCE = new CrashHandler();
         return INSTANCE;
     }
 
@@ -98,7 +97,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @return true:如果处理了该异常信息;否则返回false
      */
     private boolean handleException(Throwable ex) {
-        Log.e("lmf", "handleException");
         if (ex == null) {
             return true;
         }
@@ -106,7 +104,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
         collectCrashDeviceInfo(mContext);
         // 保存错误报告文件
         final String crashinfo = getCrashInfoToFile(ex);
-        Log.e("lmf", ">>>>>handleException>>>>>>>" + crashinfo);
         // 发送错误报告到服务器
         MobclickAgent.reportError(mContext, crashinfo);
         return false;
@@ -199,7 +196,5 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
         return mDeviceCrashInfo.toString();
     }
-
-
 
 }

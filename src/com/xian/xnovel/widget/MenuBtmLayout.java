@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.widget;
 
 import android.app.Activity;
@@ -5,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -84,22 +84,30 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         // TODO Auto-generated constructor stub
     }
 
-    private final int[] toolsImgRes = new int[] {R.drawable.icon_chapter,
+    private final int[] toolsImgRes = new int[] {
+            R.drawable.icon_chapter,
             R.drawable.icon_prev_chapter, R.drawable.icon_next_chapter,
             R.drawable.icon_auto_scroll, R.drawable.icon_bookmark, R.drawable.icon_add_bookmark,
-            R.drawable.icon_screen, R.drawable.icon_seek};
+            R.drawable.icon_screen, R.drawable.icon_seek
+    };
 
-    private final int[] toolsStrsRes = new int[] {R.string.menu_pop_catalog, R.string.menu_pop_pre,
+    private final int[] toolsStrsRes = new int[] {
+            R.string.menu_pop_catalog, R.string.menu_pop_pre,
             R.string.menu_pop_next, R.string.menu_pop_auto_scroll, R.string.menu_pop_mark,
-            R.string.menu_pop_add_mark, R.string.menu_pop_rotate, R.string.menu_pop_position};
+            R.string.menu_pop_add_mark, R.string.menu_pop_rotate, R.string.menu_pop_position
+    };
 
-    private final int[] settingsImgRes = new int[] {R.drawable.icon_adjust_light,
+    private final int[] settingsImgRes = new int[] {
+            R.drawable.icon_adjust_light,
             R.drawable.icon_adjust_font, R.drawable.icon_mode_drag, R.drawable.icon_theme,
-            R.drawable.icon_default, R.drawable.icon_feedback, R.drawable.icon_help};
+            R.drawable.icon_default, R.drawable.icon_feedback, R.drawable.icon_help
+    };
 
-    private final int[] settingsStrsRes = new int[] {R.string.menu_pop_light,
+    private final int[] settingsStrsRes = new int[] {
+            R.string.menu_pop_light,
             R.string.menu_pop_font, R.string.menu_mode_drag, R.string.menu_pop_background,
-            R.string.menu_pop_default, R.string.menu_pop_user, R.string.menu_pop_scroll};
+            R.string.menu_pop_default, R.string.menu_pop_user, R.string.menu_pop_scroll
+    };
 
     @Override
     protected void onFinishInflate() {
@@ -170,7 +178,6 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             // TODO Auto-generated method stub
-            Log.e("lmf", ">>>>onItemClick>>>>>>>>>>>>>>>>>" + arg2);
             Intent intent = null;
             switch (arg2) {
                 case 0:

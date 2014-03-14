@@ -8,7 +8,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -92,7 +91,6 @@ public class LauncherActivity extends BaseActivity {
                     @Override
                     public void onRun(int versionCode) {
                         // TODO Auto-generated method stub
-                        Log.e("lmf", "onRun>>>>>>>>>>>" + versionCode + ":");
                         initSettings();
                         mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 1500);
 

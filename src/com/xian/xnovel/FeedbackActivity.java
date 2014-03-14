@@ -70,7 +70,8 @@ public class FeedbackActivity extends BaseActivity
 
                 Map<String, String> map = info.getContact();
                 if (phone.length() > 0 || qq.length() > 0 || email.length() > 0) {
-                    contact = "phone:" + phone + "\n" + "qq:" + qq + "\n" + "email:" + email;
+                    contact = "[phone:" + phone + "],[" + "qq:" + qq + "],[" + "email:" + email
+                            + "]";
                 }
 
                 map.put("plain", contact);

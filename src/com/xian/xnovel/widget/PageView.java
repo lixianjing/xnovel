@@ -696,7 +696,6 @@ public class PageView extends View {
     }
 
     public void initBitmap() {
-        Log.e("lmf", ">>>>>>>>>>>>initBitmap>>>>>>>>>>");
 
         pagefactory.setBookSize(mWidth, mHeight);
 

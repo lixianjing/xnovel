@@ -1,3 +1,4 @@
+
 package com.xian.xnovel.widget;
 
 import android.app.Dialog;
@@ -6,7 +7,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -127,7 +127,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
                 // TODO Auto-generated method stub
-                Log.e("lmf", "onStopTrackingTouch>>>>>>>>>>>" + arg0.getProgress());
                 AppSettings.Configs.sScreenLight = arg0.getProgress();
                 mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, arg0.getProgress());
                 mEditor.commit();
@@ -141,7 +140,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             @Override
             public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
                 // TODO Auto-generated method stub
-                Log.e("lmf", "onProgressChanged>>>>>>>>>>>" + arg1);
                 AppSettings.Configs.sScreenLight = arg1;
                 // Utils.setScreenBrightness(DialogScreenSettings.this.getWindow(),
                 // AppSettings.Configs.sScreenLight);
@@ -198,7 +196,6 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             lightSb.setEnabled(false);
 
         }
-        Log.e("lmf", " setScreenMode >>>>>>>>>" + mode + ":" + AppSettings.Configs.sScreenLight);
     }
 
     public void setBookActivity(BookActivity bookActivity) {
