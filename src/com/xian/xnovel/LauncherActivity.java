@@ -1,3 +1,4 @@
+
 package com.xian.xnovel;
 
 import android.content.Context;
@@ -75,13 +76,11 @@ public class LauncherActivity extends BaseActivity {
                     @Override
                     public void onUpgrade(int oldVersion, int currentVersion) {
                         // TODO Auto-generated method stub
-                        Log.e("lmf", "onUpgrage>>>>>>>>>>>" + oldVersion + ":" + currentVersion);
 
                     }
 
                     @Override
                     public void onCreate(int versionCode) {
-                        Log.e("lmf", "onCreate>>>>>>>>>>>" + versionCode + ":");
                         // TODO Auto-generated method stub
                         mHandler.sendEmptyMessage(MSG_FIRST_SETTEXT);
                         AppDatabaseHelper mDbHelper = new AppDatabaseHelper(mContext);
@@ -172,7 +171,6 @@ public class LauncherActivity extends BaseActivity {
         AppSettings.Configs.sFontLineSpace =
                 pref.getInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace);
 
-
         // theme settings
         AppSettings.Configs.sThemeMode =
                 pref.getInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
@@ -180,7 +178,6 @@ public class LauncherActivity extends BaseActivity {
                 pref.getInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
         AppSettings.Configs.sThemeColor =
                 pref.getInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
-
 
     }
 

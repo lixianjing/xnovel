@@ -4,96 +4,122 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/main_title_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="@dimen/main_title_layout_height"
+        android:background="@drawable/title_bar_bkg"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/fb_title_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:gravity="center_vertical"
+            android:text="返回"
+            android:textColor="#FF808080"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-            <RelativeLayout
-                android:id="@+id/main_title_view"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/main_title_layout_height"
-                android:background="@drawable/title_bar_bkg"
-                android:gravity="center_vertical" >
-
-                <Button
-                            android:id="@+id/fb_title_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="返回"
-                    android:gravity="center_vertical"
-                     />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        style="@style/mainTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="用户反馈" />
-                </LinearLayout>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center_vertical"
-                    android:visibility="gone" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="您要发送的内容" />
-
-                <EditText
-                    android:id="@+id/fb_content_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|left"
-                    android:hint="您要发送的内容"
-                    android:lines="5" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="请留下您的联系方式，方便我们及时反馈您的问题。" />
-
-                <EditText
-                    android:id="@+id/fb_contact_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|left"
-                    android:hint="您的联系方式" />
-
-                <Button
-                    android:id="@+id/fb_send_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_tab_layout_height"
-                    android:hint="发送信息"
-                    android:layout_marginTop="10dp" >
-                </Button>
-            </LinearLayout>
+            <TextView
+                style="@style/mainTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="用户反馈" />
         </LinearLayout>
-    </ScrollView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/main_bkg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_medium"
+            android:background="@drawable/main_layout_bkg"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <EditText
+                android:id="@+id/fb_content_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_layout_bkg"
+                android:gravity="top|left"
+                android:hint="请把您的问题或者建议写在这里。"
+                android:lines="5"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:text="请留下您的联系方式，方便我们及时反馈您的问题。"
+                android:textColor="#FF414141"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/fb_contact_phone_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/main_layout_bkg"
+                android:gravity="left"
+                android:hint="电话"
+                android:lines="1"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/fb_contact_email_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/main_layout_bkg"
+                android:gravity="left"
+                android:hint="电子邮箱"
+                android:lines="1"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/fb_contact_qq_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/main_layout_bkg"
+                android:gravity="left"
+                android:hint="QQ号码"
+                android:lines="1"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/fb_send_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/more_btn_se"
+                android:text="发送信息"
+                android:textColor="#FF414141" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

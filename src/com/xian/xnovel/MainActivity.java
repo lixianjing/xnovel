@@ -1,13 +1,10 @@
-package com.xian.xnovel;
 
-import java.util.ArrayList;
-import java.util.List;
+package com.xian.xnovel;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +28,9 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.MainViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
@@ -75,7 +75,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("lmf", "onCreate>>>>>>>>>.");
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
@@ -94,7 +93,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
-        Log.e("lmf", "onResume");
         markLoadData();
         historyLoadData();
         super.onResume();
@@ -451,7 +449,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private static final int REQUEST_CODE = 1001;
 
     private void statrtBookActivity(int id, String title, String content, int pos) {
-        Log.e("lmf", "MainActivity>>>statrtBookActivity>");
         Intent intent = new Intent(mContext, BookActivity.class);
         intent.putExtra(AppSettings.ID, id);
         intent.putExtra(AppSettings.TITLE, title);
@@ -463,7 +460,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
-        Log.e("lmf", "onActivityResult>>>>>>" + requestCode + ":" + resultCode);
         if (RESULT_OK == resultCode) {
             int tabType = data.getIntExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_CATALOG);
             viewGroup.setCurrentScreen(tabType);
