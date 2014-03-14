@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -198,6 +197,7 @@ public class BookActivity extends BaseActivity {
         menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
         menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
 
+
         menuIv.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -224,7 +224,6 @@ public class BookActivity extends BaseActivity {
     }
 
     private void loadBook() {
-        Log.e("lmf", "hello>>>>>>>>>>");
         getIntentData(getIntent());
         if (bookId != AppSettings.BOOK_FILE_NULL) {
             pagefactory = BookPageFactory.getInstance(this);
@@ -554,7 +553,6 @@ public class BookActivity extends BaseActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
-        Log.e("lmf", ">>>>>>>>>onConfigurationChanged>>>>>>>>>>>>>>>>>>>" + newConfig.orientation);
 
         if (menuStatus == AppSettings.STATUS_MENU_SHOW) {
             mPageView.setVisibility(View.VISIBLE);

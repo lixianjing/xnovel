@@ -1,8 +1,11 @@
 package com.xian.xnovel;
 
 
+
 import android.app.Application;
 import android.content.res.Configuration;
+
+import com.xian.xnovel.utils.CrashHandler;
 
 public class MainApplication extends Application {
 
@@ -18,6 +21,8 @@ public class MainApplication extends Application {
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
 
     }
 

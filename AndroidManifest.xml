@@ -6,9 +6,19 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
+
     <!-- 保持屏幕常量 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <!-- 友盟插件需要网络 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MainApplication"
@@ -34,6 +44,21 @@
             android:configChanges="orientation|keyboard|screenSize"
             android:hardwareAccelerated="false" >
         </activity>
+        <!-- umeng key feedback -->
+        <activity
+            android:name="com.xian.xnovel.FeedbackActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- umeng key -->
+        <!-- Caution! Do not change this app key. It is only for demo usage. -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5321ccdc56240b03110394f4" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="umeng_xnovel_sanguoyanyi" >
+        </meta-data>
     </application>
 
 </manifest>

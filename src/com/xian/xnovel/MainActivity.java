@@ -1,5 +1,7 @@
-
 package com.xian.xnovel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,9 +31,6 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.MainViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
@@ -314,7 +313,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 Toast.makeText(mContext, R.string.settings_nothing, 1000).show();
                 break;
             case R.id.more_btn_sendMail:
-                Utils.sendEMailForMe(mContext);
+                // Utils.sendEMailForMe(mContext);
+                Intent intent = new Intent(mContext, FeedbackActivity.class);
+                mContext.startActivity(intent);
                 break;
             case R.id.more_btn_share:
                 Utils.shareWithFriends(mContext);
