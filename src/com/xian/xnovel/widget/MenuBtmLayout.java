@@ -20,6 +20,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.xian.xnovel.BookActivity;
+import com.xian.xnovel.FeedbackActivity;
 import com.xian.xnovel.R;
 import com.xian.xnovel.adapter.MenuBtmAdapter;
 import com.xian.xnovel.factory.BookPageFactory;
@@ -312,7 +313,9 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
 
                     break;
                 case 5:
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                    Intent intent = new Intent(mContext, FeedbackActivity.class);
+                    mContext.startActivity(intent);
                     break;
                 case 6:
                     Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();

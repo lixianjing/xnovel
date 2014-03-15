@@ -1,6 +1,5 @@
-package com.xian.xnovel;
 
-import java.io.IOException;
+package com.xian.xnovel;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +32,8 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
+
+import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -197,7 +198,6 @@ public class BookActivity extends BaseActivity {
         menuBtmLayout = (MenuBtmLayout) findViewById(R.id.menu_btm);
         menuTopLayout = (MenuTopLayout) findViewById(R.id.menu_top);
 
-
         menuIv.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -351,6 +351,13 @@ public class BookActivity extends BaseActivity {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 mPageView.nextLoadContent();
                 return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (menuStatus == AppSettings.STATUS_MENU_HIDE) {
+                    mHandler.sendEmptyMessage(AppSettings.MSG_MENU_SHOW);
+                } else {
+                    mHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
+                }
+                return true;
             case KeyEvent.KEYCODE_BACK:
                 if (isSaveHistory && position != pagefactory.getCurPosition()) {
                     saveHistory();
@@ -369,6 +376,7 @@ public class BookActivity extends BaseActivity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MENU:
                 return true;
             default:
                 return super.onKeyDown(keyCode, event);
@@ -462,7 +470,8 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK) return;
+                if (resultCode != Activity.RESULT_OK)
+                    return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -505,7 +514,8 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and
+     * returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
