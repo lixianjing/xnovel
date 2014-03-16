@@ -89,25 +89,27 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
             R.drawable.icon_chapter,
             R.drawable.icon_prev_chapter, R.drawable.icon_next_chapter,
             R.drawable.icon_auto_scroll, R.drawable.icon_bookmark, R.drawable.icon_add_bookmark,
-            R.drawable.icon_screen, R.drawable.icon_seek
+            R.drawable.icon_seek
     };
 
     private final int[] toolsStrsRes = new int[] {
             R.string.menu_pop_catalog, R.string.menu_pop_pre,
             R.string.menu_pop_next, R.string.menu_pop_auto_scroll, R.string.menu_pop_mark,
-            R.string.menu_pop_add_mark, R.string.menu_pop_rotate, R.string.menu_pop_position
+            R.string.menu_pop_add_mark, R.string.menu_pop_position
     };
 
     private final int[] settingsImgRes = new int[] {
             R.drawable.icon_adjust_light,
-            R.drawable.icon_adjust_font, R.drawable.icon_mode_drag, R.drawable.icon_theme,
-            R.drawable.icon_default, R.drawable.icon_feedback, R.drawable.icon_help
+            R.drawable.icon_adjust_font, R.drawable.icon_mode_drag, R.drawable.icon_screen,
+            R.drawable.icon_theme,
+            R.drawable.icon_default, R.drawable.icon_feedback
     };
 
     private final int[] settingsStrsRes = new int[] {
             R.string.menu_pop_light,
-            R.string.menu_pop_font, R.string.menu_mode_drag, R.string.menu_pop_background,
-            R.string.menu_pop_default, R.string.menu_pop_user, R.string.menu_pop_scroll
+            R.string.menu_pop_font, R.string.menu_mode_drag, R.string.menu_pop_rotate,
+            R.string.menu_pop_background,
+            R.string.menu_pop_default, R.string.menu_pop_user
     };
 
     @Override
@@ -177,80 +179,71 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
     private class ToolsOnItemClickListener implements OnItemClickListener {
 
         @Override
-        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
             // TODO Auto-generated method stub
             Intent intent = null;
-            switch (arg2) {
-                case 0:
-                    intent = new Intent();
-                    intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_CATALOG);
-                    mBookActivity.setResult(Activity.RESULT_OK, intent);
-                    mBookActivity.finish();
-                    break;
-                case 1:
-                    if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_BEGIN) {
-                        mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                        Toast.makeText(mContext, R.string.settings_first_chapter,
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            int id = toolsStrsRes[position];
+            if (id == R.string.menu_pop_catalog) {
+                // 章节目录
+                intent = new Intent();
+                intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_CATALOG);
+                mBookActivity.setResult(Activity.RESULT_OK, intent);
+                mBookActivity.finish();
+            } else if (id == R.string.menu_pop_pre) {
+                // 前一章节
+                if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_BEGIN) {
                     mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    mBookActivity.preChapter();
-                    Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_END) {
-                        mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                        Toast.makeText(mContext, R.string.settings_last_chapter, Toast.LENGTH_SHORT)
-                                .show();
-                        return;
-                    }
+                    Toast.makeText(mContext, R.string.settings_first_chapter,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                mBookActivity.preChapter();
+                Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
+            } else if (id == R.string.menu_pop_next) {
+                // 后一章节
+                if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_END) {
                     mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    mBookActivity.nextChapter();
-                    Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
-                    break;
-                case 3:
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
-                    break;
-                case 4:
-
-                    intent = new Intent();
-                    intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_MARK);
-                    mBookActivity.setResult(Activity.RESULT_OK, intent);
-                    mBookActivity.finish();
-                    break;
-                case 5:
-                    boolean bool = mBookActivity.addBookMark();
-                    if (bool) {
-                        Toast.makeText(mContext, R.string.menu_addmark_sucess, Toast.LENGTH_SHORT)
-                                .show();
-                    } else {
-                        Toast.makeText(mContext, R.string.menu_addmark_fail, Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    break;
-                case 6:
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
-                    break;
-                case 7:
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    if (seekDialog == null) {
-                        seekDialog = new DialogPositionSettings(mContext);
-                        seekDialog.setMainHandler(mainHandler);
-                    }
-                    BookPageFactory pagefactory = BookPageFactory.getInstance(mContext);
-                    seekDialog.setBufferLen(pagefactory.getBufferLen());
-                    seekDialog.setCurBuffer(pagefactory.getCurPosition());
-                    seekDialog.show();
-
-                    break;
-
-                default:
-                    break;
+                    Toast.makeText(mContext, R.string.settings_last_chapter, Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                mBookActivity.nextChapter();
+                Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
+            } else if (id == R.string.menu_pop_auto_scroll) {
+                // 开始滚动
+                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+            } else if (id == R.string.menu_pop_mark) {
+                // 书签管理
+                intent = new Intent();
+                intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_MARK);
+                mBookActivity.setResult(Activity.RESULT_OK, intent);
+                mBookActivity.finish();
+            } else if (id == R.string.menu_pop_add_mark) {
+                // 添加书签
+                boolean bool = mBookActivity.addBookMark();
+                if (bool) {
+                    Toast.makeText(mContext, R.string.menu_addmark_sucess, Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(mContext, R.string.menu_addmark_fail, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+            } else if (id == R.string.menu_pop_position) {
+                // 进度跳转
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                if (seekDialog == null) {
+                    seekDialog = new DialogPositionSettings(mContext);
+                    seekDialog.setMainHandler(mainHandler);
+                }
+                BookPageFactory pagefactory = BookPageFactory.getInstance(mContext);
+                seekDialog.setBufferLen(pagefactory.getBufferLen());
+                seekDialog.setCurBuffer(pagefactory.getCurPosition());
+                seekDialog.show();
             }
         }
-
     }
 
     private class SettingsOnItemClickListener implements OnItemClickListener {
@@ -258,72 +251,61 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         @Override
         public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
             // TODO Auto-generated method stub
-            switch (position) {
-                case 0:
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    if (screenDialog == null) {
-                        screenDialog = new DialogScreenSettings(mContext);
-                        screenDialog.setBookActivity(mBookActivity);
-                        screenDialog.setHandler(mainHandler);
-                    }
-                    screenDialog.show();
-                    break;
-                case 1:
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    if (fontDialog == null) {
-                        fontDialog = new DialogFontSettings(mContext);
-                        fontDialog.setMainHandler(mainHandler);
-                    }
-                    fontDialog.show();
-                    break;
-                case 2: {
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
-                    // Object tag = view.getTag();
-                    // if (tag instanceof MenuBtmAdapter.ViewHolder) {
-                    // MenuBtmAdapter.ViewHolder holder = (ViewHolder) tag;
-                    // if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
-                    // mBookActivity.setPageMode(PREF_PAGE_MODE_SCROLL);
-                    // holder.iv
-                    // .setBackgroundResource(R.drawable.icon_mode_pan);
-                    // holder.tv.setText(R.string.menu_mode_scroll);
-                    //
-                    // } else {
-                    // mBookActivity.setPageMode(PREF_PAGE_MODE_DRAG);
-                    // holder.iv
-                    // .setBackgroundResource(R.drawable.icon_mode_drag);
-                    // holder.tv.setText(R.string.menu_mode_drag);
-                    // }
-                    //
-                    // }
-                    // mainHandler
-                    // .sendEmptyMessage(BookActivity.MSG_MENU_HIDE_TRANSLATE);
+
+            int id = settingsStrsRes[position];
+            if (id == R.string.menu_pop_light) {
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                if (screenDialog == null) {
+                    screenDialog = new DialogScreenSettings(mContext);
+                    screenDialog.setBookActivity(mBookActivity);
+                    screenDialog.setHandler(mainHandler);
                 }
-                    break;
-                case 3:
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    if (themeSettingsDialog == null) {
-                        themeSettingsDialog = new DialogThemeSettings(mContext);
-                        themeSettingsDialog.setMainHandler(mainHandler);
-                    }
-                    themeSettingsDialog.show();
-
-                    break;
-                case 4:
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
-
-                    break;
-                case 5:
-                    mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    Intent intent = new Intent(mContext, FeedbackActivity.class);
-                    mContext.startActivity(intent);
-                    break;
-                case 6:
-                    Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
-                    break;
-
-                default:
-                    break;
+                screenDialog.show();
+            } else if (id == R.string.menu_pop_font) {
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                if (fontDialog == null) {
+                    fontDialog = new DialogFontSettings(mContext);
+                    fontDialog.setMainHandler(mainHandler);
+                }
+                fontDialog.show();
+            } else if (id == R.string.menu_mode_drag) {
+                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+                // Object tag = view.getTag();
+                // if (tag instanceof MenuBtmAdapter.ViewHolder) {
+                // MenuBtmAdapter.ViewHolder holder = (ViewHolder) tag;
+                // if (mBookActivity.getPageMode() == PREF_PAGE_MODE_DRAG) {
+                // mBookActivity.setPageMode(PREF_PAGE_MODE_SCROLL);
+                // holder.iv
+                // .setBackgroundResource(R.drawable.icon_mode_pan);
+                // holder.tv.setText(R.string.menu_mode_scroll);
+                //
+                // } else {
+                // mBookActivity.setPageMode(PREF_PAGE_MODE_DRAG);
+                // holder.iv
+                // .setBackgroundResource(R.drawable.icon_mode_drag);
+                // holder.tv.setText(R.string.menu_mode_drag);
+                // }
+                //
+                // }
+                // mainHandler
+                // .sendEmptyMessage(BookActivity.MSG_MENU_HIDE_TRANSLATE);
+            } else if (id == R.string.menu_pop_rotate) {
+                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+            } else if (id == R.string.menu_pop_background) {
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                if (themeSettingsDialog == null) {
+                    themeSettingsDialog = new DialogThemeSettings(mContext);
+                    themeSettingsDialog.setMainHandler(mainHandler);
+                }
+                themeSettingsDialog.show();
+            } else if (id == R.string.menu_pop_default) {
+                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+            } else if (id == R.string.menu_pop_user) {
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                Intent intent = new Intent(mContext, FeedbackActivity.class);
+                mContext.startActivity(intent);
             }
+
         }
 
     }
