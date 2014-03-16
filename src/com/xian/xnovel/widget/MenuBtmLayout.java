@@ -4,6 +4,7 @@ package com.xian.xnovel.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -251,7 +252,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         @Override
         public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
             // TODO Auto-generated method stub
-
+            Intent intent = null;
             int id = settingsStrsRes[position];
             if (id == R.string.menu_pop_light) {
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
@@ -299,10 +300,19 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
                 }
                 themeSettingsDialog.show();
             } else if (id == R.string.menu_pop_default) {
-                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                BookPageFactory.release();
+                initSettings();
+                Toast.makeText(mContext, R.string.settings_restore_default_settings,
+                        Toast.LENGTH_SHORT).show();
+                // 章节目录
+                intent = new Intent();
+                intent.putExtra(AppSettings.DATA_TAB_INDEX, AppSettings.TAB_CATALOG);
+                mBookActivity.setResult(Activity.RESULT_OK, intent);
+                mBookActivity.finish();
             } else if (id == R.string.menu_pop_user) {
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                Intent intent = new Intent(mContext, FeedbackActivity.class);
+                intent = new Intent(mContext, FeedbackActivity.class);
                 mContext.startActivity(intent);
             }
 
@@ -354,6 +364,45 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         }
         settingsAdapter.notifyDataSetChanged();
         settingsGv.invalidate();
+    }
+
+    private void initSettings() {
+
+        AppSettings.Configs.sScreenMode = AppSettings.SCREEN_MODE_SYS_LIGHT;
+        AppSettings.Configs.sScreenLight = AppSettings.SCREEN_LIGHT_VALUE_MAX / 2;
+        AppSettings.Configs.sScreenCloseLight = false;
+        AppSettings.Configs.sScreenShowStatebar = false;
+        AppSettings.Configs.sScreenOrientation = AppSettings.SCREEN_ORIENTATION_SENSOR;
+
+        AppSettings.Configs.sFontBold = false;
+        AppSettings.Configs.sFontItalic = false;
+        AppSettings.Configs.sFontLineSpace = 20;
+        AppSettings.Configs.sFontSize = 40;
+        AppSettings.Configs.sFontColor = 0xFF000000;
+
+        AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;
+        AppSettings.Configs.sThemeIndex = 0;
+        AppSettings.Configs.sThemeColor = 0xFF000000;
+
+        Editor mEditor = AppSettings.getInstance(mContext).getEditor();
+        mEditor.putInt(AppSettings.SCREEN_MODE, AppSettings.Configs.sScreenMode);
+        mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, AppSettings.Configs.sScreenLight);
+        mEditor.putBoolean(AppSettings.SCREEN_CLOSE_LIGHT, AppSettings.Configs.sScreenCloseLight);
+        mEditor.putBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
+                AppSettings.Configs.sScreenShowStatebar);
+        mEditor.putInt(AppSettings.SCREEN_ORIENTATION, AppSettings.Configs.sScreenOrientation);
+
+        mEditor.putBoolean(AppSettings.FONT_BOLD, AppSettings.Configs.sFontBold);
+        mEditor.putBoolean(AppSettings.FONT_ITALIC, AppSettings.Configs.sFontItalic);
+        mEditor.putInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace);
+        mEditor.putInt(AppSettings.FONT_SIZE, AppSettings.Configs.sFontSize);
+        mEditor.putInt(AppSettings.FONT_COLOR, AppSettings.Configs.sFontColor);
+
+        mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+        mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
+        mEditor.putInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
+        mEditor.commit();
+
     }
 
 }

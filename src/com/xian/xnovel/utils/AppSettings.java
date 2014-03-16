@@ -83,8 +83,6 @@ public class AppSettings {
 
     public static final String SCREEN_SHOW_STATEBAR = "screen_show_statebar";
 
-    public static final String SCREEN_DENSITY = "screen_density";
-
     public static final String SCREEN_ORIENTATION = "screen_orientation";
     public static final int SCREEN_ORIENTATION_SENSOR = 0;
     public static final int SCREEN_ORIENTATION_PORTRAIT = 1;
@@ -156,8 +154,6 @@ public class AppSettings {
         public static boolean sScreenCloseLight = false;
         public static boolean sScreenShowStatebar = false;
         public static int sScreenOrientation = SCREEN_ORIENTATION_SENSOR;
-
-        public static float sScreenDensity = 1.0f;
 
         public static boolean sFontBold = false;
         public static boolean sFontItalic = false;

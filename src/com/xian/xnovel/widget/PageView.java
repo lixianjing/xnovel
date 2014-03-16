@@ -198,7 +198,7 @@ public class PageView extends View {
 
     private void init(Context context) {
         // TODO Auto-generated constructor stub
-
+        Log.e("lmf", ">>>>>init>>>>>>>>>");
         mPath0 = new Path();
         mPath1 = new Path();
         createDrawable();
@@ -696,7 +696,7 @@ public class PageView extends View {
     }
 
     public void initBitmap() {
-
+        Log.e("lmf", ">>>>>>initBitmap>>>>>>>>>>");
         pagefactory.setBookSize(mWidth, mHeight);
 
         if (mCurPageBitmap != null) {

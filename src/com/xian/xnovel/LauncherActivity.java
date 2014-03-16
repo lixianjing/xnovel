@@ -75,7 +75,8 @@ public class LauncherActivity extends BaseActivity {
                     @Override
                     public void onUpgrade(int oldVersion, int currentVersion) {
                         // TODO Auto-generated method stub
-
+                        initSettings();
+                        mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 1500);
                     }
 
                     @Override

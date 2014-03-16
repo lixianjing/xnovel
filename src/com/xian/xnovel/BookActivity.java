@@ -105,7 +105,7 @@ public class BookActivity extends BaseActivity {
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_THEME_COLOR:
-                    pagefactory.setBgColor(msg.arg1);
+                    pagefactory.updateBgColor();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_THEME_PICTURE:
@@ -118,32 +118,24 @@ public class BookActivity extends BaseActivity {
                     }
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_COLOR:
-                    pagefactory.setFontColor(msg.arg1);
+                    pagefactory.updateFontColor();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_BOLD:
-                    if (msg.arg1 == 0) {
-                        pagefactory.setFontBold(false);
-                    } else {
-                        pagefactory.setFontBold(true);
-                    }
+                    pagefactory.updateFontBold();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_ITALIC:
-                    if (msg.arg1 == 0) {
-                        pagefactory.setFontItalic(false);
-                    } else {
-                        pagefactory.setFontItalic(true);
-                    }
+                    pagefactory.updateFontItalic();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_SIZE:
-                    pagefactory.setFontSize(msg.arg1);
+                    pagefactory.updateFontSize();
                     pagefactory.clearBook();
                     updatePageFactory();
                     break;
                 case AppSettings.MSG_SETTINGS_FONT_LINE_SPACE:
-                    pagefactory.setFontLineSpace(msg.arg1);
+                    pagefactory.updateFontLineSpace();
                     pagefactory.clearBook();
                     updatePageFactory();
                     break;
