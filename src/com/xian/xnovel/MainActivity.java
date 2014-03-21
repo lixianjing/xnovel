@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 // TODO Auto-generated method stub
                 // because it is need cal the header so arg2-1
                 CatalogInfo tempInfo = catalogInfos.get(arg2 - 1);
-                statrtBookActivity(tempInfo.getId(), tempInfo.getTitle(), tempInfo.getContent(), 0);
+                statrtBookActivity(tempInfo.getId(), tempInfo.getTitles(), 0);
             }
         });
     }
@@ -147,7 +147,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 MarkInfo tempInfo = markInfos.get(arg2 - 1);
-                statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(), tempInfo.getContent(),
+                CatalogInfo catalogInfo = tempInfo.getCatalog();
+                statrtBookActivity(catalogInfo.getId(), catalogInfo.getTitles(),
                         tempInfo.getPosition());
 
             }
@@ -173,7 +174,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 MarkInfo tempInfo = historyInfos.get(arg2 - 1);
-                statrtBookActivity(tempInfo.getCid(), tempInfo.getTitle(), tempInfo.getContent(),
+                CatalogInfo catalogInfo = tempInfo.getCatalog();
+                statrtBookActivity(catalogInfo.getId(), catalogInfo.getTitles(),
                         tempInfo.getPosition());
 
             }

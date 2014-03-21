@@ -16,6 +16,14 @@ public class CatalogInfo {
         super();
     }
 
+
+    public CatalogInfo(int id, String titles) {
+        super();
+        this.id = id;
+
+        this.titles = titles;
+    }
+
     public CatalogInfo(int id, int pid, int level, String titles) {
         super();
         this.id = id;

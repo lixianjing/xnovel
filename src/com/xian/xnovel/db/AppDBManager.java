@@ -33,7 +33,7 @@ public class AppDBManager {
         builder.append(" INTEGER ,");
         builder.append(BookCatalogColumns.LEVEL);
         builder.append(" INTEGER ,");
-        builder.append(BookCatalogColumns.TITLE);
+        builder.append(BookCatalogColumns.TITLES);
         builder.append(" TEXT );");
 
         Log.e(TAG, builder.toString());
@@ -199,7 +199,7 @@ public class AppDBManager {
         builder.append(" ,");
         builder.append(BookCatalogColumns.LEVEL);
         builder.append(" ,");
-        builder.append(BookCatalogColumns.TITLE);
+        builder.append(BookCatalogColumns.TITLES);
         builder.append(" ) VALUES (");
         builder.append(id);
         builder.append(" , ");
@@ -223,7 +223,7 @@ public class AppDBManager {
         public static final String ID = "id";
         public static final String PID = "pid";
         public static final String LEVEL = "level";
-        public static final String TITLE = "title";
+        public static final String TITLES = "titles";
     }
 
     public static class BookMarkColumns implements BaseColumns {

@@ -1,5 +1,6 @@
-
 package com.xian.xnovel;
+
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,8 +34,6 @@ import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
-import java.io.IOException;
-
 public class BookActivity extends BaseActivity {
 
     private Context mContext;
@@ -42,7 +41,7 @@ public class BookActivity extends BaseActivity {
     private int mWidth, mHeight;
 
     private BookPageFactory pagefactory;
-    private String bookTitle, bookContent;
+    private String bookTitle;
     private int bookId;
     private int position;
     private PowerManager powerManager = null;
@@ -58,6 +57,8 @@ public class BookActivity extends BaseActivity {
     private MenuBtmLayout menuBtmLayout;
     private MenuTopLayout menuTopLayout;
     private OnThemePictureChangedListener pictureChangedListener;
+
+    private CatalogInfo catalogInfo;
 
     private AppDBControl dbControl;
 
@@ -222,14 +223,23 @@ public class BookActivity extends BaseActivity {
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-            // pagefactory.setTitleName(bookContent);
-            menuTopLayout.setCenterText(bookTitle + " " + bookContent);
+            menuTopLayout.setCenterText(getChapterTitle(bookTitle));
             pagefactory.setCurPosition(position);
 
         } else {
             Toast.makeText(mContext, R.string.settings_not_found_book, Toast.LENGTH_SHORT).show();
             BookActivity.this.finish();
         }
+    }
+
+    private String getChapterTitle(String title) {
+        String temp[] = title.split(",");
+        String result = "";
+        for (String str : temp) {
+            result = str + " ";
+        }
+        result = result.substring(0, result.length() - 1);
+        return result;
     }
 
     public void preChapter() {
@@ -239,8 +249,7 @@ public class BookActivity extends BaseActivity {
         CatalogInfo catalog = dbControl.getCatalog(bookId - 1);
         if (catalog != null) {
             bookId = catalog.getId();
-            bookTitle = catalog.getTitle();
-            bookContent = catalog.getContent();
+            bookTitle = catalog.getTitles();
             position = 0;
             updateBook();
         }
@@ -254,8 +263,7 @@ public class BookActivity extends BaseActivity {
         CatalogInfo catalog = dbControl.getCatalog(bookId + 1);
         if (catalog != null) {
             bookId = catalog.getId();
-            bookTitle = catalog.getTitle();
-            bookContent = catalog.getContent();
+            bookTitle = catalog.getTitles();
             position = 0;
             updateBook();
         }
@@ -265,9 +273,8 @@ public class BookActivity extends BaseActivity {
     public boolean addBookMark() {
         try {
             MarkInfo info =
-                    new MarkInfo(bookId, bookTitle, bookContent, pagefactory.getCurPosition(),
-                            pagefactory.getCurPercent(), System.currentTimeMillis(),
-                            MarkInfo.TYPE_MARK);
+                    new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
+                            System.currentTimeMillis(), MarkInfo.TYPE_MARK, catalogInfo);
             dbControl.insertMark(info);
             return true;
         } catch (Exception e) {
@@ -279,8 +286,7 @@ public class BookActivity extends BaseActivity {
     private void updateBook() {
         pagefactory.closeBook();
         pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-        // pagefactory.setTitleName(bookContent);
-        menuTopLayout.setCenterText(bookTitle + " " + bookContent);
+        menuTopLayout.setCenterText(getChapterTitle(bookTitle));
         pagefactory.setCurPosition(position);
         mPageView.drawCurrentPageCanvas();
         mPageView.drawNextPageCanvas();
@@ -289,7 +295,6 @@ public class BookActivity extends BaseActivity {
 
     private void getIntentData(Intent intent) {
         bookTitle = intent.getStringExtra(AppSettings.TITLE);
-        bookContent = intent.getStringExtra(AppSettings.CONTENT);
         bookId = intent.getIntExtra(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
         position = intent.getIntExtra(AppSettings.POSITION, 0);
     }
@@ -377,9 +382,8 @@ public class BookActivity extends BaseActivity {
 
     private void saveHistory() {
         MarkInfo info =
-                new MarkInfo(bookId, bookTitle, bookContent, pagefactory.getCurPosition(),
-                        pagefactory.getCurPercent(), System.currentTimeMillis(),
-                        MarkInfo.TYPE_HISTORY);
+                new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
+                        System.currentTimeMillis(), MarkInfo.TYPE_HISTORY, catalogInfo);
         AppDBControl.getInstance(mContext).insertMark(info);
     }
 
@@ -387,7 +391,6 @@ public class BookActivity extends BaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         bookTitle = savedInstanceState.getString(AppSettings.TITLE);
-        bookContent = savedInstanceState.getString(AppSettings.CONTENT);
         bookId = savedInstanceState.getInt(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
         position = savedInstanceState.getInt(AppSettings.POSITION, 0);
         if (bookId != AppSettings.BOOK_FILE_NULL) {
@@ -407,7 +410,6 @@ public class BookActivity extends BaseActivity {
         // TODO Auto-generated method stub
 
         outState.putString(AppSettings.TITLE, bookTitle);
-        outState.putString(AppSettings.CONTENT, bookContent);
         outState.putInt(AppSettings.ID, bookId);
         outState.putInt(AppSettings.POSITION, pagefactory.getCurPosition());
 
@@ -462,8 +464,7 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK)
-                    return;
+                if (resultCode != Activity.RESULT_OK) return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -506,8 +507,7 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and
-     * returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);

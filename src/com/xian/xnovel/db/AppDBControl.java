@@ -65,7 +65,7 @@ public class AppDBControl {
                                     .getColumnIndex(BookCatalogColumns.PID)), cursor.getInt(cursor
                                     .getColumnIndex(BookCatalogColumns.LEVEL)),
                                     cursor.getString(cursor
-                                            .getColumnIndex(BookCatalogColumns.TITLE)));
+                                            .getColumnIndex(BookCatalogColumns.TITLES)));
                     list.add(comment);
                 }
             }
@@ -88,8 +88,8 @@ public class AppDBControl {
             if (count == 0) {
                 cursor =
                         mDB.rawQuery("SELECT " + Tables.BOOKCATALOG + "."
-                                + BookCatalogColumns.TITLE + "," + Tables.BOOKCATALOG + "."
-                                + BookCatalogColumns.CONTENT + "," + Tables.BOOKMARK + ".*  FROM "
+                                + BookCatalogColumns.TITLES + "," + Tables.BOOKCATALOG + "."
+                                + BookCatalogColumns.ID + "," + Tables.BOOKMARK + ".*  FROM "
                                 + Tables.BOOKCATALOG + "," + Tables.BOOKMARK + " WHERE "
                                 + BookCatalogColumns.ID + " = " + BookMarkColumns.CID + " AND "
                                 + BookMarkColumns.TYPE + " = ? ORDER BY " + BookMarkColumns.DATE
@@ -97,8 +97,8 @@ public class AppDBControl {
             } else {
                 cursor =
                         mDB.rawQuery("SELECT " + Tables.BOOKCATALOG + "."
-                                + BookCatalogColumns.TITLE + "," + Tables.BOOKCATALOG + "."
-                                + BookCatalogColumns.CONTENT + "," + Tables.BOOKMARK + ".*  FROM "
+                                + BookCatalogColumns.TITLES + "," + Tables.BOOKCATALOG + "."
+                                + BookCatalogColumns.ID + "," + Tables.BOOKMARK + ".*  FROM "
                                 + Tables.BOOKCATALOG + "," + Tables.BOOKMARK + " WHERE "
                                 + BookCatalogColumns.ID + " = " + BookMarkColumns.CID + " AND "
                                 + BookMarkColumns.TYPE + " = ? ORDER BY " + BookMarkColumns.DATE
@@ -111,15 +111,15 @@ public class AppDBControl {
                     MarkInfo info =
                             new MarkInfo(
                                     cursor.getInt(cursor.getColumnIndex(BookMarkColumns._ID)),
-                                    cursor.getInt(cursor.getColumnIndex(BookMarkColumns.CID)),
-                                    cursor.getString(cursor
-                                            .getColumnIndex(BookCatalogColumns.TITLE)),
-                                    cursor.getString(cursor
-                                            .getColumnIndex(BookCatalogColumns.CONTENT)),
+
                                     cursor.getInt(cursor.getColumnIndex(BookMarkColumns.POSITION)),
                                     cursor.getString(cursor.getColumnIndex(BookMarkColumns.PERCENT)),
                                     cursor.getLong(cursor.getColumnIndex(BookMarkColumns.DATE)),
-                                    cursor.getInt(cursor.getColumnIndex(BookMarkColumns.TYPE)));
+                                    cursor.getInt(cursor.getColumnIndex(BookMarkColumns.TYPE)),
+                                    new CatalogInfo(cursor.getInt(cursor
+                                            .getColumnIndex(BookCatalogColumns.ID)), cursor
+                                            .getString((cursor
+                                                    .getColumnIndex(BookCatalogColumns.TITLES)))));
                     list.add(info);
                 }
             }
@@ -146,7 +146,7 @@ public class AppDBControl {
         builder.append(" ,");
         builder.append(BookMarkColumns.TYPE);
         builder.append(" ) VALUES (");
-        builder.append(info.getCid());
+        builder.append(info.getCatalog().getId());
         builder.append(",");
         builder.append(info.getPosition());
         builder.append(",'");
@@ -179,7 +179,7 @@ public class AppDBControl {
                                     .getColumnIndex(BookCatalogColumns.PID)), cursor.getInt(cursor
                                     .getColumnIndex(BookCatalogColumns.LEVEL)),
                                     cursor.getString(cursor
-                                            .getColumnIndex(BookCatalogColumns.TITLE)));
+                                            .getColumnIndex(BookCatalogColumns.TITLES)));
                 }
             }
 
