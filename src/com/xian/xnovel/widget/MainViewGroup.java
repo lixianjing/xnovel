@@ -86,18 +86,13 @@ public class MainViewGroup extends ViewGroup {
             Log.i(TAG, "----OK mScroller.is  finished ---- ");
     }
 
-    // ֻ�е�ǰLAYOUT�е�ĳ��CHILD����SCROLL����������Ż���ʹ�Լ���COMPUTESCROLL������
     @Override
     public void computeScroll() {
         // TODO Auto-generated method stub
         Log.e(TAG, "computeScroll");
-        // ����true����ʾ������û�н���
-        // ��Ϊǰ��startScroll������ֻ����startScroll���ʱ �Ż�Ϊfalse
         if (mScroller.computeScrollOffset()) {
-            // �����˶���Ч�� ÿ�ι���һ��
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 
-            // ˢ��View ����Ч����������
             postInvalidate();
         } else
             Log.i(TAG, "have done the scoller -----");
@@ -119,13 +114,11 @@ public class MainViewGroup extends ViewGroup {
         return super.dispatchTouchEvent(ev);
     }
 
-    // ����о�ûʲô���� ����true����false ���ǻ�ִ��onTouchEvent�� ��Ϊ��view����onTouchEvent����false��
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // TODO Auto-generated method stub
 
         final int action = ev.getAction();
-        // ��ʾ�Ѿ���ʼ�����ˣ�����Ҫ�߸�Action_MOVE������(��һ��ʱ���ܵ���)��
         if ((action == MotionEvent.ACTION_MOVE) && (mTouchState != TOUCH_STATE_REST)) {
             return true;
         }
@@ -135,7 +128,6 @@ public class MainViewGroup extends ViewGroup {
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 final float x = ev.getX(pointerIndex);
                 final int xDiff = (int) Math.abs(mLastionMotionX - x);
-                // ��������С��������
                 if (xDiff > mTouchSlop) {
                     mTouchState = TOUCH_STATE_SCROLLING;
                 }

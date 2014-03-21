@@ -1,64 +1,61 @@
 package com.xian.xnovel.domain;
 
+
 /**
  * @author limingfeng
  */
 public class CatalogInfo {
 
 
-	private int id;
-	private int pid;
-	private String title;
-	private String content;
+    private int id;
+    private int pid;
+    private int level;
+    private String titles;
 
-	public CatalogInfo() {
-		super();
-	}
+    public CatalogInfo() {
+        super();
+    }
 
-	public CatalogInfo(int id, int pid, String title, String content) {
-		super();
-		this.id = id;
-		this.pid = pid;
-		this.title = title;
-		this.content = content;
-	}
+    public CatalogInfo(int id, int pid, int level, String titles) {
+        super();
+        this.id = id;
+        this.pid = pid;
+        this.level = level;
+        this.titles = titles;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getPid() {
-		return pid;
-	}
+    public int getPid() {
+        return pid;
+    }
 
-	public void setPid(int pid) {
-		this.pid = pid;
-	}
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public String getTitles() {
+        return titles;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setTitles(String titles) {
+        this.titles = titles;
+    }
 
-	@Override
-	public String toString() {
-		return "CatalogInfo [id=" + id + ", pid=" + pid + ", title=" + title
-				+ ", content=" + content + "]";
-	}
+
 
 }

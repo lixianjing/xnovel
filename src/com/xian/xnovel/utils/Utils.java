@@ -1,22 +1,4 @@
-
 package com.xian.xnovel.utils;
-
-import android.annotation.SuppressLint;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
-import com.xian.xnovel.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,6 +11,25 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Arrays;
+
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.xian.xnovel.R;
 
 /**
  * @author limingfeng
@@ -71,9 +72,7 @@ public class Utils {
             // intent.setType("text/plain"); //use this line for testing in the
             // emulator
             intent.setType("message/rfc822"); // use from live device
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {
-                AppSettings.CONTACT_EMAIL
-            });
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {AppSettings.CONTACT_EMAIL});
             intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.contact_email_title));
             context.startActivity(Intent.createChooser(intent,
                     context.getString(R.string.select_application)));
@@ -206,14 +205,12 @@ public class Utils {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException e1) {
-                }
+                } catch (IOException e1) {}
             }
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException e1) {
-                }
+                } catch (IOException e1) {}
             }
         }
     }
@@ -277,10 +274,8 @@ public class Utils {
     public static void setScreenBrightness(Window window, int value) {
         WindowManager.LayoutParams params = window.getAttributes();
         params.screenBrightness = value / 255f;
-        if (params.screenBrightness > 1)
-            params.screenBrightness = 1;
-        if (params.screenBrightness < 0.1)
-            params.screenBrightness = 0.1f;
+        if (params.screenBrightness > 1) params.screenBrightness = 1;
+        if (params.screenBrightness < 0.1) params.screenBrightness = 0.1f;
         window.setAttributes(params);
     }
 
@@ -297,6 +292,58 @@ public class Utils {
             return -1;
         }
     }
+
+
+    public void copyToSDCard(Context context, String fileName) {
+        File file = context.getDatabasePath(fileName);
+        if (file != null) {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File sdCardDir = Environment.getExternalStorageDirectory();// 获取SDCard目录
+                File saveFile = new File(sdCardDir, file.getName());
+                if (saveFile.exists()) {
+                    saveFile.delete();
+                }
+
+                FileInputStream fisFrom = null;
+                FileOutputStream fosTo = null;
+                try {
+                    fisFrom = new FileInputStream(file);
+                    fosTo = new FileOutputStream(saveFile);
+                    byte bt[] = new byte[1024];
+                    int c;
+                    while ((c = fisFrom.read(bt)) > 0) {
+                        fosTo.write(bt, 0, c); // 将内容写到新文件当中
+                    }
+                    Toast.makeText(context, "拷贝数据完毕", 2000).show();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    Toast.makeText(context, "拷贝数据出错", 2000).show();
+                    e.printStackTrace();
+                } finally {
+                    if (fisFrom != null) {
+                        try {
+                            fisFrom.close();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fosTo != null) {
+                        try {
+                            fosTo.close();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+        } else {
+            Toast.makeText(context, "没有数据库文件", 2000).show();
+        }
+    }
+
 
     public static String getVersionName(Context context) {
         try {
