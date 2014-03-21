@@ -1,5 +1,7 @@
-
 package com.xian.xnovel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,9 +30,6 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.MainViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
@@ -448,11 +447,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
     private static final int REQUEST_CODE = 1001;
 
-    private void statrtBookActivity(int id, String title, String content, int pos) {
+    private void statrtBookActivity(int id, String title, int pos) {
         Intent intent = new Intent(mContext, BookActivity.class);
         intent.putExtra(AppSettings.ID, id);
         intent.putExtra(AppSettings.TITLE, title);
-        intent.putExtra(AppSettings.CONTENT, content);
         intent.putExtra(AppSettings.POSITION, pos);
         this.startActivityForResult(intent, REQUEST_CODE);
     }

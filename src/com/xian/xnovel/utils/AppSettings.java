@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.utils;
 
 import android.app.Activity;
@@ -10,7 +9,6 @@ public class AppSettings {
 
     public static final String ID = "id";
     public static final String TITLE = "title";
-    public static final String CONTENT = "content";
     public static final String POSITION = "position";
 
     public static final String CONTACT_EMAIL = "flower_is@163.com";
