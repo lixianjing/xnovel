@@ -24,7 +24,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/list_cata_title"
+            android:id="@+id/list_cata_title_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -33,7 +33,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/list_cata_content1"
+            android:id="@+id/list_cata_title_center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -43,7 +43,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/list_cata_content2"
+            android:id="@+id/list_cata_title_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
