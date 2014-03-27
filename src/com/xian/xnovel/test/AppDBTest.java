@@ -1,10 +1,11 @@
-package com.xian.xnovel.db;
+package com.xian.xnovel.test;
 
 import java.util.List;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.xian.xnovel.db.AppDBControl;
 import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 

@@ -333,7 +333,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     catalogInfos = dbControl.queryCatalog(0, 10);
                 }
                 if (catalogAdapter == null) {
-                    catalogAdapter = new CatalogListAdapter(mContext, catalogInfos);
+                    catalogAdapter = new CatalogListAdapter(mContext, catalogInfos, 3);
                 }
                 catalogLv.setAdapter(catalogAdapter);
             };
@@ -364,7 +364,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     historyDataSize = historyInfos.size();
                     if (historyDataSize != 0) {
                         if (historyAdapter == null) {
-                            historyAdapter = new MarkListAdapter(mContext, historyInfos);
+                            historyAdapter = new MarkListAdapter(mContext, historyInfos, 3);
                         }
                         historyLv.setAdapter(historyAdapter);
                         historyTv.setVisibility(View.GONE);
@@ -410,7 +410,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                     markDataSize = markInfos.size();
                     if (markDataSize != 0) {
                         if (markAdapter == null) {
-                            markAdapter = new MarkListAdapter(mContext, markInfos);
+                            markAdapter = new MarkListAdapter(mContext, markInfos, 3);
                         }
                         markLv.setAdapter(markAdapter);
                         markTv.setVisibility(View.GONE);

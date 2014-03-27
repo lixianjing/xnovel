@@ -11,6 +11,7 @@ public class CatalogInfo {
     private int pid;
     private int level;
     private String titles;
+    private String fileName;
 
     public CatalogInfo() {
         super();
@@ -30,6 +31,15 @@ public class CatalogInfo {
         this.pid = pid;
         this.level = level;
         this.titles = titles;
+    }
+
+    public CatalogInfo(int id, int pid, int level, String titles, String fileName) {
+        super();
+        this.id = id;
+        this.pid = pid;
+        this.level = level;
+        this.titles = titles;
+        this.fileName = fileName;
     }
 
     public int getId() {
@@ -62,6 +72,16 @@ public class CatalogInfo {
 
     public void setTitles(String titles) {
         this.titles = titles;
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
 
