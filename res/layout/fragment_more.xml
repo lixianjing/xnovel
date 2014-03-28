@@ -1,135 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+	android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+	<ScrollView android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+		<LinearLayout android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/padding_medium"
-                android:background="@drawable/main_layout_bkg"
-                android:orientation="vertical"
-                android:padding="10dp" >
+			<LinearLayout android:layout_width="match_parent"
+				android:layout_height="wrap_content" android:layout_margin="@dimen/padding_medium"
+				android:background="@drawable/main_layout_bkg" android:orientation="vertical"
+				android:padding="10dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal" >
+				<LinearLayout android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+					android:layout_marginBottom="10dp" android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="56dip"
-                        android:layout_height="56dip"
-                        android:src="@drawable/ic_launcher" />
+					<ImageView android:layout_width="56dip"
+						android:layout_height="56dip" android:src="@drawable/ic_launcher" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="56dip"
-                        android:layout_marginLeft="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical" >
+					<LinearLayout android:layout_width="wrap_content"
+						android:layout_height="56dip" android:layout_marginLeft="5dp"
+						android:gravity="center_vertical" android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/more_tv_version"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dip"
-                            android:textColor="#FF414141"
-                            android:textSize="15sp" />
+						<TextView android:id="@+id/more_tv_version"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_marginBottom="5dip" android:textColor="#FF414141"
+							android:textSize="15sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/more_copyright_text"
-                            android:textColor="#FF414141"
-                            android:textSize="15sp" />
-                    </LinearLayout>
-                </LinearLayout>
+						<TextView android:layout_width="wrap_content"
+							android:layout_height="wrap_content" android:text="@string/more_copyright_text"
+							android:textColor="#FF414141" android:textSize="15sp" />
+					</LinearLayout>
+				</LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical" >
+				<LinearLayout android:layout_width="match_parent"
+					android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+					android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/more_btn_review"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/more_btn_se"
-                        android:text="@string/more_review_btn"
-                        android:textColor="#FF414141" />
+					<Button android:id="@+id/more_btn_review"
+						android:layout_width="match_parent" android:layout_height="wrap_content"
+						android:background="@drawable/more_btn_se" android:text="@string/more_review_btn"
+						android:textColor="#FF414141" />
 
-                    <Button
-                        android:id="@+id/more_btn_share"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/more_btn_se"
-                        android:text="@string/more_share_btn"
-                        android:textColor="#FF414141" />
+					<Button android:id="@+id/more_btn_share"
+						android:layout_width="match_parent" android:layout_height="wrap_content"
+						android:background="@drawable/more_btn_se" android:text="@string/more_share_btn"
+						android:textColor="#FF414141" />
 
-                    <Button
-                        android:id="@+id/more_btn_app"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/more_btn_se"
-                        android:text="@string/more_more_btn"
-                        android:textColor="#FF414141" />
+					<Button android:id="@+id/more_btn_app" android:layout_width="match_parent"
+						android:layout_height="wrap_content" android:background="@drawable/more_btn_se"
+						android:text="@string/more_more_btn" android:textColor="#FF414141" />
 
-                    <Button
-                        android:id="@+id/more_btn_copy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/more_btn_se"
-                        android:text="@string/more_copyright_btn"
-                        android:textColor="#FF414141" />
-                </LinearLayout>
+					<Button android:id="@+id/more_btn_copy"
+						android:layout_width="match_parent" android:layout_height="wrap_content"
+						android:background="@drawable/more_btn_se" android:text="@string/more_copyright_btn"
+						android:textColor="#FF414141" />
+				</LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical" >
+				<LinearLayout android:layout_width="match_parent"
+					android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+					android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/more_contact_msg_text"
-                        android:textColor="#FF414141"
-                        android:textSize="15sp" />
+					<TextView android:layout_width="match_parent"
+						android:layout_height="wrap_content" android:text="@string/more_contact_msg_text"
+						android:textColor="#FF414141" android:textSize="15sp" />
 
-                    <Button
-                        android:id="@+id/more_btn_sendMail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/more_btn_se"
-                        android:text="@string/more_contact_us_btn"
-                        android:textColor="#FF414141" />
-                </LinearLayout>
+					<Button android:id="@+id/more_btn_sendMail"
+						android:layout_width="match_parent" android:layout_height="wrap_content"
+						android:background="@drawable/more_btn_se" android:text="@string/more_contact_us_btn"
+						android:textColor="#FF414141" />
+				</LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+				<LinearLayout android:layout_width="match_parent"
+					android:layout_height="wrap_content" android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/more_thanks_text"
-                        android:textColor="#FF414141"
-                        android:textSize="15sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+					<TextView android:layout_width="match_parent"
+						android:layout_height="wrap_content" android:text="@string/more_thanks_text"
+						android:textColor="#FF414141" android:textSize="15sp" />
+				</LinearLayout>
+			</LinearLayout>
+		</LinearLayout>
+	</ScrollView>
 
 </LinearLayout>

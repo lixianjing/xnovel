@@ -7,7 +7,6 @@ public class AppInfo {
     private String scoreUrl;
     private String shareMessage;
     private String moreAppUrl;
-    private String thankMessage;
 
     private int styleFileCount;
     // novel style
@@ -20,15 +19,13 @@ public class AppInfo {
     }
 
     public AppInfo(String creator, String channel, String scoreUrl, String shareMessage,
-            String moreAppUrl, String thankMessage, int styleFileCount, int styleTitleCount,
-            int styleContentIndex) {
+            String moreAppUrl, int styleFileCount, int styleTitleCount, int styleContentIndex) {
         super();
         this.creator = creator;
         this.channel = channel;
         this.scoreUrl = scoreUrl;
         this.shareMessage = shareMessage;
         this.moreAppUrl = moreAppUrl;
-        this.thankMessage = thankMessage;
         this.styleFileCount = styleFileCount;
         this.styleTitleCount = styleTitleCount;
         this.styleContentIndex = styleContentIndex;
@@ -74,13 +71,6 @@ public class AppInfo {
         this.moreAppUrl = moreAppUrl;
     }
 
-    public String getThankMessage() {
-        return thankMessage;
-    }
-
-    public void setThankMessage(String thankMessage) {
-        this.thankMessage = thankMessage;
-    }
 
     public int getStyleFileCount() {
         return styleFileCount;
@@ -110,9 +100,8 @@ public class AppInfo {
     public String toString() {
         return "AppInfo [creator=" + creator + ", channel=" + channel + ", scoreUrl=" + scoreUrl
                 + ", shareMessage=" + shareMessage + ", moreAppUrl=" + moreAppUrl
-                + ", thankMessage=" + thankMessage + ", styleFileCount=" + styleFileCount
-                + ", styleTitleCount=" + styleTitleCount + ", styleContentIndex="
-                + styleContentIndex + "]";
+                + ", styleFileCount=" + styleFileCount + ", styleTitleCount=" + styleTitleCount
+                + ", styleContentIndex=" + styleContentIndex + "]";
     }
 
 

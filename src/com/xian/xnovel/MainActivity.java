@@ -70,6 +70,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private Button moreShareBtn, moreReviewBtn, moreSendMessageBtn, moreAppBtn, moreCopyBtn;
     private TextView moreVersionTv;
     private DialogCommon commonDialog;
+    private String scoreUrl, shareMessage, moreAppUrl;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -189,8 +191,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
     private void initMoreView() {
 
-        moreShareBtn = (Button) moreView.findViewById(R.id.more_btn_share);
+        scoreUrl = AppSettings.sAppInfo.getScoreUrl();
+        shareMessage = AppSettings.sAppInfo.getShareMessage();
+        moreAppUrl = AppSettings.sAppInfo.getMoreAppUrl();
+
         moreReviewBtn = (Button) moreView.findViewById(R.id.more_btn_review);
+        moreShareBtn = (Button) moreView.findViewById(R.id.more_btn_share);
         moreSendMessageBtn = (Button) moreView.findViewById(R.id.more_btn_sendMail);
         moreAppBtn = (Button) moreView.findViewById(R.id.more_btn_app);
         moreCopyBtn = (Button) moreView.findViewById(R.id.more_btn_copy);
@@ -202,6 +208,24 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         moreCopyBtn.setOnClickListener(this);
         moreVersionTv.setText(mContext.getText(R.string.more_version_text)
                 + Utils.getVersionName(mContext));
+
+        if (scoreUrl != null) {
+            moreReviewBtn.setVisibility(View.VISIBLE);
+        } else {
+            moreReviewBtn.setVisibility(View.GONE);
+        }
+
+        if (shareMessage != null) {
+            moreShareBtn.setVisibility(View.VISIBLE);
+        } else {
+            moreShareBtn.setVisibility(View.GONE);
+        }
+
+        if (moreAppUrl != null) {
+            moreAppBtn.setVisibility(View.VISIBLE);
+        } else {
+            moreAppBtn.setVisibility(View.GONE);
+        }
     }
 
     private void InitViewPager() {
@@ -303,10 +327,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 commonDialog.show();
                 break;
             case R.id.more_btn_review:
-                Toast.makeText(mContext, R.string.settings_nothing, 1000).show();
+                Utils.openBrowser(mContext, scoreUrl);
                 break;
             case R.id.more_btn_app:
-                Toast.makeText(mContext, R.string.settings_nothing, 1000).show();
+                Utils.openBrowser(mContext, moreAppUrl);
                 break;
             case R.id.more_btn_sendMail:
                 // Utils.sendEMailForMe(mContext);
@@ -314,13 +338,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
                 mContext.startActivity(intent);
                 break;
             case R.id.more_btn_share:
-                Utils.shareWithFriends(mContext);
+                Utils.shareWithFriends(mContext, shareMessage);
                 break;
             default:
                 break;
         }
 
     }
+
 
     private void catalogLoadData() {
         new AsyncTask<Void, Void, List<CatalogInfo>>() {

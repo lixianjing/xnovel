@@ -33,7 +33,6 @@ public class XmlUtils {
     private static final String TAG_APP_SCORE = "score";
     private static final String TAG_APP_SHARE = "share";
     private static final String TAG_APP_MORE = "more";
-    private static final String TAG_APP_THANKS = "thanks";
     private static final String TAG_APP_STYLE = "style";
     private static final String ATTR_APP_STYLE_FILE_COUNT = "fileCount";
     private static final String ATTR_APP_STYLE_TITLE_COUNT = "titleCount";
@@ -142,8 +141,6 @@ public class XmlUtils {
                             info.setShareMessage(xmlParser.nextText());
                         } else if (TAG_APP_MORE.equals(tag)) {
                             info.setMoreAppUrl(xmlParser.nextText());
-                        } else if (TAG_APP_THANKS.equals(tag)) {
-                            info.setThankMessage(xmlParser.nextText());
                         } else if (TAG_APP_STYLE.equals(tag)) {
                             info.setStyleFileCount(Integer.parseInt(xmlParser.getAttributeValue(
                                     null, ATTR_APP_STYLE_FILE_COUNT)));

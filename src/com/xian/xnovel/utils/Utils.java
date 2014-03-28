@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
@@ -45,17 +46,26 @@ public class Utils {
      * @param mesgRes
      * @param contentRes
      */
-    public static void shareWithFriends(Context context) {
+    public static void shareWithFriends(Context context, String str) {
         try {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_subject));
-            intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_content));
+            intent.putExtra(Intent.EXTRA_TEXT, str);
             context.startActivity(Intent.createChooser(intent,
                     context.getString(R.string.select_application)));
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    public static void openBrowser(Context context, String str) {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri content_url = Uri.parse(str);
+        intent.setData(content_url);
+        context.startActivity(intent);
     }
 
     /**
