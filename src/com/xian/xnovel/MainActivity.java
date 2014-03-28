@@ -147,9 +147,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 MarkInfo tempInfo = markInfos.get(arg2 - 1);
-                CatalogInfo catalogInfo = tempInfo.getCatalog();
-                statrtBookActivity(catalogInfo.getId(), catalogInfo.getTitles(),
-                        tempInfo.getPosition());
+                statrtBookActivity(tempInfo.getCid(), tempInfo.getTitles(), tempInfo.getPosition());
 
             }
         });
@@ -174,9 +172,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
                 MarkInfo tempInfo = historyInfos.get(arg2 - 1);
-                CatalogInfo catalogInfo = tempInfo.getCatalog();
-                statrtBookActivity(catalogInfo.getId(), catalogInfo.getTitles(),
-                        tempInfo.getPosition());
+
+                statrtBookActivity(tempInfo.getCid(), tempInfo.getTitles(), tempInfo.getPosition());
 
             }
         });

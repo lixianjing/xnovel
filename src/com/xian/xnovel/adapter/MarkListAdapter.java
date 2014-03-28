@@ -1,5 +1,8 @@
-
 package com.xian.xnovel.adapter;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,10 +14,6 @@ import android.widget.TextView;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.domain.MarkInfo;
-
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 public class MarkListAdapter extends BaseAdapter {
 
@@ -57,18 +56,12 @@ public class MarkListAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.list_mark_item, null);
-            holder.iconIv = (ImageView) convertView
-                    .findViewById(R.id.list_mark_iv_head);
-            holder.positionTv = (TextView) convertView
-                    .findViewById(R.id.list_mark_tv_position);
-            holder.dateTv = (TextView) convertView
-                    .findViewById(R.id.list_mark_tv_date);
-            holder.title1Tv = (TextView) convertView
-                    .findViewById(R.id.list_mark_tv_title1);
-            holder.title2Tv = (TextView) convertView
-                    .findViewById(R.id.list_mark_tv_title2);
-            holder.title3Tv = (TextView) convertView
-                    .findViewById(R.id.list_mark_tv_title3);
+            holder.iconIv = (ImageView) convertView.findViewById(R.id.list_mark_iv_head);
+            holder.positionTv = (TextView) convertView.findViewById(R.id.list_mark_tv_position);
+            holder.dateTv = (TextView) convertView.findViewById(R.id.list_mark_tv_date);
+            holder.title1Tv = (TextView) convertView.findViewById(R.id.list_mark_tv_title1);
+            holder.title2Tv = (TextView) convertView.findViewById(R.id.list_mark_tv_title2);
+            holder.title3Tv = (TextView) convertView.findViewById(R.id.list_mark_tv_title3);
             if (titleCount == 1) {
                 holder.title2Tv.setVisibility(View.GONE);
                 holder.title3Tv.setVisibility(View.GONE);
@@ -91,7 +84,7 @@ public class MarkListAdapter extends BaseAdapter {
         holder.positionTv.setText(info.getPercent());
         Date date = new Date(info.getDate());
         holder.dateTv.setText(dateFormatter.format(date) + "\n" + timeFormatter.format(date));
-        String[] strs = info.getCatalog().getTitles().split(",");
+        String[] strs = info.getTitles().split(",");
         if (titleCount == 1) {
             holder.title1Tv.setText(strs[0]);
 

@@ -110,16 +110,14 @@ public class AppDBControl {
                 while (cursor.moveToNext()) {
                     MarkInfo info =
                             new MarkInfo(
-                                    cursor.getInt(cursor.getColumnIndex(BookMarkColumns._ID)),
+                                    cursor.getInt(cursor.getColumnIndex(BookMarkColumns.CID)),
 
                                     cursor.getInt(cursor.getColumnIndex(BookMarkColumns.POSITION)),
                                     cursor.getString(cursor.getColumnIndex(BookMarkColumns.PERCENT)),
                                     cursor.getLong(cursor.getColumnIndex(BookMarkColumns.DATE)),
                                     cursor.getInt(cursor.getColumnIndex(BookMarkColumns.TYPE)),
-                                    new CatalogInfo(cursor.getInt(cursor
-                                            .getColumnIndex(BookCatalogColumns.ID)), cursor
-                                            .getString((cursor
-                                                    .getColumnIndex(BookCatalogColumns.TITLES)))));
+                                    cursor.getString(cursor
+                                            .getColumnIndex(BookCatalogColumns.TITLES)));
                     list.add(info);
                 }
             }
@@ -146,7 +144,7 @@ public class AppDBControl {
         builder.append(" ,");
         builder.append(BookMarkColumns.TYPE);
         builder.append(" ) VALUES (");
-        builder.append(info.getCatalog().getId());
+        builder.append(info.getCid());
         builder.append(",");
         builder.append(info.getPosition());
         builder.append(",'");

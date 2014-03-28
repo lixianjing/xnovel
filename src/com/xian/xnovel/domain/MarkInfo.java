@@ -5,44 +5,36 @@ public class MarkInfo {
     public static final int TYPE_HISTORY = 0;
     public static final int TYPE_MARK = 1;
 
-    private int id;
+    private int cid;
     private int position;
     private String percent;
     private long date;
     private int type;
-    private CatalogInfo catalog;
+    private String titles;
+
 
     public MarkInfo() {
         super();
     }
 
-    public MarkInfo(int id, int position, String percent, long date, int type, CatalogInfo catalog) {
+
+    public MarkInfo(int cid, int position, String percent, long date, int type, String titles) {
         super();
-        this.id = id;
+        this.cid = cid;
         this.position = position;
         this.percent = percent;
         this.date = date;
         this.type = type;
-        this.catalog = catalog;
+        this.titles = titles;
     }
 
-    public MarkInfo(int id, int position, String percent, long date, int type, int cid, int pid,
-            int level, String titles) {
-        super();
-        this.id = id;
-        this.position = position;
-        this.percent = percent;
-        this.date = date;
-        this.type = type;
-        this.catalog = new CatalogInfo(cid, pid, level, titles);
+
+    public int getCid() {
+        return cid;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setCid(int cid) {
+        this.cid = cid;
     }
 
     public int getPosition() {
@@ -77,12 +69,14 @@ public class MarkInfo {
         this.type = type;
     }
 
-    public CatalogInfo getCatalog() {
-        return catalog;
+
+    public String getTitles() {
+        return titles;
     }
 
-    public void setCatalog(CatalogInfo catalog) {
-        this.catalog = catalog;
+
+    public void setTitles(String titles) {
+        this.titles = titles;
     }
 
 

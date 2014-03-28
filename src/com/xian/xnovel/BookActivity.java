@@ -58,8 +58,6 @@ public class BookActivity extends BaseActivity {
     private MenuTopLayout menuTopLayout;
     private OnThemePictureChangedListener pictureChangedListener;
 
-    private CatalogInfo mCatalogInfo;
-
     private AppDBControl dbControl;
 
     private final Handler mHandler = new Handler() {
@@ -220,7 +218,6 @@ public class BookActivity extends BaseActivity {
         getIntentData(getIntent());
         if (bookId > 0 && bookId <= AppSettings.sAppInfo.getStyleFileCount()) {
             pagefactory = BookPageFactory.getInstance(this);
-            mCatalogInfo = dbControl.getCatalog(bookId + 1);
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
@@ -247,10 +244,10 @@ public class BookActivity extends BaseActivity {
         if (bookId == 1) {
             return;
         }
-        mCatalogInfo = dbControl.getCatalog(bookId - 1);
-        if (mCatalogInfo != null) {
-            bookId = mCatalogInfo.getId();
-            bookTitle = mCatalogInfo.getTitles();
+        CatalogInfo catalogInfo = dbControl.getCatalog(bookId - 1);
+        if (catalogInfo != null) {
+            bookId = catalogInfo.getId();
+            bookTitle = catalogInfo.getTitles();
             position = 0;
             updateBook();
         }
@@ -261,10 +258,10 @@ public class BookActivity extends BaseActivity {
         if (bookId == AppSettings.sAppInfo.getStyleFileCount()) {
             return;
         }
-        mCatalogInfo = dbControl.getCatalog(bookId + 1);
-        if (mCatalogInfo != null) {
-            bookId = mCatalogInfo.getId();
-            bookTitle = mCatalogInfo.getTitles();
+        CatalogInfo catalogInfo = dbControl.getCatalog(bookId + 1);
+        if (catalogInfo != null) {
+            bookId = catalogInfo.getId();
+            bookTitle = catalogInfo.getTitles();
             position = 0;
             updateBook();
         }
@@ -275,7 +272,7 @@ public class BookActivity extends BaseActivity {
         try {
             MarkInfo info =
                     new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
-                            System.currentTimeMillis(), MarkInfo.TYPE_MARK, mCatalogInfo);
+                            System.currentTimeMillis(), MarkInfo.TYPE_MARK, bookTitle);
             dbControl.insertMark(info);
             return true;
         } catch (Exception e) {
@@ -384,7 +381,7 @@ public class BookActivity extends BaseActivity {
     private void saveHistory() {
         MarkInfo info =
                 new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
-                        System.currentTimeMillis(), MarkInfo.TYPE_HISTORY, mCatalogInfo);
+                        System.currentTimeMillis(), MarkInfo.TYPE_HISTORY, bookTitle);
         AppDBControl.getInstance(mContext).insertMark(info);
     }
 
