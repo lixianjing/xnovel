@@ -1,33 +1,33 @@
-
 package com.xian.xnovel;
+
+import java.io.IOException;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
+import com.xian.xnovel.utils.XmlUtils;
 
 public class LauncherActivity extends BaseActivity {
 
     private static final int MSG_GOTOMAIN_ACTIVITY = 1001;
     private static final int MSG_FIRST_SETTEXT = 1002;
 
+    private static final int MSG_ERROR_FINISH = 2001;
+
     private Context mContext;
     private SharedPreferences pref;
-    private Editor editor;
 
     private TextView coverTv;
-    private RelativeLayout mainRl;
 
     private final Handler mHandler = new Handler() {
 
@@ -42,6 +42,10 @@ public class LauncherActivity extends BaseActivity {
                     break;
                 case MSG_FIRST_SETTEXT:
                     coverTv.setText(R.string.launcher_first_load);
+                    break;
+                case MSG_ERROR_FINISH:
+                    pref.edit().clear();
+                    LauncherActivity.this.finish();
                     break;
 
                 default:
@@ -61,8 +65,7 @@ public class LauncherActivity extends BaseActivity {
         setContentView(R.layout.activity_launcher);
         mContext = this;
         pref = AppSettings.getInstance(mContext).getPref();
-        editor = AppSettings.getInstance(mContext).getEditor();
-
+        AppSettings.sAppInfo = XmlUtils.getAppInfoFromXml(mContext);
         initView();
 
         new Thread(new Runnable() {
@@ -75,7 +78,8 @@ public class LauncherActivity extends BaseActivity {
                     @Override
                     public void onUpgrade(int oldVersion, int currentVersion) {
                         // TODO Auto-generated method stub
-                        initSettings();
+                        loadSettings();
+
                         mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 1500);
                     }
 
@@ -85,14 +89,13 @@ public class LauncherActivity extends BaseActivity {
                         mHandler.sendEmptyMessage(MSG_FIRST_SETTEXT);
                         AppDatabaseHelper mDbHelper = new AppDatabaseHelper(mContext);
                         mDbHelper.getWritableDatabase();
-                        initBookContent(mContext, 5);
-                        initSettings();
+                        copyBookContent(mContext);
                     }
 
                     @Override
                     public void onRun(int versionCode) {
                         // TODO Auto-generated method stub
-                        initSettings();
+                        loadSettings();
                         mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 1500);
 
                     }
@@ -104,45 +107,54 @@ public class LauncherActivity extends BaseActivity {
 
     private void initView() {
         coverTv = (TextView) findViewById(R.id.main_tv_cover);
-        mainRl = (RelativeLayout) findViewById(R.id.main_rl_cover);
     }
 
-    private void initBookContent(Context context, int num) {
-        for (int i = 1; i <= num; i++) {
-            new LoadBookThread(context, i, num, AppSettings.BOOK_FILE_COUNT).start();
+    private static final int THREAD_COUNT = 5;
+    private int fileCount;
 
+    private void copyBookContent(Context context) {
+        try {
+            fileCount = context.getAssets().list(AppSettings.ASSETS_FILE_PATH).length;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            mHandler.sendEmptyMessage(MSG_ERROR_FINISH);
+            return;
+
+        }
+        for (int i = 1; i <= THREAD_COUNT; i++) {
+            new LoadBookThread(context, i).start();
         }
     }
 
     private class LoadBookThread extends Thread {
-        private final int id;
-        private final int offset;
-        private final int max;
         private final Context context;
+        private final int id;
 
-        LoadBookThread(Context context, int id, int offset, int max) {
-            this.id = id;
-            this.offset = offset;
-            this.max = max;
+
+        LoadBookThread(Context context, int id) {
             this.context = context;
+            this.id = id;
+
         }
 
         @Override
         public void run() {
             // TODO Auto-generated method stub
             int i = id;
-            while (i <= max) {
+            while (i <= fileCount) {
                 Utils.copyFileFromAssets(context, AppSettings.BOOK_FILE_PREFIX + i,
-                        AppSettings.ASSETS_FILE_PATH + i);
-                i += offset;
+                        AppSettings.ASSETS_FILE_PATH + "/" + i);
+                i += THREAD_COUNT;
 
             }
+            mHandler.removeMessages(MSG_GOTOMAIN_ACTIVITY);
             mHandler.sendEmptyMessageDelayed(MSG_GOTOMAIN_ACTIVITY, 500);
         }
 
     }
 
-    private void initSettings() {
+    private void loadSettings() {
 
         SharedPreferences pref = AppSettings.getInstance(LauncherActivity.this).getPref();
         AppSettings.Configs.sScreenMode =
@@ -179,6 +191,7 @@ public class LauncherActivity extends BaseActivity {
                 pref.getInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
 
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

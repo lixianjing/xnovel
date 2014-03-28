@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.xian.xnovel.domain.AppInfo;
+
 public class AppSettings {
 
     public static final String ID = "id";
@@ -13,16 +15,12 @@ public class AppSettings {
 
     public static final String CONTACT_EMAIL = "flower_is@163.com";
 
-    public static final String ASSETS_FILE_PATH = "data/";
+    public static final String ASSETS_FILE_PATH = "data";
     public static final String BOOK_CATA_NAME = "cate_sub";
     public static final String BOOK_FILE_PATH = "/data/data/com.xian.xnovel/files/";
     public static final String BOOK_FILE_PREFIX = ".";
 
     // book info
-    public static final int BOOK_FILE_COUNT = 120;
-    public static final int BOOK_FILE_BEGIN = 1;
-    public static final int BOOK_FILE_END = 120;
-    public static final int BOOK_FILE_NULL = 0;
 
     public static final int TAB_CATALOG = 0;
     public static final int TAB_MARK = 1;
@@ -116,12 +114,17 @@ public class AppSettings {
     public static final int FONT_LINE_SPACE_MAX = 80;
     // font settings end
 
+
+
+    public static AppInfo sAppInfo;
+
     private final SharedPreferences pref;
     private final Editor editor;
 
     private final Context mContext;
 
     private static AppSettings mSettings;
+
 
     private AppSettings(Context context) {
         mContext = context;
@@ -162,6 +165,50 @@ public class AppSettings {
         public static int sThemeMode = THEME_MODE_THEME;
         public static int sThemeIndex = 0;
         public static int sThemeColor = 0xFF000000;
+
+
+
+    }
+
+
+
+    public void initSettings() {
+
+        AppSettings.Configs.sScreenMode = AppSettings.SCREEN_MODE_SYS_LIGHT;
+        AppSettings.Configs.sScreenLight = AppSettings.SCREEN_LIGHT_VALUE_MAX / 2;
+        AppSettings.Configs.sScreenCloseLight = false;
+        AppSettings.Configs.sScreenShowStatebar = false;
+        AppSettings.Configs.sScreenOrientation = AppSettings.SCREEN_ORIENTATION_SENSOR;
+
+        AppSettings.Configs.sFontBold = false;
+        AppSettings.Configs.sFontItalic = false;
+        AppSettings.Configs.sFontLineSpace = 20;
+        AppSettings.Configs.sFontSize = 40;
+        AppSettings.Configs.sFontColor = 0xFF000000;
+
+        AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;
+        AppSettings.Configs.sThemeIndex = 0;
+        AppSettings.Configs.sThemeColor = 0xFF000000;
+
+
+        Editor mEditor = AppSettings.getInstance(mContext).getEditor();
+        mEditor.putInt(AppSettings.SCREEN_MODE, AppSettings.Configs.sScreenMode);
+        mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, AppSettings.Configs.sScreenLight);
+        mEditor.putBoolean(AppSettings.SCREEN_CLOSE_LIGHT, AppSettings.Configs.sScreenCloseLight);
+        mEditor.putBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
+                AppSettings.Configs.sScreenShowStatebar);
+        mEditor.putInt(AppSettings.SCREEN_ORIENTATION, AppSettings.Configs.sScreenOrientation);
+
+        mEditor.putBoolean(AppSettings.FONT_BOLD, AppSettings.Configs.sFontBold);
+        mEditor.putBoolean(AppSettings.FONT_ITALIC, AppSettings.Configs.sFontItalic);
+        mEditor.putInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace);
+        mEditor.putInt(AppSettings.FONT_SIZE, AppSettings.Configs.sFontSize);
+        mEditor.putInt(AppSettings.FONT_COLOR, AppSettings.Configs.sFontColor);
+
+        mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
+        mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
+        mEditor.putInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
+        mEditor.commit();
 
     }
 

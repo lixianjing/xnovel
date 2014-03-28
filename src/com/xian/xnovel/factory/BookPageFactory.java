@@ -1,17 +1,4 @@
-
 package com.xian.xnovel.factory;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
-import android.widget.Toast;
-
-import com.xian.xnovel.R;
-import com.xian.xnovel.utils.AppSettings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +11,18 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.widget.Toast;
+
+import com.xian.xnovel.R;
+import com.xian.xnovel.utils.AppSettings;
 
 @SuppressLint("NewApi")
 public class BookPageFactory {
@@ -61,11 +60,9 @@ public class BookPageFactory {
     // private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
 
-    private final Integer[] themeBgRes = {
-            R.drawable.theme_1, R.drawable.theme_2,
+    private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
             R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5, R.drawable.theme_6,
-            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9
-    };
+            R.drawable.theme_7, R.drawable.theme_8, R.drawable.theme_9};
 
     private static BookPageFactory mInstance = null;
 
@@ -177,6 +174,7 @@ public class BookPageFactory {
             bookFile = new File(path, fileName);
             long lLen = bookFile.length();
             mBufferLen = (int) lLen;
+
             mapFileBuffer =
                     new RandomAccessFile(bookFile, "r").getChannel().map(
                             FileChannel.MapMode.READ_ONLY, 0, lLen);
@@ -227,8 +225,7 @@ public class BookPageFactory {
                 i--;
             }
         }
-        if (i < 0)
-            i = 0;
+        if (i < 0) i = 0;
         int nParaSize = nEnd - i;
         int j;
         byte[] buf = new byte[nParaSize];
@@ -321,8 +318,7 @@ public class BookPageFactory {
     }
 
     protected void pageUp() {
-        if (mReadStart < 0)
-            mReadStart = 0;
+        if (mReadStart < 0) mReadStart = 0;
         Vector<String> lines = new Vector<String>();
         String strParagraph = "";
         while (lines.size() < mLineCount && mReadStart > 0) {
@@ -385,8 +381,7 @@ public class BookPageFactory {
     }
 
     public void draw(Canvas c) {
-        if (mShowLine.size() == 0)
-            mShowLine = pageDown();
+        if (mShowLine.size() == 0) mShowLine = pageDown();
         if (mShowLine.size() > 0) {
             if (bgBitmap == null)
                 c.drawColor(AppSettings.Configs.sThemeColor);
@@ -464,12 +459,14 @@ public class BookPageFactory {
     }
 
     public void updateFontLineSpace() {
-        mLineCount = (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
+        mLineCount =
+                (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
     }
 
     public void updateFontSize() {
         mPaint.setTextSize(AppSettings.Configs.sFontSize);
-        mLineCount = (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
+        mLineCount =
+                (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
     }
 
     public void updateFontBold() {

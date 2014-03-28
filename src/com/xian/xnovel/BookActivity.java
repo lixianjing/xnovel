@@ -58,7 +58,7 @@ public class BookActivity extends BaseActivity {
     private MenuTopLayout menuTopLayout;
     private OnThemePictureChangedListener pictureChangedListener;
 
-    private CatalogInfo catalogInfo;
+    private CatalogInfo mCatalogInfo;
 
     private AppDBControl dbControl;
 
@@ -218,8 +218,9 @@ public class BookActivity extends BaseActivity {
 
     private void loadBook() {
         getIntentData(getIntent());
-        if (bookId != AppSettings.BOOK_FILE_NULL) {
+        if (bookId > 0 && bookId <= AppSettings.sAppInfo.getStyleFileCount()) {
             pagefactory = BookPageFactory.getInstance(this);
+            mCatalogInfo = dbControl.getCatalog(bookId + 1);
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
@@ -243,13 +244,13 @@ public class BookActivity extends BaseActivity {
     }
 
     public void preChapter() {
-        if (bookId == AppSettings.BOOK_FILE_BEGIN) {
+        if (bookId == 1) {
             return;
         }
-        CatalogInfo catalog = dbControl.getCatalog(bookId - 1);
-        if (catalog != null) {
-            bookId = catalog.getId();
-            bookTitle = catalog.getTitles();
+        mCatalogInfo = dbControl.getCatalog(bookId - 1);
+        if (mCatalogInfo != null) {
+            bookId = mCatalogInfo.getId();
+            bookTitle = mCatalogInfo.getTitles();
             position = 0;
             updateBook();
         }
@@ -257,13 +258,13 @@ public class BookActivity extends BaseActivity {
     }
 
     public void nextChapter() {
-        if (bookId == AppSettings.BOOK_FILE_END) {
+        if (bookId == AppSettings.sAppInfo.getStyleFileCount()) {
             return;
         }
-        CatalogInfo catalog = dbControl.getCatalog(bookId + 1);
-        if (catalog != null) {
-            bookId = catalog.getId();
-            bookTitle = catalog.getTitles();
+        mCatalogInfo = dbControl.getCatalog(bookId + 1);
+        if (mCatalogInfo != null) {
+            bookId = mCatalogInfo.getId();
+            bookTitle = mCatalogInfo.getTitles();
             position = 0;
             updateBook();
         }
@@ -274,7 +275,7 @@ public class BookActivity extends BaseActivity {
         try {
             MarkInfo info =
                     new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
-                            System.currentTimeMillis(), MarkInfo.TYPE_MARK, catalogInfo);
+                            System.currentTimeMillis(), MarkInfo.TYPE_MARK, mCatalogInfo);
             dbControl.insertMark(info);
             return true;
         } catch (Exception e) {
@@ -295,7 +296,7 @@ public class BookActivity extends BaseActivity {
 
     private void getIntentData(Intent intent) {
         bookTitle = intent.getStringExtra(AppSettings.TITLE);
-        bookId = intent.getIntExtra(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
+        bookId = intent.getIntExtra(AppSettings.ID, 0);
         position = intent.getIntExtra(AppSettings.POSITION, 0);
     }
 
@@ -383,7 +384,7 @@ public class BookActivity extends BaseActivity {
     private void saveHistory() {
         MarkInfo info =
                 new MarkInfo(bookId, pagefactory.getCurPosition(), pagefactory.getCurPercent(),
-                        System.currentTimeMillis(), MarkInfo.TYPE_HISTORY, catalogInfo);
+                        System.currentTimeMillis(), MarkInfo.TYPE_HISTORY, mCatalogInfo);
         AppDBControl.getInstance(mContext).insertMark(info);
     }
 
@@ -391,9 +392,9 @@ public class BookActivity extends BaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         bookTitle = savedInstanceState.getString(AppSettings.TITLE);
-        bookId = savedInstanceState.getInt(AppSettings.ID, AppSettings.BOOK_FILE_NULL);
+        bookId = savedInstanceState.getInt(AppSettings.ID, 0);
         position = savedInstanceState.getInt(AppSettings.POSITION, 0);
-        if (bookId != AppSettings.BOOK_FILE_NULL) {
+        if (bookId > 0 && bookId <= AppSettings.sAppInfo.getStyleFileCount()) {
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
             pagefactory.setCurPosition(position);
             mPageView.invalidate();

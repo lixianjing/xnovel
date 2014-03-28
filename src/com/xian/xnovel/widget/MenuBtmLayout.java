@@ -1,10 +1,8 @@
-
 package com.xian.xnovel.widget;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -86,32 +84,22 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         // TODO Auto-generated constructor stub
     }
 
-    private final int[] toolsImgRes = new int[] {
-            R.drawable.icon_chapter,
+    private final int[] toolsImgRes = new int[] {R.drawable.icon_chapter,
             R.drawable.icon_prev_chapter, R.drawable.icon_next_chapter,
             R.drawable.icon_auto_scroll, R.drawable.icon_bookmark, R.drawable.icon_add_bookmark,
-            R.drawable.icon_seek
-    };
+            R.drawable.icon_seek};
 
-    private final int[] toolsStrsRes = new int[] {
-            R.string.menu_pop_catalog, R.string.menu_pop_pre,
+    private final int[] toolsStrsRes = new int[] {R.string.menu_pop_catalog, R.string.menu_pop_pre,
             R.string.menu_pop_next, R.string.menu_pop_auto_scroll, R.string.menu_pop_mark,
-            R.string.menu_pop_add_mark, R.string.menu_pop_position
-    };
+            R.string.menu_pop_add_mark, R.string.menu_pop_position};
 
-    private final int[] settingsImgRes = new int[] {
-            R.drawable.icon_adjust_light,
+    private final int[] settingsImgRes = new int[] {R.drawable.icon_adjust_light,
             R.drawable.icon_adjust_font, R.drawable.icon_mode_drag, R.drawable.icon_screen,
-            R.drawable.icon_theme,
-            R.drawable.icon_default, R.drawable.icon_feedback
-    };
+            R.drawable.icon_theme, R.drawable.icon_default, R.drawable.icon_feedback};
 
-    private final int[] settingsStrsRes = new int[] {
-            R.string.menu_pop_light,
+    private final int[] settingsStrsRes = new int[] {R.string.menu_pop_light,
             R.string.menu_pop_font, R.string.menu_mode_drag, R.string.menu_pop_rotate,
-            R.string.menu_pop_background,
-            R.string.menu_pop_default, R.string.menu_pop_user
-    };
+            R.string.menu_pop_background, R.string.menu_pop_default, R.string.menu_pop_user};
 
     @Override
     protected void onFinishInflate() {
@@ -192,10 +180,10 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
                 mBookActivity.finish();
             } else if (id == R.string.menu_pop_pre) {
                 // 前一章节
-                if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_BEGIN) {
+                if (mBookActivity.getBookId() == 1) {
                     mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
-                    Toast.makeText(mContext, R.string.settings_first_chapter,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.settings_first_chapter, Toast.LENGTH_SHORT)
+                            .show();
                     return;
                 }
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
@@ -203,7 +191,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
                 Toast.makeText(mContext, R.string.settings_londing, Toast.LENGTH_SHORT).show();
             } else if (id == R.string.menu_pop_next) {
                 // 后一章节
-                if (mBookActivity.getBookId() == AppSettings.BOOK_FILE_END) {
+                if (mBookActivity.getBookId() == AppSettings.sAppInfo.getStyleFileCount()) {
                     mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                     Toast.makeText(mContext, R.string.settings_last_chapter, Toast.LENGTH_SHORT)
                             .show();
@@ -228,8 +216,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
                     Toast.makeText(mContext, R.string.menu_addmark_sucess, Toast.LENGTH_SHORT)
                             .show();
                 } else {
-                    Toast.makeText(mContext, R.string.menu_addmark_fail, Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(mContext, R.string.menu_addmark_fail, Toast.LENGTH_SHORT).show();
                 }
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
             } else if (id == R.string.menu_pop_position) {
@@ -302,7 +289,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
             } else if (id == R.string.menu_pop_default) {
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                 BookPageFactory.release();
-                initSettings();
+                AppSettings.getInstance(mContext).initSettings();
                 Toast.makeText(mContext, R.string.settings_restore_default_settings,
                         Toast.LENGTH_SHORT).show();
                 // 章节目录
@@ -366,43 +353,6 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
         settingsGv.invalidate();
     }
 
-    private void initSettings() {
 
-        AppSettings.Configs.sScreenMode = AppSettings.SCREEN_MODE_SYS_LIGHT;
-        AppSettings.Configs.sScreenLight = AppSettings.SCREEN_LIGHT_VALUE_MAX / 2;
-        AppSettings.Configs.sScreenCloseLight = false;
-        AppSettings.Configs.sScreenShowStatebar = false;
-        AppSettings.Configs.sScreenOrientation = AppSettings.SCREEN_ORIENTATION_SENSOR;
-
-        AppSettings.Configs.sFontBold = false;
-        AppSettings.Configs.sFontItalic = false;
-        AppSettings.Configs.sFontLineSpace = 20;
-        AppSettings.Configs.sFontSize = 40;
-        AppSettings.Configs.sFontColor = 0xFF000000;
-
-        AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;
-        AppSettings.Configs.sThemeIndex = 0;
-        AppSettings.Configs.sThemeColor = 0xFF000000;
-
-        Editor mEditor = AppSettings.getInstance(mContext).getEditor();
-        mEditor.putInt(AppSettings.SCREEN_MODE, AppSettings.Configs.sScreenMode);
-        mEditor.putInt(AppSettings.SCREEN_LIGHT_VALUE, AppSettings.Configs.sScreenLight);
-        mEditor.putBoolean(AppSettings.SCREEN_CLOSE_LIGHT, AppSettings.Configs.sScreenCloseLight);
-        mEditor.putBoolean(AppSettings.SCREEN_SHOW_STATEBAR,
-                AppSettings.Configs.sScreenShowStatebar);
-        mEditor.putInt(AppSettings.SCREEN_ORIENTATION, AppSettings.Configs.sScreenOrientation);
-
-        mEditor.putBoolean(AppSettings.FONT_BOLD, AppSettings.Configs.sFontBold);
-        mEditor.putBoolean(AppSettings.FONT_ITALIC, AppSettings.Configs.sFontItalic);
-        mEditor.putInt(AppSettings.FONT_LINE_SPACE, AppSettings.Configs.sFontLineSpace);
-        mEditor.putInt(AppSettings.FONT_SIZE, AppSettings.Configs.sFontSize);
-        mEditor.putInt(AppSettings.FONT_COLOR, AppSettings.Configs.sFontColor);
-
-        mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
-        mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
-        mEditor.putInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
-        mEditor.commit();
-
-    }
 
 }
