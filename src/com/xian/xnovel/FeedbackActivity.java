@@ -1,5 +1,7 @@
-
 package com.xian.xnovel;
+
+import java.util.List;
+import java.util.Map;
 
 import android.os.Bundle;
 import android.view.View;
@@ -15,9 +17,6 @@ import com.umeng.fb.model.DevReply;
 import com.umeng.fb.model.Reply;
 import com.umeng.fb.model.UserInfo;
 
-import java.util.List;
-import java.util.Map;
-
 /***
  * 用户反馈模块
  * 
@@ -25,9 +24,9 @@ import java.util.Map;
  */
 public class FeedbackActivity extends BaseActivity
         implements
-        OnClickListener,
-        Conversation.SyncListener {
-    private EditText et_feedback_content, fbPhoneEt, fbQQEt, fbEmailEt;
+            OnClickListener,
+            Conversation.SyncListener {
+    private EditText et_feedback_content, et_contact;
     private Button sendFeedbackBtn;
     private TextView titleBackTv;
 
@@ -42,9 +41,7 @@ public class FeedbackActivity extends BaseActivity
         setContentView(R.layout.activity_feedback);
 
         et_feedback_content = (EditText) findViewById(R.id.fb_content_et);
-        fbPhoneEt = (EditText) findViewById(R.id.fb_contact_phone_et);
-        fbQQEt = (EditText) findViewById(R.id.fb_contact_qq_et);
-        fbEmailEt = (EditText) findViewById(R.id.fb_contact_email_et);
+        et_contact = (EditText) findViewById(R.id.fb_contact_et);
         sendFeedbackBtn = (Button) findViewById(R.id.fb_send_btn);
         titleBackTv = (TextView) findViewById(R.id.fb_title_back);
 
@@ -57,22 +54,15 @@ public class FeedbackActivity extends BaseActivity
         if (v.getId() == R.id.fb_title_back)
             finish();
         else if (v.getId() == R.id.fb_send_btn) {
-            String content = et_feedback_content.getText().toString().trim();
-            String phone = fbPhoneEt.getText().toString().trim();
-            String qq = fbQQEt.getText().toString().trim();
-            String email = fbEmailEt.getText().toString().trim();
-            String contact = null;
+            String content = et_feedback_content.getText().toString();
+            String contact = et_contact.getText().toString();
 
-            if (content.equals("")) {
+            if (content.trim().equals("")) {
                 Toast.makeText(FeedbackActivity.this, "对不起，不能发送空内容哦。", 1000).show();
             } else {
                 UserInfo info = new UserInfo();
 
                 Map<String, String> map = info.getContact();
-                if (phone.length() > 0 || qq.length() > 0 || email.length() > 0) {
-                    contact = "[phone:" + phone + "],[" + "qq:" + qq + "],[" + "email:" + email
-                            + "]";
-                }
 
                 map.put("plain", contact);
                 info.setContact(map);
@@ -93,9 +83,7 @@ public class FeedbackActivity extends BaseActivity
     @Override
     public void onSendUserReply(List<Reply> arg0) {
         et_feedback_content.setText("");
-        fbPhoneEt.setText("");
-        fbQQEt.setText("");
-        fbEmailEt.setText("");
+        et_contact.setText("");
         Toast.makeText(FeedbackActivity.this, "您的反馈信息发送成功", 1000).show();
         finish();
     }

@@ -67,7 +67,7 @@
                 android:background="@drawable/main_layout_bkg"
                 android:gravity="top|left"
                 android:hint="请把您的问题或者建议写在这里。"
-                android:lines="5"
+                android:lines="10"
                 android:textSize="15sp" />
 
             <TextView
@@ -80,37 +80,17 @@
                 android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/fb_contact_phone_et"
+                android:id="@+id/fb_contact_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/main_layout_bkg"
                 android:gravity="left"
-                android:hint="电话"
+                android:hint="联系方式"
                 android:lines="1"
                 android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/fb_contact_email_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/main_layout_bkg"
-                android:gravity="left"
-                android:hint="电子邮箱"
-                android:lines="1"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/fb_contact_qq_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/main_layout_bkg"
-                android:gravity="left"
-                android:hint="QQ号码"
-                android:lines="1"
-                android:textSize="15sp" />
+          
 
             <Button
                 android:id="@+id/fb_send_btn"
