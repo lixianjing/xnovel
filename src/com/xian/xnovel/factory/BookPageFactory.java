@@ -44,20 +44,21 @@ public class BookPageFactory {
 
     private Vector<String> mShowLine = new Vector<String>();
 
-    private final int marginWidth = 15; // 左右与边缘的距离
-    private final int marginHeight = 15; // 上下与边缘的距离
-    private final int youmiHeight = 0;// 广告条的狂度
+    private float styleMarginWidth = 15; // 左右与边缘的距离
+    private float styleMarginHeight = 15; // 上下与边缘的距离
+    private float styleMarginBtm = 5; // 下面的信息条高度
+    private float styleFontBtm = 12;// 底部文字大小
 
     private int mLineCount; // 每页可以显示的行数
     private float mVisibleHeight; // 绘制内容的宽
     private float mVisibleWidth; // 绘制内容的宽
     private boolean isFirstPage, isLastPage;
-    // private final int btmFontSize = 16;// 底部文字大小
 
-    // private String titleName = "";
+
+    private String titleName = "";
 
     private final Paint mPaint;
-    // private final Paint mBtmPaint;// 底部文字绘制
+    private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
 
     private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
@@ -83,8 +84,7 @@ public class BookPageFactory {
     private BookPageFactory(Context context) {
         // TODO Auto-generated constructor stub
         mContext = context;
-
-        updateViewBg();
+        initRes();
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setTextAlign(Align.LEFT);
@@ -103,11 +103,12 @@ public class BookPageFactory {
         }
 
         // 底部文字绘制
-        // mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        // mBtmPaint.setTextAlign(Align.LEFT);
-        // mBtmPaint.setTextSize(btmFontSize);
-        // mBtmPaint.setColor(mFontColor);
-        // percentWidth = (int) mBtmPaint.measureText("99.99%") + 1;
+        mBtmPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBtmPaint.setTextAlign(Align.LEFT);
+        mBtmPaint.setTextSize(styleFontBtm);
+        mBtmPaint.setColor(AppSettings.Configs.sFontColor);
+
+
 
         // 行间距设置
         spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -115,6 +116,16 @@ public class BookPageFactory {
         spactPaint.setTextSize(AppSettings.Configs.sFontLineSpace);
 
     }
+
+
+
+    private void initRes() {
+        styleMarginWidth = mContext.getResources().getDimension(R.dimen.style_margin_width);
+        styleMarginHeight = mContext.getResources().getDimension(R.dimen.style_margin_height);
+        styleMarginBtm = mContext.getResources().getDimension(R.dimen.style_margin_btm);
+        styleFontBtm = mContext.getResources().getDimension(R.dimen.style_font_btm);
+    }
+
 
     private void updateViewBg() {
         switch (AppSettings.Configs.sThemeMode) {
@@ -161,10 +172,13 @@ public class BookPageFactory {
             mWidth = width;
             mHeight = height;
             updateViewBg();
-            mVisibleWidth = mWidth - marginWidth * 2;
-            mVisibleHeight = mHeight - marginHeight * 2 - youmiHeight;
+            mVisibleWidth = mWidth - styleMarginWidth * 2;
+            mVisibleHeight = mHeight - styleMarginHeight * 2 - styleFontBtm;
             int totalSize = AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace;
             mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
+            if ((mLineCount * totalSize + AppSettings.Configs.sFontSize) < mVisibleHeight) {
+                totalSize = totalSize + 1;
+            }
         }
 
     }
@@ -388,39 +402,40 @@ public class BookPageFactory {
             else
                 c.drawBitmap(bgBitmap, 0, 0, null);
 
-            int y = marginHeight + youmiHeight;
+            float y = styleMarginHeight;
             int i = 0;
             for (String strLine : mShowLine) {
                 y += AppSettings.Configs.sFontSize;
                 // mPaint.setTypeface(Typeface.DEFAULT_BOLD);
-                c.drawText(strLine, marginWidth, y, mPaint);
+                c.drawText(strLine, styleMarginWidth, y, mPaint);
                 y += AppSettings.Configs.sFontLineSpace;
                 if (i != mShowLine.size() - 1) {
-                    c.drawText("", marginWidth, y, spactPaint);
+                    c.drawText("", styleMarginWidth, y, spactPaint);
                 }
                 i++;
             }
         }
-        // drawBtmInfo(c);
+        drawBtmInfo(c);
     }
 
     private int titleWidth;
-    // private final int percentWidth;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
     private final DecimalFormat percentFormatter = new DecimalFormat("#0.00");
 
-    // private void drawBtmInfo(Canvas c) {
-    //
-    // c.drawText(getCurPercent(), mWidth - percentWidth, mHeight - 5,
-    // mBtmPaint);
-    //
-    // Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
-    // String str = dateFormatter.format(curDate);
-    // c.drawText(str, 5, mHeight - 5, mBtmPaint);
-    //
-    // c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - 5,
-    // mBtmPaint);
-    // }
+
+
+    private void drawBtmInfo(Canvas c) {
+
+        int percentWidth = (int) mBtmPaint.measureText(getCurPercent()) + 1;
+        c.drawText(getCurPercent(), mWidth - percentWidth - styleMarginBtm, mHeight - styleMarginBtm,
+                mBtmPaint);
+
+        Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
+        String dateTime = dateFormatter.format(curDate);
+        c.drawText(dateTime, styleMarginBtm, mHeight - styleMarginBtm, mBtmPaint);
+
+        c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - styleMarginBtm, mBtmPaint);
+    }
 
     public void setBgBitmap(Bitmap bg) {
         if (mWidth != 0 && (bg.getWidth() != mWidth || bg.getHeight() != mHeight)) {
@@ -487,10 +502,10 @@ public class BookPageFactory {
         }
     }
 
-    // public void setTitleName(String name) {
-    // titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
-    // this.titleName = name;
-    // }
+    public void setTitleName(String name) {
+        titleWidth = (int) mBtmPaint.measureText("《" + name + "》") + 1;
+        this.titleName = name;
+    }
 
     public int getCurPosition() {
         return mReadStart;

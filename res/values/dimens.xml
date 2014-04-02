@@ -8,5 +8,13 @@
     <dimen name="main_title_layout_height">45.0dip</dimen>
     <dimen name="iphone_dlg_promot_btn_size">10sp</dimen>
     
+    
+    
+    
+    <dimen name="style_margin_width">5dip</dimen>
+    <dimen name="style_margin_height">5dip</dimen>
+    <dimen name="style_margin_btm">2dip</dimen>
+    <dimen name="style_font_btm">10dip</dimen>
+    
 
 </resources>

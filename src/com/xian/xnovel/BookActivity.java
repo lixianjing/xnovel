@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -221,7 +222,8 @@ public class BookActivity extends BaseActivity {
 
             mPageView.setPagefactory(pagefactory);
             pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-            menuTopLayout.setCenterText(getChapterTitle(bookTitle));
+            menuTopLayout.setCenterText(getChapterAllTitle(bookTitle));
+            pagefactory.setTitleName(getChapterTitle(bookTitle));
             pagefactory.setCurPosition(position);
 
         } else {
@@ -230,15 +232,29 @@ public class BookActivity extends BaseActivity {
         }
     }
 
-    private String getChapterTitle(String title) {
+    private String getChapterAllTitle(String title) {
+        Log.e("lmf", ">>>getChapterTitle>>>>>>>>>>>" + title);
         String temp[] = title.split(",");
         String result = "";
         for (String str : temp) {
-            result = str + " ";
+            result = result + str + " ";
         }
         result = result.substring(0, result.length() - 1);
         return result;
     }
+
+    private String getChapterTitle(String title) {
+        Log.e("lmf", ">>>getChapterTitle>>>>>>>>>>>" + title);
+        String temp[] = title.split(",");
+        String result = "";
+        for (int i = AppSettings.sAppInfo.getStyleContentIndex(); i < AppSettings.sAppInfo
+                .getStyleTitleCount(); i++) {
+            result = result + temp[i] + " ";
+        }
+        result = result.substring(0, result.length() - 1);
+        return result;
+    }
+
 
     public void preChapter() {
         if (bookId == 1) {
@@ -284,7 +300,8 @@ public class BookActivity extends BaseActivity {
     private void updateBook() {
         pagefactory.closeBook();
         pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
-        menuTopLayout.setCenterText(getChapterTitle(bookTitle));
+        menuTopLayout.setCenterText(getChapterAllTitle(bookTitle));
+        pagefactory.setTitleName(getChapterTitle(bookTitle));
         pagefactory.setCurPosition(position);
         mPageView.drawCurrentPageCanvas();
         mPageView.drawNextPageCanvas();
