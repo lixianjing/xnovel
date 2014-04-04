@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.widget;
 
 import android.app.Dialog;
@@ -7,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -150,13 +150,7 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
 
         this.setCanceledOnTouchOutside(true);
 
-        setScreenMode(AppSettings.Configs.sScreenMode);
-        lightSb.setProgress(AppSettings.Configs.sScreenLight);
 
-        keepLightTb.setChecked(AppSettings.Configs.sScreenCloseLight);
-        stateBarTb.setChecked(AppSettings.Configs.sScreenShowStatebar);
-
-        setScreenOrientation(AppSettings.Configs.sScreenOrientation);
 
     }
 
@@ -196,6 +190,23 @@ public class DialogScreenSettings extends Dialog implements android.view.View.On
             lightSb.setEnabled(false);
 
         }
+    }
+
+
+
+    @Override
+    public void show() {
+        // TODO Auto-generated method stub
+        super.show();
+        setScreenMode(AppSettings.Configs.sScreenMode);
+        lightSb.setProgress(AppSettings.Configs.sScreenLight);
+
+        keepLightTb.setChecked(AppSettings.Configs.sScreenCloseLight);
+        stateBarTb.setChecked(AppSettings.Configs.sScreenShowStatebar);
+
+        Log.e("lmf", ">>>>>>>>>AppSettings.Configs.sScreenOrientation>>>>>>>>"
+                + AppSettings.Configs.sScreenOrientation);
+        setScreenOrientation(AppSettings.Configs.sScreenOrientation);
     }
 
     public void setBookActivity(BookActivity bookActivity) {

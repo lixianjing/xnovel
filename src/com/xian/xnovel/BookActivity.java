@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -39,6 +40,7 @@ public class BookActivity extends BaseActivity {
 
     private Context mContext;
     private SharedPreferences mPref;
+    private Editor mEditor;
     private int mWidth, mHeight;
 
     private BookPageFactory pagefactory;
@@ -157,6 +159,29 @@ public class BookActivity extends BaseActivity {
                     setOrientation(msg.arg1);
 
                     break;
+
+                case AppSettings.MSG_SETTINGS_SCREEN_ORIENTATION_UPDATE:
+                    DisplayMetrics dm = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    Log.e("lmf", ">>>>>>>>>>>>>>>>" + dm.widthPixels + ":" + dm.heightPixels);
+
+                    if (dm.widthPixels > dm.heightPixels) {
+                        setOrientation(AppSettings.SCREEN_ORIENTATION_PORTRAIT);
+                        AppSettings.Configs.sScreenOrientation =
+                                AppSettings.SCREEN_ORIENTATION_PORTRAIT;
+                    } else {
+                        setOrientation(AppSettings.SCREEN_ORIENTATION_LANDSCAPE);
+                        AppSettings.Configs.sScreenOrientation =
+                                AppSettings.SCREEN_ORIENTATION_LANDSCAPE;
+                    }
+
+
+                    mEditor.putInt(AppSettings.SCREEN_ORIENTATION,
+                            AppSettings.Configs.sScreenOrientation);
+                    mEditor.commit();
+
+
+                    break;
             }
             super.handleMessage(msg);
         }
@@ -175,6 +200,7 @@ public class BookActivity extends BaseActivity {
         // 设置全屏
         mContext = this;
         mPref = AppSettings.getInstance(this).getPref();
+        mEditor = AppSettings.getInstance(mContext).getEditor();
         if (!AppSettings.Configs.sScreenShowStatebar) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -62,6 +62,7 @@ public class AppSettings {
     public static final int MSG_SETTINGS_SCREEN_CLOSE_LIGHT = 2060;
 
     public static final int MSG_SETTINGS_SCREEN_ORIENTATION = 2070;
+    public static final int MSG_SETTINGS_SCREEN_ORIENTATION_UPDATE = 2071;
 
     public static final int STATUS_MENU_HIDE = 0;
     public static final int STATUS_MENU_SHOW = 1;

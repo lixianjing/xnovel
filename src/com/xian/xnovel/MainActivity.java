@@ -28,6 +28,7 @@ import com.xian.xnovel.domain.CatalogInfo;
 import com.xian.xnovel.domain.MarkInfo;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
+import com.xian.xnovel.utils.XmlUtils;
 import com.xian.xnovel.widget.DialogCommon;
 import com.xian.xnovel.widget.MainViewGroup;
 
@@ -191,6 +192,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
     private void initMoreView() {
 
+        if (AppSettings.sAppInfo == null) {
+            AppSettings.sAppInfo = XmlUtils.getAppInfoFromXml(mContext);
+        }
         scoreUrl = AppSettings.sAppInfo.getScoreUrl();
         shareMessage = AppSettings.sAppInfo.getShareMessage();
         moreAppUrl = AppSettings.sAppInfo.getMoreAppUrl();

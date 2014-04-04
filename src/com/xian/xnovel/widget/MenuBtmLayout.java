@@ -278,7 +278,10 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
                 // mainHandler
                 // .sendEmptyMessage(BookActivity.MSG_MENU_HIDE_TRANSLATE);
             } else if (id == R.string.menu_pop_rotate) {
-                Toast.makeText(mContext, R.string.settings_nothing, Toast.LENGTH_SHORT).show();
+
+                mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
+                mainHandler.sendEmptyMessage(AppSettings.MSG_SETTINGS_SCREEN_ORIENTATION_UPDATE);
+
             } else if (id == R.string.menu_pop_background) {
                 mainHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_DISAPPEAR);
                 if (themeSettingsDialog == null) {
