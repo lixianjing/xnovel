@@ -110,9 +110,9 @@ public class AppSettings {
     public static final String FONT_LINE_SPACE = "font_line_space";
     public static final String FONT_BOLD = "font_bold";
     public static final String FONT_ITALIC = "font_italic";
-    public static final int FONT_SIZE_MIN = 20;
-    public static final int FONT_SIZE_MAX = 100;
-    public static final int FONT_LINE_SPACE_MAX = 80;
+    public static final int FONT_SIZE_MIN = 5;
+    public static final int FONT_SIZE_MAX = 65;
+    public static final int FONT_LINE_SPACE_MAX = 60;
     // font settings end
 
 
@@ -159,8 +159,8 @@ public class AppSettings {
 
         public static boolean sFontBold = false;
         public static boolean sFontItalic = false;
-        public static int sFontLineSpace = 20;
-        public static int sFontSize = 40;
+        public static int sFontLineSpace = 8;
+        public static int sFontSize = 22;
         public static int sFontColor = 0xFF000000;
 
         public static int sThemeMode = THEME_MODE_THEME;
@@ -183,8 +183,8 @@ public class AppSettings {
 
         AppSettings.Configs.sFontBold = false;
         AppSettings.Configs.sFontItalic = false;
-        AppSettings.Configs.sFontLineSpace = 20;
-        AppSettings.Configs.sFontSize = 40;
+        AppSettings.Configs.sFontLineSpace = 8;
+        AppSettings.Configs.sFontSize = 22;
         AppSettings.Configs.sFontColor = 0xFF000000;
 
         AppSettings.Configs.sThemeMode = AppSettings.THEME_MODE_THEME;

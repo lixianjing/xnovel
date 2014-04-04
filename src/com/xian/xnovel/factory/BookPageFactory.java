@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
+import com.xian.xnovel.utils.Utils;
 
 @SuppressLint("NewApi")
 public class BookPageFactory {
@@ -44,14 +45,14 @@ public class BookPageFactory {
 
     private Vector<String> mShowLine = new Vector<String>();
 
-    private float styleMarginWidth = 15; // 左右与边缘的距离
-    private float styleMarginHeight = 15; // 上下与边缘的距离
-    private float styleMarginBtm = 5; // 下面的信息条高度
-    private float styleFontBtm = 12;// 底部文字大小
+    private int styleMarginWidth = 15; // 左右与边缘的距离
+    private int styleMarginHeight = 15; // 上下与边缘的距离
+    private int styleMarginBtm = 5; // 下面的信息条高度
+    private int styleFontBtm = 12;// 底部文字大小
 
     private int mLineCount; // 每页可以显示的行数
-    private float mVisibleHeight; // 绘制内容的宽
-    private float mVisibleWidth; // 绘制内容的宽
+    private int mVisibleHeight; // 绘制内容的宽
+    private int mVisibleWidth; // 绘制内容的宽
     private boolean isFirstPage, isLastPage;
 
 
@@ -60,6 +61,10 @@ public class BookPageFactory {
     private final Paint mPaint;
     private final Paint mBtmPaint;// 底部文字绘制
     private final Paint spactPaint;// 行间距绘制
+
+    private int fontSize;
+    private int fontLineSize;
+
 
     private final Integer[] themeBgRes = {R.drawable.theme_1, R.drawable.theme_2,
             R.drawable.theme_3, R.drawable.theme_4, R.drawable.theme_5, R.drawable.theme_6,
@@ -88,8 +93,11 @@ public class BookPageFactory {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setTextAlign(Align.LEFT);
-        // mPaint.setTextSize(30);
-        mPaint.setTextSize(AppSettings.Configs.sFontSize);
+
+        fontSize = Utils.dip2px(context, AppSettings.Configs.sFontSize);
+        fontLineSize = Utils.dip2px(context, AppSettings.Configs.sFontLineSpace);
+
+        mPaint.setTextSize(fontSize);
         mPaint.setColor(AppSettings.Configs.sFontColor);
         if (AppSettings.Configs.sFontBold) {
             mPaint.setFakeBoldText(true); // true为粗体，false为非粗体
@@ -109,21 +117,22 @@ public class BookPageFactory {
         mBtmPaint.setColor(AppSettings.Configs.sFontColor);
 
 
-
         // 行间距设置
         spactPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         spactPaint.setTextAlign(Align.LEFT);
-        spactPaint.setTextSize(AppSettings.Configs.sFontLineSpace);
+        spactPaint.setTextSize(fontLineSize);
 
     }
 
 
 
     private void initRes() {
-        styleMarginWidth = mContext.getResources().getDimension(R.dimen.style_margin_width);
-        styleMarginHeight = mContext.getResources().getDimension(R.dimen.style_margin_height);
-        styleMarginBtm = mContext.getResources().getDimension(R.dimen.style_margin_btm);
-        styleFontBtm = mContext.getResources().getDimension(R.dimen.style_font_btm);
+        styleMarginWidth =
+                mContext.getResources().getDimensionPixelSize(R.dimen.style_margin_width);
+        styleMarginHeight =
+                mContext.getResources().getDimensionPixelSize(R.dimen.style_margin_height);
+        styleMarginBtm = mContext.getResources().getDimensionPixelSize(R.dimen.style_margin_btm);
+        styleFontBtm = mContext.getResources().getDimensionPixelSize(R.dimen.style_font_btm);
     }
 
 
@@ -174,12 +183,14 @@ public class BookPageFactory {
             updateViewBg();
             mVisibleWidth = mWidth - styleMarginWidth * 2;
             mVisibleHeight = mHeight - styleMarginHeight * 2 - styleFontBtm;
-            int totalSize = AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace;
-            mLineCount = (int) ((mVisibleHeight) / totalSize); // 可显示的行数
-            if ((mLineCount * totalSize + AppSettings.Configs.sFontSize) < mVisibleHeight) {
+            int totalSize = fontSize + fontLineSize;
+            mLineCount = mVisibleHeight / totalSize; // 可显示的行数
+            if ((mLineCount * totalSize + fontSize) < mVisibleHeight) {
                 totalSize = totalSize + 1;
             }
         }
+
+
 
     }
 
@@ -405,10 +416,10 @@ public class BookPageFactory {
             float y = styleMarginHeight;
             int i = 0;
             for (String strLine : mShowLine) {
-                y += AppSettings.Configs.sFontSize;
+                y += fontSize;
                 // mPaint.setTypeface(Typeface.DEFAULT_BOLD);
                 c.drawText(strLine, styleMarginWidth, y, mPaint);
-                y += AppSettings.Configs.sFontLineSpace;
+                y += fontLineSize;
                 if (i != mShowLine.size() - 1) {
                     c.drawText("", styleMarginWidth, y, spactPaint);
                 }
@@ -427,14 +438,15 @@ public class BookPageFactory {
     private void drawBtmInfo(Canvas c) {
 
         int percentWidth = (int) mBtmPaint.measureText(getCurPercent()) + 1;
-        c.drawText(getCurPercent(), mWidth - percentWidth - styleMarginBtm, mHeight - styleMarginBtm,
-                mBtmPaint);
+        c.drawText(getCurPercent(), mWidth - percentWidth - styleMarginBtm, mHeight
+                - styleMarginBtm, mBtmPaint);
 
         Date curDate = new Date(System.currentTimeMillis());// 获取当前时间
         String dateTime = dateFormatter.format(curDate);
         c.drawText(dateTime, styleMarginBtm, mHeight - styleMarginBtm, mBtmPaint);
 
-        c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - styleMarginBtm, mBtmPaint);
+        c.drawText("《" + titleName + "》", (mWidth - titleWidth) / 2, mHeight - styleMarginBtm,
+                mBtmPaint);
     }
 
     public void setBgBitmap(Bitmap bg) {
@@ -474,14 +486,17 @@ public class BookPageFactory {
     }
 
     public void updateFontLineSpace() {
-        mLineCount =
-                (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
+
+
+        fontLineSize = Utils.dip2px(mContext, AppSettings.Configs.sFontLineSpace);
+        spactPaint.setTextSize(fontLineSize);
+        mLineCount = mVisibleHeight / (fontSize + fontLineSize); // 可显示的行数
     }
 
     public void updateFontSize() {
-        mPaint.setTextSize(AppSettings.Configs.sFontSize);
-        mLineCount =
-                (int) (mVisibleHeight / (AppSettings.Configs.sFontSize + AppSettings.Configs.sFontLineSpace)); // 可显示的行数
+        fontSize = Utils.dip2px(mContext, AppSettings.Configs.sFontSize);
+        mPaint.setTextSize(fontSize);
+        mLineCount = mVisibleHeight / (fontSize + fontLineSize); // 可显示的行数
     }
 
     public void updateFontBold() {
