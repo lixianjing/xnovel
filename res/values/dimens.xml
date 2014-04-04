@@ -14,7 +14,7 @@
     <dimen name="style_margin_width">5dip</dimen>
     <dimen name="style_margin_height">5dip</dimen>
     <dimen name="style_margin_btm">2dip</dimen>
-    <dimen name="style_font_btm">10dip</dimen>
+    <dimen name="style_font_btm">11dip</dimen>
     
 
 </resources>
