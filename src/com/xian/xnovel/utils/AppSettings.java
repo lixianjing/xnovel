@@ -13,11 +13,7 @@ public class AppSettings {
     public static final String TITLE = "title";
     public static final String POSITION = "position";
 
-    public static final String CONTACT_EMAIL = "flower_is@163.com";
-
     public static final String ASSETS_FILE_PATH = "data";
-    public static final String BOOK_CATA_NAME = "cate_sub";
-    public static final String BOOK_FILE_PATH = "/data/data/com.xian.xnovel/files/";
     public static final String BOOK_FILE_PREFIX = ".";
 
     // book info
@@ -87,10 +83,10 @@ public class AppSettings {
 
     public static final String SETTINGS_VERSION_CODE = "version_code";
 
-    public static final String PREF_PAGE_MODE = "page_mode";
-
-    public static final int PREF_PAGE_MODE_DRAG = 0;
-    public static final int PREF_PAGE_MODE_SCROLL = 1;
+    // PAGE MODE
+    public static final String PAGE_MODE = "page_mode";
+    public static final int PAGE_MODE_DRAG = 0;
+    public static final int PAGE_MODE_SCROLL = 1;
 
     // theme settings begin
     public static final String THEME_MODE = "theme_mode";
@@ -167,6 +163,7 @@ public class AppSettings {
         public static int sThemeIndex = 0;
         public static int sThemeColor = 0xFF000000;
 
+        public static int sPageMode = PAGE_MODE_DRAG;
 
 
     }
@@ -191,6 +188,8 @@ public class AppSettings {
         AppSettings.Configs.sThemeIndex = 0;
         AppSettings.Configs.sThemeColor = 0xFF000000;
 
+        AppSettings.Configs.sPageMode = PAGE_MODE_DRAG;
+
 
         Editor mEditor = AppSettings.getInstance(mContext).getEditor();
         mEditor.putInt(AppSettings.SCREEN_MODE, AppSettings.Configs.sScreenMode);
@@ -209,6 +208,7 @@ public class AppSettings {
         mEditor.putInt(AppSettings.THEME_MODE, AppSettings.Configs.sThemeMode);
         mEditor.putInt(AppSettings.THEME_THEME_INDEX, AppSettings.Configs.sThemeIndex);
         mEditor.putInt(AppSettings.THEME_COLOR_VALUE, AppSettings.Configs.sThemeColor);
+        mEditor.putInt(AppSettings.PAGE_MODE, AppSettings.Configs.sPageMode);
         mEditor.commit();
 
     }

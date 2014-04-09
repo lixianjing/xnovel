@@ -1,4 +1,3 @@
-
 package com.xian.xnovel.widget;
 
 import android.content.Context;
@@ -58,9 +57,7 @@ public class PageView extends View {
     float mTouchToCornerDis;
     ColorMatrixColorFilter mColorMatrixFilter;
     Matrix mMatrix;
-    float[] mMatrixArray = {
-            0, 0, 0, 0, 0, 0, 0, 0, 1.0f
-    };
+    float[] mMatrixArray = {0, 0, 0, 0, 0, 0, 0, 0, 1.0f};
 
     boolean mIsRTandLB; // 是否属于右上左下
     float mMaxLength = (float) Math.hypot(mWidth, mHeight);
@@ -129,14 +126,13 @@ public class PageView extends View {
                     clickStatus = ONCLICK_READY;
                 } else {
 
-                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+                    if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
 
                         calcCornerXY(x, y);
                         mTouch.x = x;
                         mTouch.y = y;
                         return bookActivity.updatePage();
-                    } else {
-                    }
+                    } else {}
 
                 }
 
@@ -147,22 +143,20 @@ public class PageView extends View {
                             return true;
                         }
                     }
-                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+                    if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
                         clickStatus = ONCLICK_NORMAL;
                         calcCornerXY(x, y);
                         mTouch.x = x;
                         mTouch.y = y;
                         return bookActivity.updatePage();
-                    } else {
-                    }
+                    } else {}
 
                 } else {
-                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+                    if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
                         mTouch.x = x;
                         mTouch.y = y;
                         this.postInvalidate();
-                    } else {
-                    }
+                    } else {}
 
                 }
 
@@ -177,7 +171,7 @@ public class PageView extends View {
                     this.postInvalidate();
                 } else {
 
-                    if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+                    if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
                         startAnimation(ANIM_DURATION);
                         this.postInvalidate();
                     } else {
@@ -208,10 +202,8 @@ public class PageView extends View {
 
         ColorMatrix cm = new ColorMatrix();
         float array[] =
-        {
-                0.55f, 0, 0, 0, 80.0f, 0, 0.55f, 0, 0, 80.0f, 0, 0, 0.55f, 0, 80.0f, 0, 0, 0,
-                0.2f, 0
-        };
+                {0.55f, 0, 0, 0, 80.0f, 0, 0.55f, 0, 0, 80.0f, 0, 0, 0.55f, 0, 80.0f, 0, 0, 0,
+                        0.2f, 0};
         cm.set(array);
         mColorMatrixFilter = new ColorMatrixColorFilter(cm);
         mMatrix = new Matrix();
@@ -289,8 +281,7 @@ public class PageView extends View {
         // 如果继续翻页，会出现BUG故在此限制
         if (mTouch.x > 0 && mTouch.x < mWidth) {
             if (mBezierStart1.x < 0 || mBezierStart1.x > mWidth) {
-                if (mBezierStart1.x < 0)
-                    mBezierStart1.x = mWidth - mBezierStart1.x;
+                if (mBezierStart1.x < 0) mBezierStart1.x = mWidth - mBezierStart1.x;
 
                 float f1 = Math.abs(mCornerX - mTouch.x);
                 float f2 = mWidth * f1 / mBezierStart1.x;
@@ -323,8 +314,7 @@ public class PageView extends View {
         mBezierEnd2 = getCross(mTouch, mBezierControl2, mBezierStart1, mBezierStart2);
 
         /*
-         * mBeziervertex1.x 推导
-         * ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
+         * mBeziervertex1.x 推导 ((mBezierStart1.x+mBezierEnd1.x)/2+mBezierControl1.x)/2 化简等价于
          * (mBezierStart1.x+ 2*mBezierControl1.x+mBezierEnd1.x) / 4
          */
         mBeziervertex1.x = (mBezierStart1.x + 2 * mBezierControl1.x + mBezierEnd1.x) / 4;
@@ -387,7 +377,7 @@ public class PageView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+        if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
             canvas.drawColor(0xAA111111);
 
             if (dragToRight()) {
@@ -417,9 +407,7 @@ public class PageView extends View {
      * Author : hmg25 Version: 1.0 Description : 创建阴影的GradientDrawable
      */
     private void createDrawable() {
-        int[] color = {
-                0x333333, 0xb0333333
-        };
+        int[] color = {0x333333, 0xb0333333};
         mFolderShadowDrawableRL =
                 new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, color);
         mFolderShadowDrawableRL.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -428,9 +416,7 @@ public class PageView extends View {
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, color);
         mFolderShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        mBackShadowColors = new int[] {
-                0xff111111, 0x111111
-        };
+        mBackShadowColors = new int[] {0xff111111, 0x111111};
         mBackShadowDrawableRL =
                 new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, mBackShadowColors);
         mBackShadowDrawableRL.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -439,9 +425,7 @@ public class PageView extends View {
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, mBackShadowColors);
         mBackShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        mFrontShadowColors = new int[] {
-                0x80111111, 0x111111
-        };
+        mFrontShadowColors = new int[] {0x80111111, 0x111111};
         mFrontShadowDrawableVLR =
                 new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, mFrontShadowColors);
         mFrontShadowDrawableVLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -627,7 +611,7 @@ public class PageView extends View {
 
     private void startAnimation(int delayMillis) {
 
-        if (bookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+        if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
             int dx, dy;
             // dx 水平方向滑动的距离，负值会使滚动向左滚动
             // dy 垂直方向滑动的距离，负值会使滚动向上滚动
@@ -642,8 +626,7 @@ public class PageView extends View {
                 dy = (int) (1 - mTouch.y); // 防止mTouch.y最终变为0
             }
             mScroller.startScroll((int) mTouch.x, (int) mTouch.y, dx, dy, delayMillis);
-        } else {
-        }
+        } else {}
 
     }
 
@@ -657,8 +640,7 @@ public class PageView extends View {
      * Author : hmg25 Version: 1.0 Description : 是否从左边翻向右边
      */
     public boolean dragToRight() {
-        if (mCornerX > 0)
-            return false;
+        if (mCornerX > 0) return false;
         return true;
     }
 

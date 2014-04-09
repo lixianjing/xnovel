@@ -345,7 +345,7 @@ public class MenuBtmLayout extends LinearLayout implements View.OnClickListener 
     public void setBookActivity(BookActivity bookActivity) {
 
         this.mBookActivity = bookActivity;
-        if (mBookActivity.getPageMode() == AppSettings.PREF_PAGE_MODE_DRAG) {
+        if (AppSettings.Configs.sPageMode == AppSettings.PAGE_MODE_DRAG) {
             settingsImgRes[2] = R.drawable.icon_mode_drag;
             settingsStrsRes[2] = R.string.menu_mode_drag;
         } else {

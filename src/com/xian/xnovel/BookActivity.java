@@ -5,7 +5,6 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -39,7 +38,6 @@ import com.xian.xnovel.widget.PageView;
 public class BookActivity extends BaseActivity {
 
     private Context mContext;
-    private SharedPreferences mPref;
     private Editor mEditor;
     private int mWidth, mHeight;
 
@@ -52,7 +50,6 @@ public class BookActivity extends BaseActivity {
     private boolean isSaveHistory = true;
 
     private int menuStatus = AppSettings.STATUS_MENU_HIDE;
-    private int pageMode = AppSettings.PREF_PAGE_MODE_DRAG;
 
     private PageView mPageView;
     private RelativeLayout menuRl;
@@ -199,7 +196,6 @@ public class BookActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // 设置全屏
         mContext = this;
-        mPref = AppSettings.getInstance(this).getPref();
         mEditor = AppSettings.getInstance(mContext).getEditor();
         if (!AppSettings.Configs.sScreenShowStatebar) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -225,7 +221,6 @@ public class BookActivity extends BaseActivity {
             }
         });
 
-        pageMode = mPref.getInt(AppSettings.PREF_PAGE_MODE, AppSettings.PREF_PAGE_MODE_DRAG);
         menuBtmLayout.setMainHandler(mHandler);
         menuBtmLayout.setBookActivity(this);
         mPageView.setMainHandler(mHandler);
@@ -235,7 +230,6 @@ public class BookActivity extends BaseActivity {
         wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "keep light");
         wakeLock.setReferenceCounted(false);
 
-        mPref = AppSettings.getInstance(mContext).getPref();
 
         loadBook();
 
@@ -247,7 +241,8 @@ public class BookActivity extends BaseActivity {
             pagefactory = BookPageFactory.getInstance(this);
 
             mPageView.setPagefactory(pagefactory);
-            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+            pagefactory.openBook(mContext.getFilesDir().getAbsolutePath(),
+                    AppSettings.BOOK_FILE_PREFIX + bookId);
             menuTopLayout.setCenterText(getChapterAllTitle(bookTitle));
             pagefactory.setTitleName(getChapterTitle(bookTitle));
             pagefactory.setCurPosition(position);
@@ -325,7 +320,8 @@ public class BookActivity extends BaseActivity {
 
     private void updateBook() {
         pagefactory.closeBook();
-        pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+        pagefactory.openBook(mContext.getFilesDir().getAbsolutePath(), AppSettings.BOOK_FILE_PREFIX
+                + bookId);
         menuTopLayout.setCenterText(getChapterAllTitle(bookTitle));
         pagefactory.setTitleName(getChapterTitle(bookTitle));
         pagefactory.setCurPosition(position);
@@ -435,7 +431,8 @@ public class BookActivity extends BaseActivity {
         bookId = savedInstanceState.getInt(AppSettings.ID, 0);
         position = savedInstanceState.getInt(AppSettings.POSITION, 0);
         if (bookId > 0 && bookId <= AppSettings.sAppInfo.getStyleFileCount()) {
-            pagefactory.openBook(AppSettings.BOOK_FILE_PATH, AppSettings.BOOK_FILE_PREFIX + bookId);
+            pagefactory.openBook(mContext.getFilesDir().getAbsolutePath(),
+                    AppSettings.BOOK_FILE_PREFIX + bookId);
             pagefactory.setCurPosition(position);
             mPageView.invalidate();
 
@@ -573,16 +570,6 @@ public class BookActivity extends BaseActivity {
         this.menuStatus = menuStatus;
     }
 
-    public int getPageMode() {
-        return pageMode;
-    }
-
-    public void setPageMode(int pageMode) {
-        this.pageMode = pageMode;
-        Editor editor = mPref.edit();
-        editor.putInt(AppSettings.PREF_PAGE_MODE, pageMode);
-        editor.commit();
-    }
 
     public int getBookId() {
         return bookId;
