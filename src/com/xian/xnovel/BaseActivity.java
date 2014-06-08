@@ -17,6 +17,7 @@ public class BaseActivity extends Activity {
 
     }
 
+
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
