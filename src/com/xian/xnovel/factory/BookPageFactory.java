@@ -1,17 +1,5 @@
 package com.xian.xnovel.factory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Vector;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -24,6 +12,18 @@ import android.widget.Toast;
 import com.xian.xnovel.R;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
 
 @SuppressLint("NewApi")
 public class BookPageFactory {
@@ -482,7 +482,7 @@ public class BookPageFactory {
 
     public void updateFontColor() {
         mPaint.setColor(AppSettings.Configs.sFontColor);
-        // mBtmPaint.setColor(mFontColor);
+        mBtmPaint.setColor(AppSettings.Configs.sFontColor);
     }
 
     public void updateFontLineSpace() {
