@@ -1,7 +1,5 @@
 package com.xian.xnovel;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +14,10 @@ import com.xian.xnovel.db.AppDatabaseHelper;
 import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.utils.Utils;
 import com.xian.xnovel.utils.XmlUtils;
+
+import net.youmi.android.AdManager;
+
+import java.io.IOException;
 
 public class LauncherActivity extends BaseActivity {
 
@@ -62,6 +64,11 @@ public class LauncherActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // umeng send data
         MobclickAgent.updateOnlineConfig(mContext);
+        // youmi
+        // AdManager.getInstance(this).init("您的应用发布ID", "您的应用密钥", true);
+        AdManager.getInstance(this).init("85aa56a59eac8b3d",
+                "a14006f66f58d5d7", true);
+
         setContentView(R.layout.activity_launcher);
         mContext = this;
         pref = AppSettings.getInstance(mContext).getPref();

@@ -1,7 +1,5 @@
 package com.xian.xnovel;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +32,11 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
+
+import net.youmi.android.spot.SpotDialogListener;
+import net.youmi.android.spot.SpotManager;
+
+import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -194,6 +197,16 @@ public class BookActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // youmi
+        SpotManager.getInstance(this).loadSpotAds();
+        SpotManager.getInstance(this).setSpotTimeout(5000);
+        SpotManager.getInstance(this)
+                .setAutoCloseSpot(true);// 设置自动关闭插屏开关
+        SpotManager.getInstance(this)
+                .setCloseTime(6000);
+
+
         // 设置全屏
         mContext = this;
         mEditor = AppSettings.getInstance(mContext).getEditor();
@@ -254,7 +267,6 @@ public class BookActivity extends BaseActivity {
     }
 
     private String getChapterAllTitle(String title) {
-        Log.e("lmf", ">>>getChapterTitle>>>>>>>>>>>" + title);
         String temp[] = title.split(",");
         String result = "";
         for (String str : temp) {
@@ -265,7 +277,6 @@ public class BookActivity extends BaseActivity {
     }
 
     private String getChapterTitle(String title) {
-        Log.e("lmf", ">>>getChapterTitle>>>>>>>>>>>" + title);
         String temp[] = title.split(",");
         String result = "";
         for (int i = AppSettings.sAppInfo.getStyleContentIndex(); i < AppSettings.sAppInfo
@@ -340,6 +351,9 @@ public class BookActivity extends BaseActivity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         pagefactory.closeBook();
+        // youmi
+        SpotManager.getInstance(this)
+                .unregisterSceenReceiver();
         super.onDestroy();
     }
 
@@ -475,6 +489,19 @@ public class BookActivity extends BaseActivity {
                 e1.printStackTrace();
             }
             if (pagefactory.isLastPage()) {
+                // youmi
+                SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
+                    @Override
+                    public void onShowSuccess() {
+                        Log.i("lmf", "onShowSuccess");
+                    }
+
+                    @Override
+                    public void onShowFailed() {
+                        Log.i("lmf", "onShowFailed");
+                    }
+                });
+
                 Toast.makeText(mContext, R.string.settings_last_page, Toast.LENGTH_SHORT).show();
                 return false;
             }
