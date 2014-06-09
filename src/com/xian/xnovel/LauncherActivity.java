@@ -65,7 +65,7 @@ public class LauncherActivity extends BaseActivity {
         MobclickAgent.updateOnlineConfig(mContext);
         // youmi
         // AdManager.getInstance(this).init("您的应用发布ID", "您的应用密钥", true);
-        AdManager.getInstance(this).init("5e951fb24b2ca861", "49f774d6bc5b31d3", true);
+        AdManager.getInstance(this).init("5e951fb24b2ca861", "49f774d6bc5b31d3", false);
 
         setContentView(R.layout.activity_launcher);
         mContext = this;
