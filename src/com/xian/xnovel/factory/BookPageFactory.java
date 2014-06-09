@@ -405,6 +405,10 @@ public class BookPageFactory {
         }
     }
 
+    public boolean isPageEnd() {
+        return mReadEnd >= mBufferLen;
+    }
+
     public void draw(Canvas c) {
         if (mShowLine.size() == 0) mShowLine = pageDown();
         if (mShowLine.size() > 0) {

@@ -1,9 +1,6 @@
+
 package com.xian.xnovel;
 
-import java.io.IOException;
-
-import net.youmi.android.spot.SpotDialogListener;
-import net.youmi.android.spot.SpotManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +34,11 @@ import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
 
+import net.youmi.android.spot.SpotDialogListener;
+import net.youmi.android.spot.SpotManager;
+
+import java.io.IOException;
+
 public class BookActivity extends BaseActivity {
 
     private Context mContext;
@@ -61,6 +63,7 @@ public class BookActivity extends BaseActivity {
     private OnThemePictureChangedListener pictureChangedListener;
 
     private AppDBControl dbControl;
+    private boolean isShowAd = false;
 
     private final Handler mHandler = new Handler() {
 
@@ -173,11 +176,9 @@ public class BookActivity extends BaseActivity {
                                 AppSettings.SCREEN_ORIENTATION_LANDSCAPE;
                     }
 
-
                     mEditor.putInt(AppSettings.SCREEN_ORIENTATION,
                             AppSettings.Configs.sScreenOrientation);
                     mEditor.commit();
-
 
                     break;
             }
@@ -203,7 +204,6 @@ public class BookActivity extends BaseActivity {
                 .setAutoCloseSpot(true);// 设置自动关闭插屏开关
         SpotManager.getInstance(this)
                 .setCloseTime(6000);
-
 
         // 设置全屏
         mContext = this;
@@ -240,7 +240,6 @@ public class BookActivity extends BaseActivity {
         powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         wakeLock = this.powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "keep light");
         wakeLock.setReferenceCounted(false);
-
 
         loadBook();
 
@@ -285,7 +284,6 @@ public class BookActivity extends BaseActivity {
         return result;
     }
 
-
     public void preChapter() {
         if (bookId == 1) {
             return;
@@ -301,6 +299,23 @@ public class BookActivity extends BaseActivity {
     }
 
     public void nextChapter() {
+
+        if (!isShowAd && pagefactory.isPageEnd()) {
+            SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
+                @Override
+                public void onShowSuccess() {
+                    isShowAd = true;
+                    Log.i("lmf", "onShowSuccess");
+                }
+
+                @Override
+                public void onShowFailed() {
+                    Log.i("lmf", "onShowFailed");
+                    isShowAd = true;
+                }
+            });
+        }
+
         if (bookId == AppSettings.sAppInfo.getStyleFileCount()) {
             return;
         }
@@ -491,6 +506,7 @@ public class BookActivity extends BaseActivity {
                 SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
                     @Override
                     public void onShowSuccess() {
+                        isShowAd = true;
                         Log.i("lmf", "onShowSuccess");
                     }
 
@@ -514,8 +530,25 @@ public class BookActivity extends BaseActivity {
         // TODO Auto-generated method stub
         if (menuBtmLayout.getVisibility() == View.VISIBLE) {
             mHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
+        } else if (!isShowAd && pagefactory.isPageEnd()) {
+            SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
+                @Override
+                public void onShowSuccess() {
+                    isShowAd = true;
+                    Log.i("lmf", "onShowSuccess");
+                }
+
+                @Override
+                public void onShowFailed() {
+                    Log.i("lmf", "onShowFailed");
+                    isShowAd = true;
+                }
+            });
         } else {
-            super.onBackPressed();
+
+            if (!SpotManager.getInstance(this).disMiss()) {
+                super.onBackPressed();
+            }
         }
 
     }
@@ -528,7 +561,8 @@ public class BookActivity extends BaseActivity {
         switch (requestCode) {
             case AppSettings.REQUEST_CODE_PHOTO_PICKED_WITH_DATA: {
                 // Ignore failed requests
-                if (resultCode != Activity.RESULT_OK) return;
+                if (resultCode != Activity.RESULT_OK)
+                    return;
                 // As we are coming back to this view, the editor will be
                 // reloaded automatically,
                 // which will cause the photo that is set here to disappear. To
@@ -571,7 +605,8 @@ public class BookActivity extends BaseActivity {
     }
 
     /**
-     * Constructs an intent for picking a photo from Gallery, cropping it and returning the bitmap.
+     * Constructs an intent for picking a photo from Gallery, cropping it and
+     * returning the bitmap.
      */
     public Intent getPhotoPickIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
@@ -595,7 +630,6 @@ public class BookActivity extends BaseActivity {
     public void setMenuStatus(int menuStatus) {
         this.menuStatus = menuStatus;
     }
-
 
     public int getBookId() {
         return bookId;
