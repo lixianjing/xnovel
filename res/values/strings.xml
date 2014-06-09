@@ -97,5 +97,7 @@
     <string name="sys_confirm">确定</string>
     <string name="sys_giveup">放弃</string>
     <string name="sys_cancel">取消</string>
+    
+     <string name="settings_last_page_alter">已经是最后一页了，看看远方休息休息眼睛吧。</string>
 
 </resources>

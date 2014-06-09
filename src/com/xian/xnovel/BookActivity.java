@@ -1,5 +1,9 @@
 package com.xian.xnovel;
 
+import java.io.IOException;
+
+import net.youmi.android.spot.SpotDialogListener;
+import net.youmi.android.spot.SpotManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,11 +36,6 @@ import com.xian.xnovel.utils.AppSettings;
 import com.xian.xnovel.widget.MenuBtmLayout;
 import com.xian.xnovel.widget.MenuTopLayout;
 import com.xian.xnovel.widget.PageView;
-
-import net.youmi.android.spot.SpotDialogListener;
-import net.youmi.android.spot.SpotManager;
-
-import java.io.IOException;
 
 public class BookActivity extends BaseActivity {
 
@@ -163,7 +162,6 @@ public class BookActivity extends BaseActivity {
                 case AppSettings.MSG_SETTINGS_SCREEN_ORIENTATION_UPDATE:
                     DisplayMetrics dm = new DisplayMetrics();
                     getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    Log.e("lmf", ">>>>>>>>>>>>>>>>" + dm.widthPixels + ":" + dm.heightPixels);
 
                     if (dm.widthPixels > dm.heightPixels) {
                         setOrientation(AppSettings.SCREEN_ORIENTATION_PORTRAIT);
@@ -502,7 +500,8 @@ public class BookActivity extends BaseActivity {
                     }
                 });
 
-                Toast.makeText(mContext, R.string.settings_last_page, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.settings_last_page_alter, 6000)
+                        .show();
                 return false;
             }
             mPageView.drawNextPageCanvas();
