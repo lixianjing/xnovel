@@ -65,6 +65,20 @@ public class BookActivity extends BaseActivity {
     private AppDBControl dbControl;
     private boolean isShowAd = false;
 
+    private final SpotDialogListener adDialogListener = new SpotDialogListener() {
+        @Override
+        public void onShowSuccess() {
+            isShowAd = true;
+            Log.i("lmf", "onShowSuccess");
+        }
+
+        @Override
+        public void onShowFailed() {
+            Log.i("lmf", "onShowFailed");
+            isShowAd = true;
+        }
+    };
+
     private final Handler mHandler = new Handler() {
 
         @Override
@@ -285,9 +299,15 @@ public class BookActivity extends BaseActivity {
     }
 
     public void preChapter() {
+
+        if (!isShowAd && pagefactory.isPageEnd()) {
+            SpotManager.getInstance(this).showSpotAds(this, adDialogListener);
+        }
+
         if (bookId == 1) {
             return;
         }
+
         CatalogInfo catalogInfo = dbControl.getCatalog(bookId - 1);
         if (catalogInfo != null) {
             bookId = catalogInfo.getId();
@@ -301,19 +321,7 @@ public class BookActivity extends BaseActivity {
     public void nextChapter() {
 
         if (!isShowAd && pagefactory.isPageEnd()) {
-            SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
-                @Override
-                public void onShowSuccess() {
-                    isShowAd = true;
-                    Log.i("lmf", "onShowSuccess");
-                }
-
-                @Override
-                public void onShowFailed() {
-                    Log.i("lmf", "onShowFailed");
-                    isShowAd = true;
-                }
-            });
+            SpotManager.getInstance(this).showSpotAds(this, adDialogListener);
         }
 
         if (bookId == AppSettings.sAppInfo.getStyleFileCount()) {
@@ -503,18 +511,7 @@ public class BookActivity extends BaseActivity {
             }
             if (pagefactory.isLastPage()) {
                 // youmi
-                SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
-                    @Override
-                    public void onShowSuccess() {
-                        isShowAd = true;
-                        Log.i("lmf", "onShowSuccess");
-                    }
-
-                    @Override
-                    public void onShowFailed() {
-                        Log.i("lmf", "onShowFailed");
-                    }
-                });
+                SpotManager.getInstance(this).showSpotAds(this, adDialogListener);
 
                 Toast.makeText(mContext, R.string.settings_last_page_alter, 6000)
                         .show();
@@ -531,19 +528,7 @@ public class BookActivity extends BaseActivity {
         if (menuBtmLayout.getVisibility() == View.VISIBLE) {
             mHandler.sendEmptyMessage(AppSettings.MSG_MENU_HIDE_TRANSLATE);
         } else if (!isShowAd && pagefactory.isPageEnd()) {
-            SpotManager.getInstance(this).showSpotAds(this, new SpotDialogListener() {
-                @Override
-                public void onShowSuccess() {
-                    isShowAd = true;
-                    Log.i("lmf", "onShowSuccess");
-                }
-
-                @Override
-                public void onShowFailed() {
-                    Log.i("lmf", "onShowFailed");
-                    isShowAd = true;
-                }
-            });
+            SpotManager.getInstance(this).showSpotAds(this, adDialogListener);
         } else {
 
             if (!SpotManager.getInstance(this).disMiss()) {
@@ -669,5 +654,7 @@ public class BookActivity extends BaseActivity {
                 break;
         }
     }
+
+
 
 }
